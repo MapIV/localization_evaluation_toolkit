@@ -1,0 +1,23 @@
+class YamlParam:
+    def __init__(self):
+        self.separate_time_stamp = ''
+        self.stamp_column = ''
+        self.secs_stamp_column = ''
+        self.nsecs_stamp_column = ''
+        self.x_column = ''
+        self.y_column = ''
+        self.z_column = ''
+        self.use_quaternion = ''
+        self.ori_x_column = ''
+        self.ori_y_column = ''
+        self.ori_z_column = ''
+        self.ori_w_column = ''
+        self.use_radian = ''
+        self.roll_column = ''
+        self.pitch_column = ''
+        self.yaw_column = ''
+
+        self.font = ''
+        self.save_figures = ''
+        self.save_extension_type = ''
+        self.save_dataframe = ''

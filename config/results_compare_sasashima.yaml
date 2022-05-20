@@ -1,0 +1,92 @@
+######################
+## Necessary Params ##
+######################
+
+Reference:
+  # Time
+  separate_time_stamp: true #[true]:Set stamp_idx / [false]:Set secs_stamp_idx and nsecs_stamp_idx
+  stamp_column: 0
+  secs_stamp_column: 2
+  nsecs_stamp_column: 3
+
+  # Position
+  x_column: 5
+  y_column: 6
+  z_column: 7
+
+  # Rotation
+  use_quaternion: true # [true]:Set Quaternion / [false]:Set Euler
+
+  # Quaternion
+  ori_x_column: 8
+  ori_y_column: 9
+  ori_z_column: 10
+  ori_w_column: 11
+
+  # Euler
+  use_radian: true # [true]:radian / [false]:degree
+  roll_column: 8
+  pitch_column: 9
+  yaw_column: 10
+
+
+Result:
+  # Time
+  separate_time_stamp: true #[true]:Set stamp_idx / [false]:Set secs_stamp_idx and nsecs_stamp_idx
+  stamp_column: 0
+  secs_stamp_column: 2
+  nsecs_stamp_column: 3
+
+  # Position
+  x_column: 5
+  y_column: 6
+  z_column: 7
+
+  # Rotation
+  use_quaternion: true # [true]:Set Quaternion / [false]:Set Euler
+
+  # Quaternion
+  ori_x_column: 8
+  ori_y_column: 9
+  ori_z_column: 10
+  ori_w_column: 11
+
+  # Euler
+  use_radian: true # [true]:radian / [false]:degree
+  roll_column: 8
+  pitch_column: 9
+  yaw_column: 10
+
+# The others
+font: Times New Roman
+save_figures: true
+save_extension_type: png # without "."
+save_dataframe: true
+
+
+############
+## Option ##
+############
+execution_time_graph: false
+execuation_column: 0
+
+ellipse_display: false
+ellipse_long_radius_column: 0
+ellipse_short_radius_column: 0
+ellipse_yaw_column: 0
+
+
+##################
+## Warning sign ##
+##################
+2D_error:
+3D_error:
+normal distance:
+across_error:
+across_error:
+ellipse_long_radius:
+ellipse_short_radius:
+ellipse_along:
+ellipse_across:
+
+
