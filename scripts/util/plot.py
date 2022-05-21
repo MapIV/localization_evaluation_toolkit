@@ -44,7 +44,7 @@ def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
     ax_result_p = fig_rpy.add_subplot(324)
     ax_resukt_y = fig_rpy.add_subplot(326)
 
-    ax_ref_r.plot(time, sync_ref_df['ref_roll'], marker="o", markersize=4)
+    ax_ref_r.plot(time, sync_ref_df['ref_roll'], marker="o")
     ax_ref_p.plot(time, sync_ref_df['ref_pitch'], marker="o")
     ax_ref_y.plot(time, sync_ref_df['ref_yaw'], marker="o")
     ax_result_r.plot(time, sync_result_df['result_roll'], marker="o")
@@ -157,7 +157,7 @@ def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
     # Roll Error
     fig_rpy_error = plt.figure('Roll_Pitch_Yaw_Error')
     ax_roll_error = fig_rpy_error.add_subplot(311)
-    ax_roll_error.set_title('Roll Error')
+    ax_roll_error.set_title('Roll_Error')
     ax_roll_error.plot(time, sync_result_df['result_roll'] - sync_ref_df['ref_roll'], marker="o", c='k', markersize=2)
     ax_roll_error.set_xlabel('time[s]')
     ax_roll_error.set_ylabel('error[dgree]')
@@ -166,7 +166,7 @@ def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
 
     # Pitch Error
     ax_pitch_error = fig_rpy_error.add_subplot(312)
-    ax_pitch_error.set_title('Pitch Error')
+    ax_pitch_error.set_title('Pitch_Error')
     ax_pitch_error.plot(time, sync_result_df['result_pitch'] - sync_ref_df['ref_pitch'], marker="o", c='k', markersize=2)
     ax_pitch_error.set_xlabel('time[s]')
     ax_pitch_error.set_ylabel('error[dgree]')
@@ -175,7 +175,7 @@ def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
 
     # Yaw Error
     ax_yaw_error = fig_rpy_error.add_subplot(313)
-    ax_yaw_error.set_title('Yaw Error')
+    ax_yaw_error.set_title('Yaw_Error')
     ax_yaw_error.plot(time, sync_result_df['result_yaw'] - sync_ref_df['ref_yaw'], marker="o", c='k', markersize=2)
     ax_yaw_error.set_xlabel('time[s]')
     ax_yaw_error.set_ylabel('error[dgree]')

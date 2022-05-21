@@ -78,9 +78,9 @@ def unit_adjust(ref_param, result_param, ref_df_temp, result_df_temp, ref_df, re
         for i in range(len(ref_df_temp)):
             ref_q_temp = [ref_df_temp.iloc[i,ref_param.ori_x_column],ref_df_temp.iloc[i,ref_param.ori_y_column],ref_df_temp.iloc[i,ref_param.ori_z_column],ref_df_temp.iloc[i,ref_param.ori_w_column]]
             ref_e_temp = R.from_quat([ref_q_temp[0], ref_q_temp[1], ref_q_temp[2], ref_q_temp[3]])
-            ref_df.at[i,'ref_roll'] = ref_e_temp.as_euler('xyz', degrees=False)[0]
-            ref_df.at[i,'ref_pitch'] = ref_e_temp.as_euler('xyz', degrees=False)[1]
-            ref_df.at[i,'ref_yaw'] = ref_e_temp.as_euler('xyz', degrees=False)[2]
+            ref_df.at[i,'ref_roll'] = ref_e_temp.as_euler('ZYX', degrees=False)[2]
+            ref_df.at[i,'ref_pitch'] = ref_e_temp.as_euler('ZYX', degrees=False)[1]
+            ref_df.at[i,'ref_yaw'] = ref_e_temp.as_euler('ZYX', degrees=False)[0]
     elif ref_param.use_quaternion == False and ref_param.use_radian == False:
         ref_df['ref_roll'] = ref_df_temp.iloc[:,ref_param.roll_column]
         ref_df['ref_pitch'] = ref_df_temp.iloc[:,ref_param.pitch_column]
@@ -95,9 +95,9 @@ def unit_adjust(ref_param, result_param, ref_df_temp, result_df_temp, ref_df, re
         for i in range(len(result_df_temp)):
             result_q_temp = [result_df_temp.iloc[i,result_param.ori_x_column],result_df_temp.iloc[i,result_param.ori_y_column],result_df_temp.iloc[i,result_param.ori_z_column],result_df_temp.iloc[i,result_param.ori_w_column]]
             result_e_temp = R.from_quat([result_q_temp[0], result_q_temp[1], result_q_temp[2], result_q_temp[3]])
-            result_df.at[i,'result_roll'] = result_e_temp.as_euler('zyx', degrees=False)[2]
-            result_df.at[i,'result_pitch'] = result_e_temp.as_euler('zyx', degrees=False)[1]
-            result_df.at[i,'result_yaw'] = result_e_temp.as_euler('zyx', degrees=False)[0]
+            result_df.at[i,'result_roll'] = result_e_temp.as_euler('ZYX', degrees=False)[2]
+            result_df.at[i,'result_pitch'] = result_e_temp.as_euler('ZYX', degrees=False)[1]
+            result_df.at[i,'result_yaw'] = result_e_temp.as_euler('ZYX', degrees=False)[0]
     elif result_param.use_quaternion == False and result_param.use_radian == False:
         result_df['result_roll'] = result_df_temp.iloc[:,result_param.roll_column]
         result_df['result_pitch'] = result_df_temp.iloc[:,result_param.pitch_column]
