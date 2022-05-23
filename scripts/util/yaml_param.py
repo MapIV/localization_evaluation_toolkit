@@ -17,7 +17,11 @@ class YamlParam:
         self.pitch_column = ''
         self.yaw_column = ''
 
-        self.font = ''
+        self.use_radian = ''
+        # self.font = ''
+        self.title_font_size = ''
+        self.label_font_size = ''
+        self.ticks_font_size = ''
         self.save_figures = ''
         self.save_extension_type = ''
         self.save_dataframe = ''

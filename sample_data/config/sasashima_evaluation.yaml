@@ -4,30 +4,30 @@
 
 Reference:
   # Time
-  separate_time_stamp: true #[true]:Set stamp_idx / [false]:Set secs_stamp_idx and nsecs_stamp_idx
-  stamp_column: 0
-  secs_stamp_column: 2
-  nsecs_stamp_column: 3
+  separate_time_stamp: false #[true]:Set stamp_idx / [false]:Set secs_stamp_idx and nsecs_stamp_idx
+  stamp_column: 1
+  secs_stamp_column: 0
+  nsecs_stamp_column: 0
 
   # Position
-  x_column: 5
-  y_column: 6
-  z_column: 7
+  x_column: 3
+  y_column: 4
+  z_column: 5
 
   # Rotation
-  use_quaternion: true # [true]:Set Quaternion / [false]:Set Euler
+  use_quaternion: false # [true]:Set Quaternion / [false]:Set Euler
 
   # Quaternion
-  ori_x_column: 8
-  ori_y_column: 9
-  ori_z_column: 10
-  ori_w_column: 11
+  ori_x_column: 0
+  ori_y_column: 0
+  ori_z_column: 0
+  ori_w_column: 0
 
   # Euler
   use_radian: true # [true]:radian / [false]:degree
-  roll_column: 8
-  pitch_column: 9
-  yaw_column: 10
+  roll_column: 6
+  pitch_column: 7
+  yaw_column: 8
 
 
 Result:
@@ -53,12 +53,18 @@ Result:
 
   # Euler
   use_radian: true # [true]:radian / [false]:degree
-  roll_column: 8
-  pitch_column: 9
-  yaw_column: 10
+  roll_column: 0
+  pitch_column: 0
+  yaw_column: 0
 
-# The others
-font: Times New Roman
+# Display
+use_radian: true # [true]:radian / [false]:degree
+title_font_size: 14 
+label_font_size: 10
+ticks_font_size: 8
+# font: Arial　<Unimplemented>
+
+# Save
 save_figures: true
 save_extension_type: png # without "."
 save_dataframe: true
@@ -67,26 +73,18 @@ save_dataframe: true
 ############
 ## Option ##
 ############
-execution_time_graph: false
-execuation_column: 0
+# <--coming soon-->
+# execution_time_graph: false
+# execuation_column: 0
 
-ellipse_display: false
-ellipse_long_radius_column: 0
-ellipse_short_radius_column: 0
-ellipse_yaw_column: 0
-
+# velocity_graph: false
+# velocity_column:
 
 ##################
 ## Warning sign ##
 ##################
-2D_error:
-3D_error:
-normal distance:
-across_error:
-across_error:
-ellipse_long_radius:
-ellipse_short_radius:
-ellipse_along:
-ellipse_across:
-
-
+# <--coming soon-->
+# 2D_error:
+# 3D_error:
+# ellipse_long_radius:
+# ellipse_short_radius:

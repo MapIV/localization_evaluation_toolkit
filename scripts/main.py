@@ -41,11 +41,10 @@ if __name__ == '__main__':
     adjust.adjust_end_time(ref_df,result_df)
     print('Completed!!')
 
-    print('Sync_time  ...', end='')
+    print('Synchronizing time...', end='')
     sync_ref_df, sync_result_df = adjust.sync_time(ref_df, result_df)
     del ref_df, result_df
     print('Completed!!')
 
-    print('Output graph  ...', end='')
+    print('Output graph ...', end='')
     plot.output_graph(sync_ref_df, sync_result_df, output_dir, save_param)
-    print('Completed!!') 
