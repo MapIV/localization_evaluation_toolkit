@@ -62,7 +62,7 @@ use_radian: true # [true]:radian / [false]:degree
 title_font_size: 14 
 label_font_size: 10
 ticks_font_size: 8
-# font: Arial　<Unimplemented>
+# font: Arial <Unimplemented>
 
 # Save
 save_figures: true

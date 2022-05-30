@@ -153,7 +153,7 @@ def sync_time(ref_df, result_df):
                 if min_ref_time < before_min_time:
                     sync_ref_df.drop(sync_ref_df.index[-1], inplace=True)
                     result_df.drop(i-1, inplace=True)
-                if min_ref_time > before_min_time:
+                elif min_ref_time > before_min_time:
                     result_df.drop(i, inplace=True)
                     continue
             sync_ref_df = sync_ref_df.append(ref_df.iloc[sync_ref_id,:], ignore_index = True)
@@ -172,7 +172,7 @@ def sync_time(ref_df, result_df):
                 if min_result_time < before_min_time:
                     sync_result_df.drop(sync_result_df.index[-1], inplace=True)
                     ref_df.drop(i-1, inplace=True)
-                if min_result_time > before_min_time:
+                elif min_result_time > before_min_time:
                     ref_df.drop(i, inplace=True)
                     continue
             sync_result_df = sync_result_df.append(result_df.iloc[sync_result_id,:], ignore_index = True)

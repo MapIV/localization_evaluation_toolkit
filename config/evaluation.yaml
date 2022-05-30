@@ -59,7 +59,7 @@ Result:
 
 # Display
 use_radian: true # [true]:radian / [false]:degree
-# font: Arial　<Unimplemented>
+# font: Arial <Unimplemented>
 title_font_size: 14 
 label_font_size: 10
 ticks_font_size: 8
