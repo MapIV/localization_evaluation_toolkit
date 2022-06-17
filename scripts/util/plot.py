@@ -107,7 +107,7 @@ def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
         rpy_label = '[rad]'
 
     # Reference and Result Roll Pitch Yaw
-    fig_rpy = plt.figure('Roll_Pitch_Yaw', constrained_layout=True, figsize=(16, 9), dpi=120)
+    fig_rpy = plt.figure('Roll_Pitch_Yaw', figsize=(16, 9), dpi=120)
     ax_ref_r = fig_rpy.add_subplot(321)
     ax_ref_p = fig_rpy.add_subplot(323)
     ax_ref_y = fig_rpy.add_subplot(325)
@@ -158,9 +158,11 @@ def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
     ax_resukt_y.tick_params(labelsize= save_param.ticks_font_size)
     ax_resukt_y.grid()
 
+    plt.tight_layout()
+
     # Roll Pitch Yaw Error
+    fig_rpy_error = plt.figure('Roll_Pitch_Yaw_Error',figsize=(16, 9), dpi=120)
     # Roll Error
-    fig_rpy_error = plt.figure('Roll_Pitch_Yaw_Error', constrained_layout=True, figsize=(16, 9), dpi=120)
     ax_roll_error = fig_rpy_error.add_subplot(311)
     ax_roll_error.set_title('Roll_Error', fontsize = save_param.title_font_size)
     ax_roll_error.plot(time, error_roll*rad_to_deg, marker="o", c='k', markersize=2)
@@ -215,4 +217,5 @@ def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
         fig_rpy.savefig(output_dir + "/rpy." + save_param.save_extension_type)
         fig_rpy_error.savefig(output_dir + "/rpy_error." + save_param.save_extension_type)
         print('Completed!!')
+    plt.tight_layout()
     plt.show()

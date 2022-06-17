@@ -3,26 +3,29 @@
 ######################
 
 Reference:
-  # Time
-  separate_time_stamp: false #[true]:Set stamp_idx / [false]:Set secs_stamp_idx and nsecs_stamp_idx
-  stamp_column: 1
+  ## Time
+  separate_time_stamp: false #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
+  #--------true--------#
   secs_stamp_column: 0
   nsecs_stamp_column: 0
+  #--------false-------#
+  stamp_column: 1
 
-  # Position
+  ## Position
   x_column: 3
   y_column: 4
   z_column: 5
 
-  # Rotation
+  ## Rotation
   use_quaternion: false # [true]:Set Quaternion / [false]:Set Euler
-
+  #--------true--------#
   # Quaternion
   ori_x_column: 0
   ori_y_column: 0
   ori_z_column: 0
   ori_w_column: 0
 
+  #--------false-------#
   # Euler
   use_radian: true # [true]:radian / [false]:degree
   roll_column: 6
@@ -31,26 +34,28 @@ Reference:
 
 
 Result:
-  # Time
-  separate_time_stamp: true #[true]:Set stamp_idx / [false]:Set secs_stamp_idx and nsecs_stamp_idx
-  stamp_column: 0
+  separate_time_stamp: true #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
+  #--------true--------#
   secs_stamp_column: 2
   nsecs_stamp_column: 3
+  #--------false-------#
+  stamp_column: 0
 
-  # Position
+  ## Position
   x_column: 5
   y_column: 6
   z_column: 7
 
-  # Rotation
+  ## Rotation
   use_quaternion: true # [true]:Set Quaternion / [false]:Set Euler
-
+  #--------true--------#
   # Quaternion
   ori_x_column: 8
   ori_y_column: 9
   ori_z_column: 10
   ori_w_column: 11
 
+  #--------false-------#
   # Euler
   use_radian: true # [true]:radian / [false]:degree
   roll_column: 0
@@ -59,10 +64,10 @@ Result:
 
 # Display
 use_radian: true # [true]:radian / [false]:degree
+# font: Arial <Unimplemented>
 title_font_size: 14 
 label_font_size: 10
 ticks_font_size: 8
-# font: Arial <Unimplemented>
 
 # Save
 save_figures: true
@@ -88,3 +93,6 @@ save_dataframe: true
 # 3D_error:
 # ellipse_long_radius:
 # ellipse_short_radius:
+
+
+
