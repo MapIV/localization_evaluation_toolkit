@@ -34,7 +34,8 @@ if __name__ == '__main__':
     print('Completed!!')
 
     print('Adjusting the start time ...', end='')
-    adjust.adjust_start_time(ref_df,result_df)
+    if adjust.adjust_start_time(ref_df,result_df) is -1:
+        sys.exit(1)
     print('Completed!!')
 
     print('Adjusting the end time ...', end='')
