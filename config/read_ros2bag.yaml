@@ -1,0 +1,21 @@
+Reference:
+  topic_name: /localization/pose_estimator/pose_with_covariance
+  storage_id: sqlite3
+  serialization_format: cdr
+
+Result:
+  topic_name: /localization/pose_twist_fusion_filter/pose_with_covariance_without_yawbias
+  storage_id: sqlite3
+  serialization_format: cdr
+
+# Display
+use_radian: true # [true]:radian / [false]:degree
+# font: Arial <Unimplemented>
+title_font_size: 14 
+label_font_size: 10
+ticks_font_size: 8
+
+# Save
+save_figures: true
+save_extension_type: png # without "."
+save_dataframe: true

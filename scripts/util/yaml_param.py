@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
-import copy
 
 class YamlParam:
     def __init__(self):
+        # CSV
         self.separate_time_stamp = ""
         self.stamp_column = ""
         self.secs_stamp_column = ""
@@ -21,6 +21,12 @@ class YamlParam:
         self.pitch_column = ""
         self.yaw_column = ""
 
+        # Bag
+        self.topic = ""
+        self.bag_id = ""
+        self.bag_format = ""
+
+        # Save format
         self.use_radian = ""
         # self.font = ''
         self.title_font_size = ""
@@ -30,14 +36,15 @@ class YamlParam:
         self.save_extension_type = ""
         self.save_dataframe = ""
 
+        # Adjust time
         self.direct_vel = ""
         self.vel_colmn = ""
 
+        # DataFrame
         self.df_temp = pd.DataFrame()
         self.df = pd.DataFrame()
 
-# ##YamlParamが使えない
-# class UnitExtraction(YamlParam):
+
     def extract_time(self):
         if self.separate_time_stamp == True:
             self.df['time'] = self.df_temp.iloc[:, self.secs_stamp_column] + self.df_temp.iloc[:, self.nsecs_stamp_column] / 10**9

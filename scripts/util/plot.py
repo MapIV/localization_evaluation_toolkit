@@ -3,24 +3,22 @@ import math
 import numpy as np
 
 
-def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
-    time = sync_ref_df["ref_time"] - sync_ref_df["ref_time"][0]
-    error_x = sync_result_df["result_x"] - sync_ref_df["ref_x"]
-    error_y = sync_result_df["result_y"] - sync_ref_df["ref_y"]
-    error_z = sync_result_df["result_z"] - sync_ref_df["ref_z"]
-    error_roll = sync_result_df["result_roll"] - sync_ref_df["ref_roll"]
-    error_pitch = sync_result_df["result_pitch"] - sync_ref_df["ref_pitch"]
-    error_yaw = sync_result_df["result_yaw"] - sync_ref_df["ref_yaw"]
+def output_graph(ref_param, result_param, output_dir, save_param):
+    time = ref_param.df["time"] - ref_param.df["time"][0]
+    error_x = result_param.df["x"] - ref_param.df["x"]
+    error_y = result_param.df["y"] - ref_param.df["y"]
+    error_z = result_param.df["z"] - ref_param.df["z"]
+    error_roll = result_param.df["roll"] - ref_param.df["roll"]
+    error_pitch = result_param.df["pitch"] - ref_param.df["pitch"]
+    error_yaw = result_param.df["yaw"] - ref_param.df["yaw"]
 
     # 2D Trajectory
     fig_2d_trj = plt.figure("2D_Trajectory", figsize=(16, 9), dpi=120)
     ax_2d_trj = fig_2d_trj.add_subplot(111)
     ax_2d_trj.set_title("2D Trajectory", fontsize=save_param.title_font_size)
-    ax_2d_trj.scatter(sync_ref_df["ref_x"], sync_ref_df["ref_y"], c="k", label="Reference")
-    ax_2d_trj.scatter(sync_result_df["result_x"], sync_result_df["result_y"], c="r", s=2, label="Retult")
-    ax_2d_trj.plot(
-        [sync_ref_df["ref_x"], sync_result_df["result_x"]], [sync_ref_df["ref_y"], sync_result_df["result_y"]], "g-", linewidth=0.2, zorder=1
-    )
+    ax_2d_trj.scatter(ref_param.df["x"], ref_param.df["y"], c="k", label="Reference")
+    ax_2d_trj.scatter(result_param.df["x"], result_param.df["y"], c="r", s=2, label="Retult")
+    ax_2d_trj.plot([ref_param.df["x"], result_param.df["x"]], [ref_param.df["y"], result_param.df["y"]], "g-", linewidth=0.2, zorder=1)
     ax_2d_trj.set_xlabel("x[m]", fontsize=save_param.label_font_size)
     ax_2d_trj.set_ylabel("y[m]", fontsize=save_param.label_font_size)
     ax_2d_trj.tick_params(labelsize=save_param.ticks_font_size)
@@ -32,8 +30,8 @@ def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
     # fig_3d_trj = plt.figure('3D_Trajectory')
     # ax_3d_trj = fig_3d_trj.add_subplot(projection='3d')
     # ax_3d_trj.set_title('3D Trajectory')
-    # ax_3d_trj.plot3D(sync_ref_df['ref_x'], sync_ref_df['ref_y'], sync_ref_df['ref_z'], c = "k")
-    # ax_3d_trj.plot3D(sync_result_df['result_x'], sync_result_df['result_y'], sync_result_df['result_z'], c="r")
+    # ax_3d_trj.plot3D(ref_param.df['x'], ref_param.df['y'], ref_param.df['z'], c = "k")
+    # ax_3d_trj.plot3D(result_param.df['x'], result_param.df['y'], result_param.df['z'], c="r")
     # ax_3d_trj.set_xlabel('x [m]')
     # ax_3d_trj.set_ylabel('y [m]')
     # ax_3d_trj.set_zlabel('z [m]')
@@ -76,9 +74,9 @@ def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
     # Error considering vehicle direction
     longitudinal = []
     lateral = []
-    for i in range(len(sync_ref_df)):
-        longitudinal.append(error_x[i] * math.cos(-sync_ref_df["ref_yaw"][i]) - error_y[i] * math.sin(-sync_ref_df["ref_yaw"][i]))
-        lateral.append(error_x[i] * math.sin(-sync_ref_df["ref_yaw"][i]) + error_y[i] * math.cos(-sync_ref_df["ref_yaw"][i]))
+    for i in range(len(ref_param.df)):
+        longitudinal.append(error_x[i] * math.cos(-ref_param.df["yaw"][i]) - error_y[i] * math.sin(-ref_param.df["yaw"][i]))
+        lateral.append(error_x[i] * math.sin(-ref_param.df["yaw"][i]) + error_y[i] * math.cos(-ref_param.df["yaw"][i]))
     # Longitudinal Error
     fig_longitudinal_error = plt.figure("Longitudinal_Error", figsize=(16, 9), dpi=120)
     ax_longitudinal_error = fig_longitudinal_error.add_subplot(111)
@@ -118,12 +116,12 @@ def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
     ax_result_p = fig_rpy.add_subplot(324)
     ax_resukt_y = fig_rpy.add_subplot(326)
 
-    ax_ref_r.plot(time, sync_ref_df["ref_roll"] * rad_to_deg, marker="o", c="k", markersize=2)
-    ax_ref_p.plot(time, sync_ref_df["ref_pitch"] * rad_to_deg, marker="o", c="k", markersize=2)
-    ax_ref_y.plot(time, sync_ref_df["ref_yaw"] * rad_to_deg, marker="o", c="k", markersize=2)
-    ax_result_r.plot(time, sync_result_df["result_roll"] * rad_to_deg, marker="o", c="k", markersize=2)
-    ax_result_p.plot(time, sync_result_df["result_pitch"] * rad_to_deg, marker="o", c="k", markersize=2)
-    ax_resukt_y.plot(time, sync_result_df["result_yaw"] * rad_to_deg, marker="o", c="k", markersize=2)
+    ax_ref_r.plot(time, ref_param.df["roll"] * rad_to_deg, marker="o", c="k", markersize=2)
+    ax_ref_p.plot(time, ref_param.df["pitch"] * rad_to_deg, marker="o", c="k", markersize=2)
+    ax_ref_y.plot(time, ref_param.df["yaw"] * rad_to_deg, marker="o", c="k", markersize=2)
+    ax_result_r.plot(time, result_param.df["roll"] * rad_to_deg, marker="o", c="k", markersize=2)
+    ax_result_p.plot(time, result_param.df["pitch"] * rad_to_deg, marker="o", c="k", markersize=2)
+    ax_resukt_y.plot(time, result_param.df["yaw"] * rad_to_deg, marker="o", c="k", markersize=2)
 
     ax_ref_r.set_title("Reference Roll", fontsize=save_param.title_font_size)
     ax_ref_r.set_xlabel("time[s]", fontsize=save_param.label_font_size)
@@ -203,8 +201,8 @@ def output_graph(sync_ref_df, sync_result_df, output_dir, save_param):
     # Save Dataframe
     if save_param.save_dataframe == True:
         print("Now saving csv files ...", end="")
-        sync_ref_df.to_csv(output_dir + "/sync_ref_df.csv")
-        sync_result_df.to_csv(output_dir + "/sync_result_df.csv")
+        ref_param.df.to_csv(output_dir + "/sync_ref_df.csv")
+        result_param.df.to_csv(output_dir + "/sync_result_df.csv")
         print("Completed!!")
 
     # Save Figures
