@@ -1,0 +1,35 @@
+Target:
+  ## Time
+  separate_time_stamp: true #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
+  #--------true--------#
+  secs_stamp_column: 2
+  nsecs_stamp_column: 3
+  #--------false-------#
+  stamp_column: 0
+
+  ## Velocity
+  direct_vel: true
+  #--------true--------# 
+  vel_colmn: 5
+  #--------false-------#
+  x_column: 0
+  y_column: 0
+  z_column: 0
+
+Offset:
+  ## Time
+  separate_time_stamp: true #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
+  #--------true--------#
+  secs_stamp_column: 2
+  nsecs_stamp_column: 3
+  #--------false-------#
+  stamp_column: 0
+
+  ## Velocity
+  direct_vel: true
+  #--------true--------# 
+  vel_colmn: 5
+  #--------false-------#
+  x_column: 0
+  y_column: 0
+  z_column: 0
