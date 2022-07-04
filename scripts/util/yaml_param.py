@@ -26,6 +26,9 @@ class YamlParam:
         self.tf_roll = ""
         self.tf_pitch = ""
         self.tf_yaw = ""
+        self.inv_roll = ""
+        self.inv_pitch = ""
+        self.inv_yaw = ""
 
         # Bag
         self.topic = ""
@@ -33,7 +36,7 @@ class YamlParam:
         self.bag_format = ""
 
         # Save format
-        self.use_radian = ""
+        self.display_radian = ""
         # self.font = ''
         self.title_font_size = ""
         self.label_font_size = ""

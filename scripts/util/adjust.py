@@ -31,6 +31,9 @@ def set_tf(config, param, item):
     param.tf_roll = config[item]["tf_roll"]
     param.tf_pitch = config[item]["tf_pitch"]
     param.tf_yaw = config[item]["tf_yaw"]
+    param.inv_roll = config[item]["inv_roll"]
+    param.inv_pitch = config[item]["inv_pitch"]
+    param.inv_yaw = config[item]["inv_yaw"]
 
 
 def input_yaml_ros2(config, param, item):  
@@ -40,7 +43,7 @@ def input_yaml_ros2(config, param, item):
 
 
 def input_save_param(config, save_param):
-    save_param.use_radian = config["use_radian"]
+    save_param.display_radian = config["use_radian"]
     # save_param.font = config['font']
     save_param.title_font_size = config["title_font_size"]
     save_param.label_font_size = config["label_font_size"]
@@ -55,7 +58,10 @@ def unit_adjust(param, df_org):
     if param.separate_time_stamp == True:
         param.df_temp["time"] = df_org.iloc[:, param.secs_stamp_column] + df_org.iloc[:, param.nsecs_stamp_column] / 10**9 + param.tf_time
     else:
-        param.df_temp["time"] = df_org.iloc[:, param.stamp_column] + param.tf_time
+        if len(str(int(df_org.iloc[0, param.stamp_column]))) > 10:
+            param.df_temp["time"] = df_org.iloc[:, param.stamp_column]/10**9 + param.tf_time
+        else:
+            param.df_temp["time"] = df_org.iloc[:, param.stamp_column] + param.tf_time
 
     # Position
     param.df_temp["x"] = df_org.iloc[:, param.x_column] + param.tf_x
@@ -72,17 +78,17 @@ def unit_adjust(param, df_org):
                 df_org.iloc[i, param.ori_w_column],
             ]
             ref_e_temp = R.from_quat([ref_q_temp[0], ref_q_temp[1], ref_q_temp[2], ref_q_temp[3]])
-            param.df_temp.at[i, "roll"] = ref_e_temp.as_euler("ZYX", degrees=False)[2] + param.tf_roll
-            param.df_temp.at[i, "pitch"] = ref_e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch
-            param.df_temp.at[i, "yaw"] = ref_e_temp.as_euler("ZYX", degrees=False)[0] + param.tf_yaw
+            param.df_temp.at[i, "roll"] = (ref_e_temp.as_euler("ZYX", degrees=False)[2] + param.tf_roll) * param.inv_roll
+            param.df_temp.at[i, "pitch"] = (ref_e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch) * param.inv_pitch
+            param.df_temp.at[i, "yaw"] = (ref_e_temp.as_euler("ZYX", degrees=False)[0] + param.tf_yaw) * param.inv_yaw
     elif param.use_quaternion == False and param.use_radian == True:
-        param.df_temp["roll"] = df_org.iloc[:, param.roll_column] + param.tf_roll
-        param.df_temp["pitch"] = df_org.iloc[:, param.pitch_column] + param.tf_pitch
-        param.df_temp["yaw"] = df_org.iloc[:, param.yaw_column] + param.tf_yaw
+        param.df_temp["roll"] = (df_org.iloc[:, param.roll_column] + param.tf_roll) * param.inv_roll
+        param.df_temp["pitch"] = (df_org.iloc[:, param.pitch_column] + param.tf_pitch) * param.inv_pitch
+        param.df_temp["yaw"] = (df_org.iloc[:, param.yaw_column] + param.tf_yaw) * param.inv_yaw
     elif param.use_quaternion == False and param.use_radian == False:
-        param.df_temp["roll"] = df_org.iloc[:, param.roll_column] * math.pi / 180 + param.tf_roll
-        param.df_temp["pitch"] = df_org.iloc[:, param.pitch_column] * math.pi / 180 + param.tf_pitch
-        param.df_temp["yaw"] = df_org.iloc[:, param.yaw_column] * math.pi / 180 + param.tf_yaw
+        param.df_temp["roll"] = (df_org.iloc[:, param.roll_column] * math.pi / 180 + param.tf_roll) * param.inv_roll
+        param.df_temp["pitch"] = (df_org.iloc[:, param.pitch_column] * math.pi / 180 + param.tf_pitch) * param.inv_pitch
+        param.df_temp["yaw"] = (df_org.iloc[:, param.yaw_column] * math.pi / 180 + param.tf_yaw) * param.inv_yaw
 
 
 def adjust_start_time(ref_param, result_param):

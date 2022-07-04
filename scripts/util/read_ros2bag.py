@@ -36,9 +36,9 @@ def read_ros2bag(bag_file, param):
         param.df_temp.at[i, "z"] = msg.pose.pose.position.z + param.tf_z
         q_temp = [msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z, msg.pose.pose.orientation.w]
         e_temp = R.from_quat([q_temp[0], q_temp[1], q_temp[2], q_temp[3]])
-        param.df_temp.at[i, "roll"] = e_temp.as_euler("ZYX", degrees=False)[2] + param.tf_roll
-        param.df_temp.at[i, "pitch"] = e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch
-        param.df_temp.at[i, "yaw"] = e_temp.as_euler("ZYX", degrees=False)[0] + param.tf_yaw
+        param.df_temp.at[i, "roll"] = (e_temp.as_euler("ZYX", degrees=False)[2] + param.tf_roll) * param.inv_roll
+        param.df_temp.at[i, "pitch"] = (e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch) * param.inv_pitch
+        param.df_temp.at[i, "yaw"] = (e_temp.as_euler("ZYX", degrees=False)[0] + param.tf_yaw) * param.inv_yaw
         i += 1
 
 def read_unique(bag_file, param):

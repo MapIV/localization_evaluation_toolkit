@@ -127,7 +127,7 @@ def output_graph(ref_param, result_param, output_dir, save_param):
     # Distance to the Nearest Reference Pose
 
     # To degree
-    if save_param.use_radian == False:
+    if save_param.display_radian == False:
         rad_to_deg = 180 / math.pi
         rpy_label = "[degree]"
     else:
@@ -144,7 +144,9 @@ def output_graph(ref_param, result_param, output_dir, save_param):
     ax_r.set_xlabel("time[s]", fontsize=save_param.label_font_size)
     ax_r.set_ylabel(rpy_label, fontsize=save_param.label_font_size)
     # ax_r.set_xlim(0, x_max)
-    ax_r.set_ylim([-r_absmax-0.1, r_absmax+0.1])
+    y_min, y_max = ax_r.get_ylim()
+    y_max = max(abs(y_min),abs(y_max))
+    ax_r.set_ylim(-y_max, y_max)
     ax_r.tick_params(labelsize=save_param.ticks_font_size)
     ax_r.grid()
     ax_r.legend()
@@ -157,7 +159,9 @@ def output_graph(ref_param, result_param, output_dir, save_param):
     ax_p.set_xlabel("time[s]", fontsize=save_param.label_font_size)
     ax_p.set_ylabel(rpy_label, fontsize=save_param.label_font_size)
     # ax_p.set_xlim(0, x_max)
-    ax_p.set_ylim([-p_absmax-0.1, p_absmax+0.1])
+    y_min, y_max = ax_p.get_ylim()
+    y_max = max(abs(y_min),abs(y_max))
+    ax_p.set_ylim(-y_max, y_max)
     ax_p.tick_params(labelsize=save_param.ticks_font_size)
     ax_p.grid()
     ax_p.legend()
@@ -170,7 +174,9 @@ def output_graph(ref_param, result_param, output_dir, save_param):
     ax_y.set_xlabel("time[s]", fontsize=save_param.label_font_size)
     ax_y.set_ylabel(rpy_label, fontsize=save_param.label_font_size)
     # ax_y.set_xlim(0, x_max)
-    ax_y.set_ylim([-y_absmax-0.1, y_absmax+0.1])
+    y_min, y_max = ax_y.get_ylim()
+    y_max = max(abs(y_min),abs(y_max))
+    ax_y.set_ylim(-y_max, y_max)
     ax_y.tick_params(labelsize=save_param.ticks_font_size)
     ax_y.grid()
     ax_y.legend()
@@ -186,7 +192,9 @@ def output_graph(ref_param, result_param, output_dir, save_param):
     ax_roll_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
     ax_roll_error.set_ylabel("error" + rpy_label, fontsize=save_param.label_font_size)
     # ax_roll_error.set_xlim(0, x_max)
-    ax_roll_error.set_ylim([-er_absmax-0.01, er_absmax+0.01])
+    y_min, y_max = ax_roll_error.get_ylim()
+    y_max = max(abs(y_min),abs(y_max))
+    ax_roll_error.set_ylim(-y_max, y_max)
     ax_roll_error.tick_params(labelsize=save_param.ticks_font_size)
     ax_roll_error.grid()
 
@@ -197,7 +205,9 @@ def output_graph(ref_param, result_param, output_dir, save_param):
     ax_pitch_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
     ax_pitch_error.set_ylabel("error" + rpy_label, fontsize=save_param.label_font_size)
     # ax_pitch_error.set_xlim(0, x_max)
-    ax_pitch_error.set_ylim([-ep_absmax-0.01, ep_absmax+0.01])
+    y_min, y_max = ax_pitch_error.get_ylim()
+    y_max = max(abs(y_min),abs(y_max))
+    ax_pitch_error.set_ylim(-y_max, y_max)
     ax_pitch_error.tick_params(labelsize=save_param.ticks_font_size)
     ax_pitch_error.grid()
 
@@ -208,7 +218,9 @@ def output_graph(ref_param, result_param, output_dir, save_param):
     ax_yaw_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
     ax_yaw_error.set_ylabel("error" + rpy_label, fontsize=save_param.label_font_size)
     # ax_yaw_error.set_xlim(0, x_max)
-    ax_yaw_error.set_ylim([-ey_absmax-0.01, ey_absmax+0.01])
+    y_min, y_max = ax_yaw_error.get_ylim()
+    y_max = max(abs(y_min),abs(y_max))
+    ax_yaw_error.set_ylim(-y_max, y_max)
     ax_yaw_error.tick_params(labelsize=save_param.ticks_font_size)
     ax_yaw_error.grid()
     

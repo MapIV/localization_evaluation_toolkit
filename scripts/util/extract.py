@@ -4,11 +4,14 @@ def extract_time(param):
     if param.separate_time_stamp == True:
         param.df['time'] = param.df_temp.iloc[:, param.secs_stamp_column] + param.df_temp.iloc[:, param.nsecs_stamp_column] / 10**9
     else:
+        if int(df_org.iloc[0, param.stamp_column]) > 10:
+        param.df_temp["time"] = df_org.iloc[:, param.stamp_column]/10**9 + param.tf_time
+        else:
         param.df['time'] = param.df_temp.iloc[:, param.stamp_column]
 
 
 def extract_vel(param):
-    if param.separate_time_stamp == True:
+    if param.direct_vel == True:
         param.df['vel'] = param.df_temp.iloc[:, param.vel_colmn]
     else:
         for i in range(param.df):
