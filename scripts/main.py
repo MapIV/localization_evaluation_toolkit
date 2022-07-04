@@ -1,5 +1,6 @@
 import pandas as pd
 import sys
+import yaml
 
 sys.dont_write_bytecode = True
 
@@ -10,22 +11,27 @@ from util import plot
 if __name__ == "__main__":
 
     argv = sys.argv
-    ref_csv_dir = argv[1]
-    result_csv_dir = argv[2]
-    config_dir = argv[3]
+    ref_csv_path = argv[1]
+    result_csv_path = argv[2]
+    config_path = argv[3]
     output_dir = argv[4]
 
     print("Loading yaml file ...", end="")
+    with open(config_path, "r") as yml:
+        config = yaml.safe_load(yml)
     ref_param = yaml_param.YamlParam()
     result_param = yaml_param.YamlParam()
     save_param = yaml_param.YamlParam()
-    config = adjust.input_yaml_param(config_dir, ref_param, result_param)
+    adjust.input_yaml_param(config, ref_param, "Reference")
+    adjust.set_tf(config, ref_param, "Reference")
+    adjust.input_yaml_param(config, result_param, "Result")
+    adjust.set_tf(config, result_param, "Result")    
     adjust.input_save_param(config, save_param)
     print("Completed!!")
 
     print("Loading csv files ...", end="")
-    ref_df_org = pd.read_csv(ref_csv_dir)
-    result_df_org = pd.read_csv(result_csv_dir)
+    ref_df_org = pd.read_csv(ref_csv_path)
+    result_df_org = pd.read_csv(result_csv_path)
     print("Completed!!")
 
     print("Adjusting unit ...", end="")
@@ -35,7 +41,7 @@ if __name__ == "__main__":
     print("Completed!!")
 
     print("Adjusting the start time ...", end="")
-    if adjust.adjust_start_time(ref_param, result_param) is -1:
+    if adjust.adjust_start_time(ref_param, result_param) == -1:
         sys.exit(1)
     print("Completed!!")
 

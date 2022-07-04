@@ -1,65 +1,43 @@
 import pandas as pd
 import math
-import yaml
 from operator import truediv
 from scipy.spatial.transform import Rotation as R
 
 
-def input_yaml_param(config_dir, param, result_param, ):
-    with open(config_dir, "r") as yml:
-        config = yaml.safe_load(yml)
-
-        param.separate_time_stamp = config["Reference"]["separate_time_stamp"]
-        param.stamp_column = config["Reference"]["stamp_column"]
-        param.secs_stamp_column = config["Reference"]["secs_stamp_column"]
-        param.nsecs_stamp_column = config["Reference"]["nsecs_stamp_column"]
-        param.x_column = config["Reference"]["x_column"]
-        param.y_column = config["Reference"]["y_column"]
-        param.z_column = config["Reference"]["z_column"]
-        param.use_quaternion = config["Reference"]["use_quaternion"]
-        param.ori_x_column = config["Reference"]["ori_x_column"]
-        param.ori_y_column = config["Reference"]["ori_y_column"]
-        param.ori_z_column = config["Reference"]["ori_z_column"]
-        param.ori_w_column = config["Reference"]["ori_w_column"]
-        param.use_radian = config["Reference"]["use_radian"]
-        param.roll_column = config["Reference"]["roll_column"]
-        param.pitch_column = config["Reference"]["pitch_column"]
-        param.yaw_column = config["Reference"]["yaw_column"]
-
-        result_param.separate_time_stamp = config["Result"]["separate_time_stamp"]
-        result_param.stamp_column = config["Result"]["stamp_column"]
-        result_param.secs_stamp_column = config["Result"]["secs_stamp_column"]
-        result_param.nsecs_stamp_column = config["Result"]["nsecs_stamp_column"]
-        result_param.x_column = config["Result"]["x_column"]
-        result_param.y_column = config["Result"]["y_column"]
-        result_param.z_column = config["Result"]["z_column"]
-        result_param.use_quaternion = config["Result"]["use_quaternion"]
-        result_param.ori_x_column = config["Result"]["ori_x_column"]
-        result_param.ori_y_column = config["Result"]["ori_y_column"]
-        result_param.ori_z_column = config["Result"]["ori_z_column"]
-        result_param.ori_w_column = config["Result"]["ori_w_column"]
-        result_param.use_radian = config["Result"]["use_radian"]
-        result_param.roll_column = config["Result"]["roll_column"]
-        result_param.pitch_column = config["Result"]["pitch_column"]
-        result_param.yaw_column = config["Result"]["yaw_column"]
-
-        return config
+def input_yaml_param(config, param, item):
+    param.separate_time_stamp = config[item]["separate_time_stamp"]
+    param.stamp_column = config[item]["stamp_column"]
+    param.secs_stamp_column = config[item]["secs_stamp_column"]
+    param.nsecs_stamp_column = config[item]["nsecs_stamp_column"]
+    param.x_column = config[item]["x_column"]
+    param.y_column = config[item]["y_column"]
+    param.z_column = config[item]["z_column"]
+    param.use_quaternion = config[item]["use_quaternion"]
+    param.ori_x_column = config[item]["ori_x_column"]
+    param.ori_y_column = config[item]["ori_y_column"]
+    param.ori_z_column = config[item]["ori_z_column"]
+    param.ori_w_column = config[item]["ori_w_column"]
+    param.use_radian = config[item]["use_radian"]
+    param.roll_column = config[item]["roll_column"]
+    param.pitch_column = config[item]["pitch_column"]
+    param.yaw_column = config[item]["yaw_column"]
 
 
-def input_yaml_ros2(config_dir, ref_param, result_param):
-    with open(config_dir, "r") as yml:
-        config = yaml.safe_load(yml)
-        
-        ref_param.topic = config["Reference"]["topic_name"]
-        ref_param.bag_id = config["Reference"]["storage_id"]
-        ref_param.bag_format = config["Reference"]["serialization_format"]
+def set_tf(config, param, item):
+    param.tf_time = config[item]["tf_time"]
+    param.tf_x = config[item]["tf_x"]
+    param.tf_y = config[item]["tf_y"]
+    param.tf_z = config[item]["tf_z"]
+    param.tf_roll = config[item]["tf_roll"]
+    param.tf_pitch = config[item]["tf_pitch"]
+    param.tf_yaw = config[item]["tf_yaw"]
 
-        result_param.topic = config["Result"]["topic_name"]
-        result_param.bag_id  = config["Result"]["storage_id"]
-        result_param.bag_format = config["Result"]["serialization_format"]
 
-        return config
-        
+def input_yaml_ros2(config, param, item):  
+    param.topic = config[item]["topic_name"]
+    param.bag_id = config[item]["storage_id"]
+    param.bag_format = config[item]["serialization_format"]
+
 
 def input_save_param(config, save_param):
     save_param.use_radian = config["use_radian"]
@@ -75,14 +53,14 @@ def input_save_param(config, save_param):
 def unit_adjust(param, df_org):
     # Time
     if param.separate_time_stamp == True:
-        param.df_temp["time"] = df_org.iloc[:, param.secs_stamp_column] + df_org.iloc[:, param.nsecs_stamp_column] / 10**9
+        param.df_temp["time"] = df_org.iloc[:, param.secs_stamp_column] + df_org.iloc[:, param.nsecs_stamp_column] / 10**9 + param.tf_time
     else:
-        param.df_temp["time"] = df_org.iloc[:, param.stamp_column]
+        param.df_temp["time"] = df_org.iloc[:, param.stamp_column] + param.tf_time
 
     # Position
-    param.df_temp["x"] = df_org.iloc[:, param.x_column]
-    param.df_temp["y"] = df_org.iloc[:, param.y_column]
-    param.df_temp["z"] = df_org.iloc[:, param.z_column]
+    param.df_temp["x"] = df_org.iloc[:, param.x_column] + param.tf_x
+    param.df_temp["y"] = df_org.iloc[:, param.y_column] + param.tf_y
+    param.df_temp["z"] = df_org.iloc[:, param.z_column] + param.tf_z
 
     # Rotation
     if param.use_quaternion == True:
@@ -94,17 +72,17 @@ def unit_adjust(param, df_org):
                 df_org.iloc[i, param.ori_w_column],
             ]
             ref_e_temp = R.from_quat([ref_q_temp[0], ref_q_temp[1], ref_q_temp[2], ref_q_temp[3]])
-            param.df_temp.at[i, "roll"] = ref_e_temp.as_euler("ZYX", degrees=False)[2]
-            param.df_temp.at[i, "pitch"] = ref_e_temp.as_euler("ZYX", degrees=False)[1]
-            param.df_temp.at[i, "yaw"] = ref_e_temp.as_euler("ZYX", degrees=False)[0]
+            param.df_temp.at[i, "roll"] = ref_e_temp.as_euler("ZYX", degrees=False)[2] + param.tf_roll
+            param.df_temp.at[i, "pitch"] = ref_e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch
+            param.df_temp.at[i, "yaw"] = ref_e_temp.as_euler("ZYX", degrees=False)[0] + param.tf_yaw
     elif param.use_quaternion == False and param.use_radian == True:
-        param.df_temp["roll"] = df_org.iloc[:, param.roll_column]
-        param.df_temp["pitch"] = df_org.iloc[:, param.pitch_column]
-        param.df_temp["yaw"] = df_org.iloc[:, param.yaw_column]
+        param.df_temp["roll"] = df_org.iloc[:, param.roll_column] + param.tf_roll
+        param.df_temp["pitch"] = df_org.iloc[:, param.pitch_column] + param.tf_pitch
+        param.df_temp["yaw"] = df_org.iloc[:, param.yaw_column] + param.tf_yaw
     elif param.use_quaternion == False and param.use_radian == False:
-        param.df_temp["roll"] = df_org.iloc[:, param.roll_column] * math.pi / 180
-        param.df_temp["pitch"] = df_org.iloc[:, param.pitch_column] * math.pi / 180
-        param.df_temp["yaw"] = df_org.iloc[:, param.yaw_column] * math.pi / 180
+        param.df_temp["roll"] = df_org.iloc[:, param.roll_column] * math.pi / 180 + param.tf_roll
+        param.df_temp["pitch"] = df_org.iloc[:, param.pitch_column] * math.pi / 180 + param.tf_pitch
+        param.df_temp["yaw"] = df_org.iloc[:, param.yaw_column] * math.pi / 180 + param.tf_yaw
 
 
 def adjust_start_time(ref_param, result_param):

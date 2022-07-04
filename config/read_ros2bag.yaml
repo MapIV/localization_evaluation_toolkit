@@ -2,11 +2,27 @@ Reference:
   topic_name: /localization/pose_estimator/pose_with_covariance
   storage_id: sqlite3
   serialization_format: cdr
+  ## TF
+  tf_time: 0 #[s]
+  tf_x: 0 #[m]
+  tf_y: 0 #[m]
+  tf_z: 0 #[m]
+  tf_roll: 0 #[rad]
+  tf_pitch: 0 #[rad]
+  tf_yaw: 0 #[rad]
 
 Result:
   topic_name: /localization/pose_twist_fusion_filter/pose_with_covariance_without_yawbias
   storage_id: sqlite3
   serialization_format: cdr
+  ## TF
+  tf_time: 0 #[s]
+  tf_x: 0 #[m]
+  tf_y: 0 #[m]
+  tf_z: 0 #[m]
+  tf_roll: 0 #[rad]
+  tf_pitch: 0 #[rad]
+  tf_yaw: 0 #[rad]
 
 # Display
 use_radian: true # [true]:radian / [false]:degree

@@ -24,13 +24,21 @@ Reference:
   ori_y_column: 0
   ori_z_column: 0
   ori_w_column: 0
-
   #--------false-------#
   # Euler
   use_radian: true # [true]:radian / [false]:degree
   roll_column: 6
   pitch_column: 7
   yaw_column: 8
+
+  ## TF
+  tf_time: 0 #[s]
+  tf_x: 0 #[m]
+  tf_y: 0 #[m]
+  tf_z: 0 #[m]
+  tf_roll: 0 #[rad]
+  tf_pitch: 0 #[rad]
+  tf_yaw: 0 #[rad]
 
 
 Result:
@@ -54,13 +62,22 @@ Result:
   ori_y_column: 9
   ori_z_column: 10
   ori_w_column: 11
-
   #--------false-------#
   # Euler
   use_radian: true # [true]:radian / [false]:degree
   roll_column: 0
   pitch_column: 0
   yaw_column: 0
+
+  ## TF
+  tf_time: 0 #[s]
+  tf_x: 0 #[m]
+  tf_y: 0 #[m]
+  tf_z: 0 #[m]
+  tf_roll: 0 #[rad]
+  tf_pitch: 0 #[rad]
+  tf_yaw: 0 #[rad]
+  
 
 # Display
 use_radian: true # [true]:radian / [false]:degree

@@ -1,5 +1,6 @@
 import pandas as pd
 import sys
+import yaml
 
 sys.dont_write_bytecode = True
 
@@ -17,10 +18,15 @@ if __name__ == "__main__":
     output_dir = argv[4]
 
     print("Loading yaml file ...", end="")
+    with open(config_path, "r") as yml:
+        config = yaml.safe_load(yml)
     ref_param = yaml_param.YamlParam()
     result_param = yaml_param.YamlParam()
     save_param = yaml_param.YamlParam()
-    config = adjust.input_yaml_ros2(config_path, ref_param, result_param)
+    adjust.input_yaml_ros2(config, ref_param, "Reference")
+    adjust.set_tf(config, ref_param, "Reference")
+    adjust.input_yaml_ros2(config, result_param, "Result")
+    adjust.set_tf(config, result_param, "Result")
     adjust.input_save_param(config, save_param)
     print("Completed!!")
 

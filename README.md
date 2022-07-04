@@ -1,30 +1,57 @@
 # localization_evaluation_toolkit -Ver.1.0
-You can evaluate your localization results by comparing it to a reliable pose trajectory. The start time, end time, and period can be different for both data. The evaluation is automatically aligned with the one with the smaller number of data.
+You can evaluate your a localization result by comparing it to a reliable pose trajectory. The start time, end time, and period can be different for both data. The evaluation is automatically aligned with the one with the smaller number of data.
 
 ## Install
 ```
 $ git clone https://github.com/MapIV/localization_evaluation_toolkit.git
 ```
 
-## Necessary csv files
-You should prepare the two types of csv files. The start time, end time, and period can be different for both data.
-1. Reference csv ...Reliable pose trajectory
-2. Result csv ...Localization result trajectory you'd like to evaluate
+## Necessary files
+You should prepare the two types of csv files or bag files. The start time, end time, and period can be different for both data.
+- Reference ...Reliable pose trajectory
+- Result ...Localization result trajectory you'd like to evaluate
 
-These files require at least the following elements.
+csv files require at least the following elements.
 - Time stamp
 - Position (x,y,z)
-- Rotation (Quaternion or Euler[degree or radian]) 
+- Rotation (Quaternion or Euler[degree or radian])
+
+ros2 bag files require the following Type of Topic.
+- Type: geometry_msgs/msg/PoseWithCovarianceStamped 
 
 ## How to specify the value of yaml file
-Please specify the "Necessary Params" at least.
+All yaml files are in the config/ directory.
+
 In 'Reference' and 'Result', specify the number of csv columns corresponding to the element. Depending on your csv, select the time and rotation format as True or False.
 'Display' column is setting of output graphs. In 'Save' column, you can choose whether to save the graphs.
 
 ## How to run
+1 Evaluate with csv files
 ```
 $ cd localization_evaluation_toolkit/scripts
 $ python3 main.py [reference_csv_path] [localization_result_csv] [yaml_file] [output_folder_path]
+```
+
+2 Evaluate with ros2 bag files
+```
+$ cd localization_evaluation_toolkit/scripts
+$ python3 ros2bag_main.py [reference_bag_path] [localization_result_bag] [yaml_file] [output_folder_path]
+```
+
+output_folder_path shoule be without "/"
+
+## Sub evaluation and adjustment
+1 Evaluate TP, NVTL, execution time and iteration with ros2 bag files
+```
+$ cd localization_evaluation_toolkit/sub_scripts
+$ source ~/xxxxxx/install/setup.bash
+$ python3 sub_evaluation.py [bag_path] [output_folder_path]
+```
+
+2 Adjust time stamp with csv files
+```
+$ cd localization_evaluation_toolkit/sub_scripts
+$ python3 adjust_time_stamp.py [target_csv_path] [offset_csv_path] [yaml_file] [output_folder_path]
 ```
 
 ## What graphs are outputed?
@@ -36,37 +63,37 @@ $ python3 main.py ~/localization_evaluation_toolkit/sample_data/reference.csv ~/
 
 1. 2D Trajectory
 
-![2d_trj](https://user-images.githubusercontent.com/81670028/169790998-f64bd0e2-6ace-4981-b910-1ec9974a6a9c.png)
+![2d_trj](https://user-images.githubusercontent.com/81670028/177121453-eb6c2c35-15f8-4769-a3ee-f80fc91526ec.png)
 
 When you zoom in on the graph, you can see the correspondence.
-![2D_Trajectory_expansion](https://user-images.githubusercontent.com/81670028/169792194-a1aa8e63-68a9-4fe2-9567-9d5195e0c18b.png)
+![2D_Trajectory_zoom](https://user-images.githubusercontent.com/81670028/177121881-c157dbf5-6829-471a-b923-352ac31c14e2.png)
 
 2. 2D Error
 
-![2d_error](https://user-images.githubusercontent.com/81670028/169789941-6c06f257-6fee-4199-8769-7ddbf1afd99c.png)
+![2d_error](https://user-images.githubusercontent.com/81670028/177121927-f8519619-e300-46bb-adf3-62741519a2fb.png)
 
 3. Hight Error
 
-![hight_error](https://user-images.githubusercontent.com/81670028/169791076-3e22a628-fa2f-4cac-a8ec-d4ab9c4e5c9e.png)
+![hight_error](https://user-images.githubusercontent.com/81670028/177121971-71db77a4-cf89-4550-a563-8739f893a6a7.png)
 
 4. 3D Error
 
-![3d_error](https://user-images.githubusercontent.com/81670028/169791037-96ecb39c-6dc9-419f-aede-32ca248a9796.png)
+![3d_error](https://user-images.githubusercontent.com/81670028/177122017-a0e06e5c-3fa6-41f1-a6a0-cf06debd4074.png)
 
 5. Longitudinal Error
 
-![longitudinal_error](https://user-images.githubusercontent.com/81670028/169791156-0ccced9d-028f-4223-a7a9-3b5e980cb2e5.png)
+![longitudinal_error](https://user-images.githubusercontent.com/81670028/177122086-28a5d4db-3bd2-4d19-9a9c-167e9974daf8.png)
 
 6. Lateral Error
 
-![lateral_error](https://user-images.githubusercontent.com/81670028/169791113-440ef4b5-e5a4-4775-93d3-5ec0017650b5.png)
+![lateral_error](https://user-images.githubusercontent.com/81670028/177122142-a5ec259d-d1eb-4c02-b11a-08ffdecb6ae0.png)
 
 7. Roll Pitch Yaw
 
 You can choose between radian display and degree display.
-![rpy](https://user-images.githubusercontent.com/81670028/169791184-8207bcf0-93aa-4b66-8665-5d049d6effba.png)
+![rpy](https://user-images.githubusercontent.com/81670028/177122197-a3686219-a840-4844-bdc3-6661f8d3c55f.png)
 
 8. Roll Pitch Yaw Error
 
 You can choose between radian display and degree display.
-![rpy_error](https://user-images.githubusercontent.com/81670028/169791223-147023de-4b28-4810-a8c3-2279095e2b43.png)
+![rpy_error](https://user-images.githubusercontent.com/81670028/177122246-c4c30803-9e25-45d0-aa16-d7d87d5091f2.png)

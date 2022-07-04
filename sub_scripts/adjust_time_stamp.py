@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial import KDTree
 sys.path.append('../scripts')
 from util import yaml_param
+from util import extract
 
 def input_yaml_param(config_path, target_param, offset_param):
     with open(config_path, "r") as yml:
@@ -31,6 +32,10 @@ def input_yaml_param(config_path, target_param, offset_param):
         offset_param.y_column = config["Offset"]["y_column"]
         offset_param.z_column = config["Offset"]["z_column"]
 
+        search_range = config["search_range"]
+        delta = config["delta"]
+
+        return (search_range, delta)
 
 def initial_graph(target_param, offset_param):
     initial_fig= plt.figure("Initial Graph", figsize=(16, 9), dpi=120)
@@ -44,9 +49,7 @@ def initial_graph(target_param, offset_param):
     ax_initial.set_aspect('equal')
 
 
-def all_search(target_df, offset_df):
-    search_range = 2
-    delta = 0.01
+def all_search(target_df, offset_df, search_range, delta):
     num_off = search_range / delta
     target = target_df.to_numpy()
     offset_df["time"] -= search_range
@@ -88,6 +91,7 @@ def output(fit_width, target_param, offset_param, output_dir):
     ax_fit.set_ylabel('data')
     ax_fit.grid()
     ax_fit.set_aspect('equal')
+    print("Completed!!")
     plt.show()
 
 
@@ -101,7 +105,7 @@ if __name__ == "__main__":
     print("Loading yaml file ...", end="")
     target_param = yaml_param.YamlParam()
     offset_param = yaml_param.YamlParam()
-    input_yaml_param(config_path, target_param, offset_param)
+    search_range, delta = input_yaml_param(config_path, target_param, offset_param)
     print("Completed!!")
 
     print("Loading csv files ...", end="")
@@ -110,16 +114,16 @@ if __name__ == "__main__":
     print("Completed!!")
 
     print("Extraction ...", end="")
-    target_param.extract_time()
-    target_param.extract_vel()
-    offset_param.extract_time()
-    offset_param.extract_vel()
+    extract.extract_time(target_param)
+    extract.extract_vel(target_param)
+    extract.extract_time(offset_param)
+    extract.extract_vel(offset_param)
     del target_param.df_temp
     initial_graph(target_param, offset_param)
     print("Completed!!")
 
     print("Find minimum ...", end="")
-    fit_width = all_search(target_param.df, offset_param.df)
+    fit_width = all_search(target_param.df, offset_param.df, search_range, delta)
     print("Completed!!")
 
     print("Output data ...", end="")
