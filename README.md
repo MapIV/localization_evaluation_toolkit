@@ -1,4 +1,4 @@
-# localization_evaluation_toolkit -Ver.1.0
+# localization_evaluation_toolkit -Ver.2.0
 You can evaluate your a localization result by comparing it to a reliable pose trajectory. The start time, end time, and period can be different for both data. The evaluation is automatically aligned with the one with the smaller number of data.
 
 ## Install
@@ -29,13 +29,13 @@ In 'Reference' and 'Result', specify the number of csv columns corresponding to 
 1 Evaluate with csv files
 ```
 $ cd localization_evaluation_toolkit/scripts
-$ python3 main.py [reference_csv_path] [localization_result_csv] [yaml_file] [output_folder_path]
+$ python3 main.py [reference_csv_path] [localization_result_csv] [evaluation.yaml] [output_folder_path]
 ```
 
 2 Evaluate with ros2 bag files
 ```
 $ cd localization_evaluation_toolkit/scripts
-$ python3 ros2bag_main.py [reference_bag_path] [localization_result_bag] [yaml_file] [output_folder_path]
+$ python3 ros2bag_main.py [reference_bag_path] [localization_result_bag] [read_ros2bag.yaml] [output_folder_path]
 ```
 
 output_folder_path shoule be without "/"
@@ -51,7 +51,7 @@ $ python3 sub_evaluation.py [bag_path] [output_folder_path]
 2 Adjust time stamp with csv files
 ```
 $ cd localization_evaluation_toolkit/sub_scripts
-$ python3 adjust_time_stamp.py [target_csv_path] [offset_csv_path] [yaml_file] [output_folder_path]
+$ python3 adjust_time_stamp.py [target_csv_path] [offset_csv_path] [ajust_time_stamp.yaml] [output_folder_path]
 ```
 
 ## What graphs are outputed?

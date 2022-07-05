@@ -39,6 +39,9 @@ Reference:
   tf_roll: 0 #[rad]
   tf_pitch: 0 #[rad]
   tf_yaw: 0 #[rad]
+  inv_roll: 1 # 1 or -1
+  inv_pitch: 1 # 1 or -1
+  inv_yaw: 1 # 1 or -1
 
 
 Result:
@@ -77,6 +80,9 @@ Result:
   tf_roll: 0 #[rad]
   tf_pitch: 0 #[rad]
   tf_yaw: 0 #[rad]
+  inv_roll: 1 # 1 or -1
+  inv_pitch: 1 # 1 or -1
+  inv_yaw: 1 # 1 or -1
   
 
 # Display

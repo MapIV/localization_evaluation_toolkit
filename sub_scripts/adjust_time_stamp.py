@@ -63,6 +63,8 @@ def all_search(target_df, offset_df, search_range, delta):
         dist_temp, indexes_temp = kd_tree.query(offset)
         dist_sum.append(np.sum(dist_temp))
         calc_df["time"] += delta
+        if i % 10 == 0:
+            print(i,"/" ,int(num_off)*2)
     min_idx = dist_sum.index(min(dist_sum))
     offset_df["time"] += delta*min_idx
     fit_width = delta * min_idx - search_range
@@ -110,7 +112,7 @@ if __name__ == "__main__":
 
     print("Loading csv files ...", end="")
     target_param.df_temp = pd.read_csv(target_dir)
-    offset_param.df_temp  = pd.read_csv(offset_dir)
+    offset_param.df_temp = pd.read_csv(offset_dir)
     print("Completed!!")
 
     print("Extraction ...", end="")
@@ -126,5 +128,5 @@ if __name__ == "__main__":
     fit_width = all_search(target_param.df, offset_param.df, search_range, delta)
     print("Completed!!")
 
-    print("Output data ...", end="")
+    print("Output data ...")
     output(fit_width, target_param, offset_param, output_dir)
