@@ -42,10 +42,20 @@ output_folder_path shoule be without "/"
 
 ## Sub evaluation and adjustment
 1 Evaluate TP, NVTL, execution time and iteration with ros2 bag files
+
+Please input a rosbag containing the following (at least one) topic.
+```
+/localization/pose_estimator/pose_with_covariance
+/localization/pose_estimator/nearest_voxel_transformation_likelihood
+/localization/pose_estimator/transform_probability
+/localization/pose_estimator/exe_time_ms
+/localization/pose_estimator/iteration_num
+```
+
 ```
 $ cd localization_evaluation_toolkit/sub_scripts
 $ source ~/xxxxxx/install/setup.bash
-$ python3 sub_evaluation.py [bag_path] [output_folder_path]
+$ python3 sub_ndt_evaluation.py [bag_path] [output_folder_path]
 ```
 
 2 Adjust time stamp with csv files
