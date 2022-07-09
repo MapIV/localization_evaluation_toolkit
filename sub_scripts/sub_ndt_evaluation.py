@@ -106,7 +106,7 @@ if __name__ == "__main__":
         ax_tp.set_xlabel("time[s]")
         ax_tp.set_ylabel("TP")
         ax_tp.grid()
-        fig_tp.savefig(output_dir + "/rpy_tperror.png")
+        fig_tp.savefig(output_dir + "/tp.png")
 
     if exe_time_empty == False:
         fig_exe_time = plt.figure("Execution Time", figsize=(16, 9), dpi=120)
