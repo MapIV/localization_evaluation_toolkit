@@ -11,33 +11,36 @@ You should prepare the two types of csv files or bag files. The start time, end 
 - Reference ...Reliable pose trajectory
 - Result ...Localization result trajectory you'd like to evaluate
 
-1 csv files require at least the following elements.
+**1 Evaluate with csv files**  
+csv files require at least the following elements.
 - Time stamp
 - Position (x,y,z)
 - Rotation (Quaternion or Euler[degree or radian])
 
-2 ros2 bag files require the following Type of Topic.
+**2 Evaluate with ros2 bag files**  
+ros2 bag files require the following Type of Topic.
 - Type: geometry_msgs/msg/PoseWithCovarianceStamped 
 
 ## How to specify the value of yaml file
 All yaml files are in the config/ directory.
 
-1 Evaluate with csv files
+**1 Evaluate with csv files** → Use config/evaluation.yaml  
 In 'Reference' and 'Result', specify the number of csv columns corresponding to the element. Depending on your csv, select the time and rotation format as True or False.
 
-2 Evaluate with ros2 bag files
-Specify topic names in "Reference" and "Result".
+**2 Evaluate with ros2 bag files** → Use config/read_ros2bag.yaml  
+Specify topic names in 'Reference' and 'Result'.
 
+**Display, Save column**
 'Display' column is setting of output graphs. In 'Save' column, you can choose whether to save the graphs.
 
 ## How to run
-1 Evaluate with csv files
+**1 Evaluate with csv files**
 ```
 $ cd localization_evaluation_toolkit/scripts
 $ python3 main.py [reference_csv_path] [result_csv_path] [evaluation.yaml path] [output_folder_path]
 ```
 
-2 Evaluate with ros2 bag files
+**2 Evaluate with ros2 bag files**
 ```
 $ cd localization_evaluation_toolkit/scripts
 $ python3 ros2bag_main.py [reference_bag_path] [result_bag_path] [read_ros2bag.yaml path] [output_folder_path]
@@ -46,7 +49,7 @@ $ python3 ros2bag_main.py [reference_bag_path] [result_bag_path] [read_ros2bag.y
 output_folder_path shoule be without "/"
 
 ## Sub evaluation and adjustment
-1 Evaluate TP, NVTL, execution time and iteration with ros2 bag files
+**1 Evaluate TP, NVTL, execution time and iteration with ros2 bag files**
 
 Please input a rosbag containing the following (at least one) topic.
 ```
@@ -63,7 +66,7 @@ $ source ~/xxxxxx/install/setup.bash
 $ python3 sub_ndt_evaluation.py [bag_path] [output_folder_path]
 ```
 
-2 Adjust time stamp with csv files
+**2 Adjust time stamp with csv files**
 ```
 $ cd localization_evaluation_toolkit/sub_scripts
 $ python3 adjust_time_stamp.py [target_csv_path] [offset_csv_path] [ajust_time_stamp.yaml path] [output_folder_path]
