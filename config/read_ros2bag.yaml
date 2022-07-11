@@ -1,5 +1,5 @@
 Reference:
-  topic_name: /localization/pose_estimator/pose_with_covariance
+  topic_name: /localization/pose_twist_fusion_filter/pose_with_covariance_without_yawbias
   storage_id: sqlite3
   serialization_format: cdr
   ## TF
@@ -15,7 +15,7 @@ Reference:
   inv_yaw: 1 # 1 or -1
 
 Result:
-  topic_name: /localization/pose_twist_fusion_filter/pose_with_covariance_without_yawbias
+  topic_name: /localization/pose_estimator/pose_with_covariance
   storage_id: sqlite3
   serialization_format: cdr
   ## TF
