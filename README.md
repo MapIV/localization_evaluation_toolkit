@@ -26,11 +26,11 @@ You should prepare the two types of csv files or bag files. The start time, end 
 ## How to specify the value of yaml file
 All yaml files are in the config/ directory.
 
-**A. Evaluate with csv files** → Use config/evaluation.yaml  
+**A. Evaluate with csv files → Use config/evaluation.yaml**  
 - In 'Reference' and 'Result', specify the number of csv columns corresponding to the element. 
 - Depending on your csv, select the time and rotation format as True or False.
 
-**B. Evaluate with ros2 bag files** → Use config/read_ros2bag.yaml  
+**B. Evaluate with ros2 bag files → Use config/read_ros2bag.yaml**  
 - Specify topic names in 'Reference' and 'Result'.
 
 **Display, Save column**  
