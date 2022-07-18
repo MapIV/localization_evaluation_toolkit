@@ -1,3 +1,7 @@
+######################
+## Necessary Params ##
+######################
+
 Reference:
   topic_name: /localization/pose_twist_fusion_filter/pose_with_covariance_without_yawbias
   storage_id: sqlite3
@@ -41,3 +45,8 @@ ticks_font_size: 8
 save_figures: true
 save_extension_type: png # without "."
 save_dataframe: true
+
+############
+## Option ##
+############
+use_lerp: true

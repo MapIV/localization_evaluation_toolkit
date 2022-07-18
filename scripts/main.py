@@ -22,11 +22,13 @@ if __name__ == "__main__":
     ref_param = yaml_param.YamlParam()
     result_param = yaml_param.YamlParam()
     save_param = yaml_param.YamlParam()
+    op_param = yaml_param.OpParam()
     adjust.input_yaml_param(config, ref_param, "Reference")
     adjust.set_tf(config, ref_param, "Reference")
     adjust.input_yaml_param(config, result_param, "Result")
     adjust.set_tf(config, result_param, "Result")    
     adjust.input_save_param(config, save_param)
+    adjust.input_op_param(config, op_param)
     print("Completed!!")
 
     print("Loading csv files ...", end="")
@@ -50,7 +52,7 @@ if __name__ == "__main__":
     print("Completed!!")
 
     print("Synchronizing time...", end="")
-    ref_param.df, result_param.df = adjust.sync_time(ref_param, result_param)
+    ref_param.df, result_param.df = adjust.sync_time(ref_param, result_param, op_param)
     del ref_param.df_temp, result_param.df_temp
     print("Completed!!")
 

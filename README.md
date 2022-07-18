@@ -20,8 +20,9 @@ You should prepare the two types of csv files or bag files. The start time, end 
     - Rotation (Quaternion or Euler[degree or radian])
 
 **B. Evaluate with ros2 bag files**  
-- ros2 bag files require the following Type of Topic.
-    - Type: geometry_msgs/msg/PoseWithCovarianceStamped 
+- ros2 bag files require one of the following types of topics.
+    - Type: geometry_msgs/msg/PoseWithCovarianceStamped
+    - Type: nav_msgs/msg/Odometry
 
 ## How to specify the value of yaml file
 All yaml files are in the config/ directory.

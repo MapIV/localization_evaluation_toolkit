@@ -101,6 +101,8 @@ save_dataframe: true
 ############
 ## Option ##
 ############
+use_lerp: true
+
 # <--coming soon-->
 # execution_time_graph: false
 # execuation_column: 0

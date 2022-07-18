@@ -52,3 +52,7 @@ class YamlParam:
         # DataFrame
         self.df_temp = pd.DataFrame()
         self.df = pd.DataFrame()
+
+class OpParam:
+    def __init__(self):
+        self.use_lerp = ""

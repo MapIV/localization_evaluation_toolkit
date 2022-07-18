@@ -52,6 +52,8 @@ def input_save_param(config, save_param):
     save_param.save_extension_type = config["save_extension_type"]
     save_param.save_dataframe = config["save_dataframe"]
 
+def input_op_param(config, op_param):
+    op_param.use_lerp = config["use_lerp"]
 
 def unit_adjust(param, df_org):
     # Time
@@ -122,7 +124,7 @@ def adjust_end_time(ref_param, result_param):
         result_param.df_temp.reset_index(inplace=True, drop=True)
 
 
-def sync_time(ref_param, result_param):
+def sync_time(ref_param, result_param, op_param):
     before_sync = -1
     before_min_time = 0
     if len(ref_param.df_temp.index) >= len(result_param.df_temp.index):
@@ -138,6 +140,8 @@ def sync_time(ref_param, result_param):
                 elif min_ref_time > before_min_time:
                     result_param.df_temp.drop(i, inplace=True)
                     continue
+            if op_param.use_lerp == True and i != 0 and i != len(result_param.df_temp):
+                lerp(ref_param.df_temp, sync_ref_id, min_ref_time, result_param.df_temp.at[i, "time"])
             sync_ref_df = sync_ref_df.append(ref_param.df_temp.iloc[sync_ref_id, :], ignore_index=True)
             before_sync = sync_ref_id
             before_min_time = min_ref_time
@@ -146,20 +150,47 @@ def sync_time(ref_param, result_param):
         return sync_ref_df, result_param.df_temp
     else:
         sync_result_df = pd.DataFrame()
-        for i in range(0, len(ref_param.df_temp)):
-            search_sync_result_time = abs(result_param.df_temp["time"] - ref_param.df_temp.at[i, "time"])
+        ref_param.df = ref_param.df_temp.copy()
+        for i in range(0, len(ref_param.df)):
+            search_sync_result_time = abs(result_param.df_temp["time"] - ref_param.df.at[i, "time"])
             sync_result_id = search_sync_result_time.idxmin()
             min_result_time = search_sync_result_time.min()
             if sync_result_id == before_sync:
                 if min_result_time < before_min_time:
                     sync_result_df.drop(sync_result_df.index[-1], inplace=True)
-                    ref_param.df_temp.drop(i - 1, inplace=True)
+                    ref_param.df.drop(i - 1, inplace=True)
                 elif min_result_time > before_min_time:
-                    ref_param.df_temp.drop(i, inplace=True)
+                    ref_param.df.drop(i, inplace=True)
                     continue
+            if op_param.use_lerp == True and i != 0 and i != len(ref_param.df):
+                lerp(ref_param.df_temp, i, min_result_time, result_param.df_temp.at[sync_result_id, "time"])
             sync_result_df = sync_result_df.append(result_param.df_temp.iloc[sync_result_id, :], ignore_index=True)
             before_sync = sync_result_id
             before_min_time = min_result_time
-        ref_param.df_temp.reset_index(inplace=True, drop=True)
+        ref_param.df.reset_index(inplace=True, drop=True)
         del search_sync_result_time, before_min_time
-        return ref_param.df_temp, sync_result_df
+        return ref_param.df, sync_result_df
+
+
+def lerp(target_param, sync_id, min_ref_time, result_time):
+    tar_sync_time = target_param.at[sync_id,"time"]
+    if tar_sync_time > result_time:
+        delta_t = tar_sync_time - target_param.at[sync_id-1,"time"]
+        if delta_t == 0:
+            return
+        tar_xbefore = target_param.at[sync_id-1,"x"]
+        tar_ybefore = target_param.at[sync_id-1,"y"]
+        tar_zbefore = target_param.at[sync_id-1,"z"]
+        target_param.at[sync_id,"x"] -= (target_param.at[sync_id,"x"] - tar_xbefore)*min_ref_time/(delta_t)
+        target_param.at[sync_id,"y"] -= (target_param.at[sync_id,"y"] - tar_ybefore)*min_ref_time/(delta_t)
+        target_param.at[sync_id,"z"] -= (target_param.at[sync_id,"z"] - tar_zbefore)*min_ref_time/(delta_t)
+    elif tar_sync_time < result_time:
+        delta_t = target_param.at[sync_id+1,"time"] - tar_sync_time
+        if delta_t == 0:
+            return
+        tar_xafter = target_param.at[sync_id+1,"x"]
+        tar_yafter = target_param.at[sync_id+1,"y"]
+        tar_zafter = target_param.at[sync_id+1,"z"]
+        target_param.at[sync_id,"x"] += (tar_xafter - target_param.at[sync_id,"x"])*min_ref_time/(delta_t)
+        target_param.at[sync_id,"y"] += (tar_yafter - target_param.at[sync_id,"y"])*min_ref_time/(delta_t)
+        target_param.at[sync_id,"z"] += (tar_zafter - target_param.at[sync_id,"z"])*min_ref_time/(delta_t)
