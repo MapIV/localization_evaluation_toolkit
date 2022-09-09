@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 class YamlParam:
     def __init__(self):
         # CSV
@@ -35,6 +36,27 @@ class YamlParam:
         self.bag_id = ""
         self.bag_format = ""
 
+        # # Save format
+        # self.display_radian = ""
+        # # self.font = ''
+        # self.title_font_size = ""
+        # self.label_font_size = ""
+        # self.ticks_font_size = ""
+        # self.save_figures = ""
+        # self.save_extension_type = ""
+        # self.save_dataframe = ""
+
+        # Adjust time
+        self.direct_vel = ""
+        self.vel_colmn = ""
+
+        # DataFrame
+        self.df_temp = pd.DataFrame()
+        self.df = pd.DataFrame()
+
+
+class SaveParam:
+    def __init__(self):
         # Save format
         self.display_radian = ""
         # self.font = ''
@@ -45,14 +67,12 @@ class YamlParam:
         self.save_extension_type = ""
         self.save_dataframe = ""
 
-        # Adjust time
-        self.direct_vel = ""
-        self.vel_colmn = ""
-
-        # DataFrame
-        self.df_temp = pd.DataFrame()
-        self.df = pd.DataFrame()
 
 class OpParam:
     def __init__(self):
         self.use_lerp = ""
+        self.display_ellipse = ""
+        self.covariance_xx_column = ""
+        self.covariance_xy_column = ""
+        self.covariance_yx_column = ""
+        self.covariance_yy_column = ""

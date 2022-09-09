@@ -1,6 +1,8 @@
-import pandas as pd
 import math
 from operator import truediv
+
+import numpy as np
+import pandas as pd
 from scipy.spatial.transform import Rotation as R
 
 
@@ -36,7 +38,7 @@ def set_tf(config, param, item):
     param.inv_yaw = config[item]["inv_yaw"]
 
 
-def input_yaml_ros2(config, param, item):  
+def input_yaml_ros2(config, param, item):
     param.topic = config[item]["topic_name"]
     param.bag_id = config[item]["storage_id"]
     param.bag_format = config[item]["serialization_format"]
@@ -52,16 +54,31 @@ def input_save_param(config, save_param):
     save_param.save_extension_type = config["save_extension_type"]
     save_param.save_dataframe = config["save_dataframe"]
 
+
 def input_op_param(config, op_param):
     op_param.use_lerp = config["use_lerp"]
+    op_param.display_ellipse = config["display_ellipse"]
+    if op_param.display_ellipse == True:
+        op_param.display_ellipse = config["covariance_xx_column"]
+        op_param.display_ellipse = config["covariance_xy_column"]
+        op_param.display_ellipse = config["covariance_yx_column"]
+        op_param.display_ellipse = config["covariance_yy_column"]
+
+
+def input_op_param_ros2(config, op_param):
+    op_param.use_lerp = config["use_lerp"]
+    op_param.display_ellipse = config["display_ellipse"]
+
 
 def unit_adjust(param, df_org):
     # Time
     if param.separate_time_stamp == True:
-        param.df_temp["time"] = df_org.iloc[:, param.secs_stamp_column] + df_org.iloc[:, param.nsecs_stamp_column] / 10**9 + param.tf_time
+        param.df_temp["time"] = (
+            df_org.iloc[:, param.secs_stamp_column] + df_org.iloc[:, param.nsecs_stamp_column] / 10**9 + param.tf_time
+        )
     else:
         if len(str(int(df_org.iloc[0, param.stamp_column]))) > 10:
-            param.df_temp["time"] = df_org.iloc[:, param.stamp_column]/10**9 + param.tf_time
+            param.df_temp["time"] = df_org.iloc[:, param.stamp_column] / 10**9 + param.tf_time
         else:
             param.df_temp["time"] = df_org.iloc[:, param.stamp_column] + param.tf_time
 
@@ -80,8 +97,12 @@ def unit_adjust(param, df_org):
                 df_org.iloc[i, param.ori_w_column],
             ]
             ref_e_temp = R.from_quat([ref_q_temp[0], ref_q_temp[1], ref_q_temp[2], ref_q_temp[3]])
-            param.df_temp.at[i, "roll"] = (ref_e_temp.as_euler("ZYX", degrees=False)[2] + param.tf_roll) * param.inv_roll
-            param.df_temp.at[i, "pitch"] = (ref_e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch) * param.inv_pitch
+            param.df_temp.at[i, "roll"] = (
+                ref_e_temp.as_euler("ZYX", degrees=False)[2] + param.tf_roll
+            ) * param.inv_roll
+            param.df_temp.at[i, "pitch"] = (
+                ref_e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch
+            ) * param.inv_pitch
             param.df_temp.at[i, "yaw"] = (ref_e_temp.as_euler("ZYX", degrees=False)[0] + param.tf_yaw) * param.inv_yaw
     elif param.use_quaternion == False and param.use_radian == True:
         param.df_temp["roll"] = (df_org.iloc[:, param.roll_column] + param.tf_roll) * param.inv_roll
@@ -94,12 +115,18 @@ def unit_adjust(param, df_org):
 
 
 def adjust_start_time(ref_param, result_param):
-    if ref_param.df_temp.at[0, "time"] < result_param.df_temp.at[0, "time"] and ref_param.df_temp["time"].iloc[-1] > result_param.df_temp.at[0, "time"]:
+    if (
+        ref_param.df_temp.at[0, "time"] < result_param.df_temp.at[0, "time"]
+        and ref_param.df_temp["time"].iloc[-1] > result_param.df_temp.at[0, "time"]
+    ):
         search_ref_start = abs(ref_param.df_temp["time"] - result_param.df_temp.at[0, "time"])
         ref_start_time_index = search_ref_start.idxmin()
         ref_param.df_temp.drop(range(0, ref_start_time_index), inplace=True)
         ref_param.df_temp.reset_index(inplace=True, drop=True)
-    elif ref_param.df_temp.at[0, "time"] > result_param.df_temp.at[0, "time"] and ref_param.df_temp.at[0, "time"] < result_param.df_temp["time"].iloc[-1]:
+    elif (
+        ref_param.df_temp.at[0, "time"] > result_param.df_temp.at[0, "time"]
+        and ref_param.df_temp.at[0, "time"] < result_param.df_temp["time"].iloc[-1]
+    ):
         search_result_start = abs(result_param.df_temp["time"] - ref_param.df_temp.at[0, "time"])
         result_start_time_index = search_result_start.idxmin()
         result_param.df_temp.drop(range(0, result_start_time_index), inplace=True)
@@ -173,24 +200,62 @@ def sync_time(ref_param, result_param, op_param):
 
 
 def lerp(target_param, sync_id, min_ref_time, result_time):
-    tar_sync_time = target_param.at[sync_id,"time"]
+    tar_sync_time = target_param.at[sync_id, "time"]
     if tar_sync_time > result_time:
-        delta_t = tar_sync_time - target_param.at[sync_id-1,"time"]
+        delta_t = tar_sync_time - target_param.at[sync_id - 1, "time"]
         if delta_t == 0:
             return
-        tar_xbefore = target_param.at[sync_id-1,"x"]
-        tar_ybefore = target_param.at[sync_id-1,"y"]
-        tar_zbefore = target_param.at[sync_id-1,"z"]
-        target_param.at[sync_id,"x"] -= (target_param.at[sync_id,"x"] - tar_xbefore)*min_ref_time/(delta_t)
-        target_param.at[sync_id,"y"] -= (target_param.at[sync_id,"y"] - tar_ybefore)*min_ref_time/(delta_t)
-        target_param.at[sync_id,"z"] -= (target_param.at[sync_id,"z"] - tar_zbefore)*min_ref_time/(delta_t)
+        tar_xbefore = target_param.at[sync_id - 1, "x"]
+        tar_ybefore = target_param.at[sync_id - 1, "y"]
+        tar_zbefore = target_param.at[sync_id - 1, "z"]
+        target_param.at[sync_id, "x"] -= (target_param.at[sync_id, "x"] - tar_xbefore) * min_ref_time / (delta_t)
+        target_param.at[sync_id, "y"] -= (target_param.at[sync_id, "y"] - tar_ybefore) * min_ref_time / (delta_t)
+        target_param.at[sync_id, "z"] -= (target_param.at[sync_id, "z"] - tar_zbefore) * min_ref_time / (delta_t)
     elif tar_sync_time < result_time:
-        delta_t = target_param.at[sync_id+1,"time"] - tar_sync_time
+        delta_t = target_param.at[sync_id + 1, "time"] - tar_sync_time
         if delta_t == 0:
             return
-        tar_xafter = target_param.at[sync_id+1,"x"]
-        tar_yafter = target_param.at[sync_id+1,"y"]
-        tar_zafter = target_param.at[sync_id+1,"z"]
-        target_param.at[sync_id,"x"] += (tar_xafter - target_param.at[sync_id,"x"])*min_ref_time/(delta_t)
-        target_param.at[sync_id,"y"] += (tar_yafter - target_param.at[sync_id,"y"])*min_ref_time/(delta_t)
-        target_param.at[sync_id,"z"] += (tar_zafter - target_param.at[sync_id,"z"])*min_ref_time/(delta_t)
+        tar_xafter = target_param.at[sync_id + 1, "x"]
+        tar_yafter = target_param.at[sync_id + 1, "y"]
+        tar_zafter = target_param.at[sync_id + 1, "z"]
+        target_param.at[sync_id, "x"] += (tar_xafter - target_param.at[sync_id, "x"]) * min_ref_time / (delta_t)
+        target_param.at[sync_id, "y"] += (tar_yafter - target_param.at[sync_id, "y"]) * min_ref_time / (delta_t)
+        target_param.at[sync_id, "z"] += (tar_zafter - target_param.at[sync_id, "z"]) * min_ref_time / (delta_t)
+
+
+def calc_ellipse(param):
+    ellipse_dict = {
+        "ellipse_long": [],
+        "ellipse_short": [],
+        "ellipse_yaw": [],
+        "ellipse_longitudinal": [],
+        "ellipse_lateral": [],
+    }
+    for i in range(len(param.df)):
+        covariance = np.array(
+            [[param.df.at[i, "cov_xx"], param.df.at[i, "cov_xy"]], [param.df.at[i, "cov_yx"], param.df.at[i, "cov_yy"]]]
+        )
+        eig_vals, eig_vec = np.linalg.eig(covariance)
+        ellipse_long = math.sqrt(eig_vals[0] * 9.21)
+        ellipse_short = math.sqrt(eig_vals[1] * 9.21)
+        ellipse_yaw = round(math.atan2(eig_vec[1, 0], eig_vec[0, 0]), 4)
+        th = ellipse_yaw - param.df.at[i, "yaw"]
+        ellipse_dict["ellipse_long"].append(ellipse_long)
+        ellipse_dict["ellipse_short"].append(ellipse_short)
+        ellipse_dict["ellipse_yaw"].append(ellipse_yaw)
+        ellipse_dict["ellipse_lateral"].append(
+            math.sqrt(pow(ellipse_long * math.sin(th), 2) + pow(ellipse_short * math.cos(th), 2))
+        )
+        ellipse_dict["ellipse_longitudinal"].append(
+            math.sqrt(
+                pow(ellipse_long * math.sin(th + math.pi / 2), 2) + pow(ellipse_short * math.cos(th + math.pi / 2), 2)
+            )
+        )
+
+    param.df = param.df.assign(
+        ellipse_long=ellipse_dict["ellipse_long"],
+        ellipse_short=ellipse_dict["ellipse_short"],
+        ellipse_yaw=ellipse_dict["ellipse_yaw"],
+        ellipse_lateral=ellipse_dict["ellipse_lateral"],
+        ellipse_longitudinal=ellipse_dict["ellipse_longitudinal"],
+    )

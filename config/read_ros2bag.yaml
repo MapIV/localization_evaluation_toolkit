@@ -49,4 +49,6 @@ save_dataframe: true
 ############
 ## Option ##
 ############
-use_lerp: true
+use_lerp: false
+
+display_ellipse: true

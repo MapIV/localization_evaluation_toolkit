@@ -1,9 +1,12 @@
-import matplotlib.pyplot as plt
 import math
+
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
 import numpy as np
 
 
-def output_graph(ref_param, result_param, output_dir, save_param):
+# fmt: off
+def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     time = ref_param.df["time"] - ref_param.df["time"][0]
     error_x = result_param.df["x"] - ref_param.df["x"]
     error_y = result_param.df["y"] - ref_param.df["y"]
@@ -27,6 +30,10 @@ def output_graph(ref_param, result_param, output_dir, save_param):
     ax_2d_trj.scatter(ref_param.df["x"], ref_param.df["y"], c="k", label="Reference")
     ax_2d_trj.scatter(result_param.df["x"], result_param.df["y"], c="r", s=2, label="Result")
     ax_2d_trj.plot([ref_param.df["x"], result_param.df["x"]], [ref_param.df["y"], result_param.df["y"]], "g-", linewidth=0.2, zorder=1)
+    if op_param.display_ellipse == True:
+        for i in range(1,len(result_param.df)):
+            e = patches.Ellipse(xy=(result_param.df['x'][i],result_param.df['y'][i]), width=result_param.df["ellipse_long"][i]*2, height=result_param.df["ellipse_short"][i]*2, angle=math.degrees(result_param.df["ellipse_yaw"][i]), alpha=0.3,color='m') 
+            ax_2d_trj.add_patch(e)
     ax_2d_trj.set_xlabel("x[m]", fontsize=save_param.label_font_size)
     ax_2d_trj.set_ylabel("y[m]", fontsize=save_param.label_font_size)
     ax_2d_trj.tick_params(labelsize=save_param.ticks_font_size)
@@ -101,12 +108,15 @@ def output_graph(ref_param, result_param, output_dir, save_param):
     ax_longitudinal_error = fig_longitudinal_error.add_subplot(111)
     ax_longitudinal_error.set_title("Longitudinal Error", fontsize=save_param.title_font_size)
     ax_longitudinal_error.plot(time, longitudinal, marker="o", c="k", markersize=2, linewidth = 0.5)
+    if op_param.display_ellipse == True:
+        ax_longitudinal_error.plot(time, result_param.df["ellipse_longitudinal"], marker="o", c="m", markersize=2, linewidth = 0.5)
     ax_longitudinal_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
     ax_longitudinal_error.set_ylabel("error[m]", fontsize=save_param.label_font_size)
     # ax_longitudinal_error.set_xlim(0, x_max)
     y_min, y_max = ax_longitudinal_error.get_ylim()
     y_max = max(abs(y_min),abs(y_max))
     ax_longitudinal_error.set_ylim(-y_max, y_max)
+    # ax_longitudinal_error.set_yticks(np.arange(-6, 6.1, 1))
     ax_longitudinal_error.tick_params(labelsize=save_param.ticks_font_size)
     ax_longitudinal_error.grid()
 
@@ -115,12 +125,15 @@ def output_graph(ref_param, result_param, output_dir, save_param):
     ax_lateral_error = fig_lateral_error.add_subplot(111)
     ax_lateral_error.set_title("Lateral Error", fontsize=save_param.title_font_size)
     ax_lateral_error.plot(time, lateral, marker="o", c="k", markersize=2, linewidth = 0.5)
+    if op_param.display_ellipse == True:
+        ax_lateral_error.plot(time, result_param.df["ellipse_lateral"], marker="o", c="m", markersize=2, linewidth = 0.5)
     ax_lateral_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
     ax_lateral_error.set_ylabel("error[m]", fontsize=save_param.label_font_size)
     # ax_lateral_error.set_xlim(0, x_max)
     y_min, y_max = ax_lateral_error.get_ylim()
     y_max = max(abs(y_min),abs(y_max))
     ax_lateral_error.set_ylim(-y_max, y_max)
+    # ax_lateral_error.set_yticks(np.arange(-1.0, 1.1, 0.1))
     ax_lateral_error.tick_params(labelsize=save_param.ticks_font_size)
     ax_lateral_error.grid()
 
@@ -256,3 +269,4 @@ def output_graph(ref_param, result_param, output_dir, save_param):
         print("Completed!!")
 
     plt.show()
+    # fmt: on

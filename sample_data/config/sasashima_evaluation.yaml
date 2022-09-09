@@ -101,23 +101,14 @@ save_dataframe: true
 ############
 ## Option ##
 ############
-use_lerp: true
+use_lerp: false
 
-# <--coming soon-->
-# execution_time_graph: false
-# execuation_column: 0
-
-# velocity_graph: false
-# velocity_column:
-
-##################
-## Warning sign ##
-##################
-# <--coming soon-->
-# 2D_error:
-# 3D_error:
-# ellipse_long_radius:
-# ellipse_short_radius:
+# Dosplay ellipse (put 2D covariance in result file)
+display_ellipse: false
+covariance_xx_column: 10
+covariance_xy_column: 11
+covariance_yx_column: 12
+covariance_yy_column: 13
 
 
 

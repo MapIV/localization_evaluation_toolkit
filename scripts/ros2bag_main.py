@@ -1,13 +1,11 @@
-import pandas as pd
 import sys
+
+import pandas as pd
 import yaml
 
 sys.dont_write_bytecode = True
 
-from util import yaml_param
-from util import adjust
-from util import plot
-from util import read_ros2bag
+from util import adjust, plot, read_ros2bag, yaml_param
 
 if __name__ == "__main__":
 
@@ -22,19 +20,19 @@ if __name__ == "__main__":
         config = yaml.safe_load(yml)
     ref_param = yaml_param.YamlParam()
     result_param = yaml_param.YamlParam()
-    save_param = yaml_param.YamlParam()
+    save_param = yaml_param.SaveParam()
     op_param = yaml_param.OpParam()
     adjust.input_yaml_ros2(config, ref_param, "Reference")
     adjust.set_tf(config, ref_param, "Reference")
     adjust.input_yaml_ros2(config, result_param, "Result")
     adjust.set_tf(config, result_param, "Result")
     adjust.input_save_param(config, save_param)
-    adjust.input_op_param(config, op_param)
+    adjust.input_op_param_ros2(config, op_param)
     print("Completed!!")
 
     print("Loading ros2 bag files ...", end="")
-    read_ros2bag.read_ros2bag(ref_path, ref_param)
-    read_ros2bag.read_ros2bag(result_path, result_param)
+    read_ros2bag.read_ros2bag(ref_path, ref_param, op_param)
+    read_ros2bag.read_ros2bag(result_path, result_param, op_param)
     print("Completed!!")
 
     print("Adjusting the start time ...", end="")
@@ -51,5 +49,10 @@ if __name__ == "__main__":
     del ref_param.df_temp, result_param.df_temp
     print("Completed!!")
 
+    if op_param.display_ellipse == True:
+        print("Calculating error ellipse ...", end="")
+        adjust.calc_ellipse(result_param)
+        print("Completed!!")
+
     print("Output graph ...", end="")
-    plot.output_graph(ref_param, result_param, output_dir, save_param)
+    plot.output_graph(ref_param, result_param, output_dir, save_param, op_param)
