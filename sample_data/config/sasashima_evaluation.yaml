@@ -105,10 +105,10 @@ use_lerp: false
 
 # Dosplay ellipse (put 2D covariance in result file)
 display_ellipse: false
-covariance_xx_column: 10
-covariance_xy_column: 11
-covariance_yx_column: 12
-covariance_yy_column: 13
+covariance_xx_column: 0
+covariance_xy_column: 0
+covariance_yx_column: 0
+covariance_yy_column: 0
 
 
 

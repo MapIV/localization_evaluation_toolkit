@@ -36,16 +36,6 @@ class YamlParam:
         self.bag_id = ""
         self.bag_format = ""
 
-        # # Save format
-        # self.display_radian = ""
-        # # self.font = ''
-        # self.title_font_size = ""
-        # self.label_font_size = ""
-        # self.ticks_font_size = ""
-        # self.save_figures = ""
-        # self.save_extension_type = ""
-        # self.save_dataframe = ""
-
         # Adjust time
         self.direct_vel = ""
         self.vel_colmn = ""

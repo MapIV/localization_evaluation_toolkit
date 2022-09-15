@@ -51,4 +51,4 @@ save_dataframe: true
 ############
 use_lerp: false
 
-display_ellipse: true
+display_ellipse: false

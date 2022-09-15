@@ -250,6 +250,12 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     # Save Dataframe
     if save_param.save_dataframe == True:
         print("Now saving csv files ...", end="")
+        ref_param.df = ref_param.df[["time","x","y","z","roll","pitch","yaw"]]
+        if op_param.display_ellipse == True:
+            result_param.df = result_param.df[["time","x","y","z","roll","pitch","yaw","cov_xx","cov_xy","cov_yx","cov_yy",
+                "ellipse_long","ellipse_short","ellipse_yaw","ellipse_lateral","ellipse_longitudinal"]]
+        else:
+            result_param.df = result_param.df[["time","x","y","z","roll","pitch","yaw"]]
         ref_param.df.to_csv(output_dir + "/sync_ref_df.csv")
         result_param.df.to_csv(output_dir + "/sync_result_df.csv")
         print("Completed!!")

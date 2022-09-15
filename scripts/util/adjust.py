@@ -59,10 +59,10 @@ def input_op_param(config, op_param):
     op_param.use_lerp = config["use_lerp"]
     op_param.display_ellipse = config["display_ellipse"]
     if op_param.display_ellipse == True:
-        op_param.display_ellipse = config["covariance_xx_column"]
-        op_param.display_ellipse = config["covariance_xy_column"]
-        op_param.display_ellipse = config["covariance_yx_column"]
-        op_param.display_ellipse = config["covariance_yy_column"]
+        op_param.covariance_xx_column = config["covariance_xx_column"]
+        op_param.covariance_xy_column = config["covariance_xy_column"]
+        op_param.covariance_yx_column = config["covariance_yx_column"]
+        op_param.covariance_yy_column = config["covariance_yy_column"]
 
 
 def input_op_param_ros2(config, op_param):
@@ -112,6 +112,13 @@ def unit_adjust(param, df_org):
         param.df_temp["roll"] = (df_org.iloc[:, param.roll_column] * math.pi / 180 + param.tf_roll) * param.inv_roll
         param.df_temp["pitch"] = (df_org.iloc[:, param.pitch_column] * math.pi / 180 + param.tf_pitch) * param.inv_pitch
         param.df_temp["yaw"] = (df_org.iloc[:, param.yaw_column] * math.pi / 180 + param.tf_yaw) * param.inv_yaw
+
+
+def add_covariance(param, df_org, op_param):
+    param.df_temp["cov_xx"] = df_org.iloc[:, op_param.covariance_xx_column]
+    param.df_temp["cov_xy"] = df_org.iloc[:, op_param.covariance_xy_column]
+    param.df_temp["cov_yx"] = df_org.iloc[:, op_param.covariance_yx_column]
+    param.df_temp["cov_yy"] = df_org.iloc[:, op_param.covariance_yy_column]
 
 
 def adjust_start_time(ref_param, result_param):
@@ -167,7 +174,7 @@ def sync_time(ref_param, result_param, op_param):
                 elif min_ref_time > before_min_time:
                     result_param.df_temp.drop(i, inplace=True)
                     continue
-            if op_param.use_lerp == True and i != 0 and i != len(result_param.df_temp):
+            if op_param.use_lerp == True:
                 lerp(ref_param.df_temp, sync_ref_id, min_ref_time, result_param.df_temp.at[i, "time"])
             sync_ref_df = sync_ref_df.append(ref_param.df_temp.iloc[sync_ref_id, :], ignore_index=True)
             before_sync = sync_ref_id
@@ -189,7 +196,7 @@ def sync_time(ref_param, result_param, op_param):
                 elif min_result_time > before_min_time:
                     ref_param.df.drop(i, inplace=True)
                     continue
-            if op_param.use_lerp == True and i != 0 and i != len(ref_param.df):
+            if op_param.use_lerp == True:
                 lerp(ref_param.df_temp, i, min_result_time, result_param.df_temp.at[sync_result_id, "time"])
             sync_result_df = sync_result_df.append(result_param.df_temp.iloc[sync_result_id, :], ignore_index=True)
             before_sync = sync_result_id
@@ -202,6 +209,8 @@ def sync_time(ref_param, result_param, op_param):
 def lerp(target_param, sync_id, min_ref_time, result_time):
     tar_sync_time = target_param.at[sync_id, "time"]
     if tar_sync_time > result_time:
+        if sync_id == 0:
+            return
         delta_t = tar_sync_time - target_param.at[sync_id - 1, "time"]
         if delta_t == 0:
             return
@@ -212,6 +221,8 @@ def lerp(target_param, sync_id, min_ref_time, result_time):
         target_param.at[sync_id, "y"] -= (target_param.at[sync_id, "y"] - tar_ybefore) * min_ref_time / (delta_t)
         target_param.at[sync_id, "z"] -= (target_param.at[sync_id, "z"] - tar_zbefore) * min_ref_time / (delta_t)
     elif tar_sync_time < result_time:
+        if sync_id + 1 == len(target_param):
+            return
         delta_t = target_param.at[sync_id + 1, "time"] - tar_sync_time
         if delta_t == 0:
             return

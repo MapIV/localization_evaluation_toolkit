@@ -103,7 +103,6 @@ save_dataframe: true
 ############
 use_lerp: false
 
-# !!Not yet implemented with csv
 # Dosplay ellipse (put 2D covariance in result file)
 display_ellipse: false
 covariance_xx_column: 10

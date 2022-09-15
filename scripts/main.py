@@ -38,8 +38,13 @@ if __name__ == "__main__":
     print("Adjusting unit ...", end="")
     adjust.unit_adjust(ref_param, ref_df_org)
     adjust.unit_adjust(result_param, result_df_org)
-    del ref_df_org, result_df_org
     print("Completed!!")
+
+    if op_param.display_ellipse == True:
+        print("Add covariance ...", end="")
+        adjust.add_covariance(result_param, result_df_org, op_param)
+        print("Completed!!")
+    del ref_df_org, result_df_org
 
     print("Adjusting the start time ...", end="")
     if adjust.adjust_start_time(ref_param, result_param) == -1:
@@ -54,6 +59,11 @@ if __name__ == "__main__":
     ref_param.df, result_param.df = adjust.sync_time(ref_param, result_param, op_param)
     del ref_param.df_temp, result_param.df_temp
     print("Completed!!")
+
+    if op_param.display_ellipse == True:
+        print("Calculating error ellipse ...", end="")
+        adjust.calc_ellipse(result_param)
+        print("Completed!!")
 
     print("Output graph ...", end="")
     plot.output_graph(ref_param, result_param, output_dir, save_param, op_param)
