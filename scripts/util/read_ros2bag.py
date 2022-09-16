@@ -34,6 +34,8 @@ def read_ros2bag(bag_file, param, op_param):
         "roll": [],
         "pitch": [],
         "yaw": [],
+    }
+    cov_data_dict = {
         "cov_xx": [],
         "cov_xy": [],
         "cov_yx": [],
@@ -60,11 +62,18 @@ def read_ros2bag(bag_file, param, op_param):
         pose_data_dict["pitch"].append((e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch) * param.inv_pitch)
         pose_data_dict["yaw"].append((e_temp.as_euler("ZYX", degrees=False)[0] + param.tf_yaw) * param.inv_yaw)
         if op_param.display_ellipse == True:
-            pose_data_dict["cov_xx"].append(msg.pose.covariance[0])
-            pose_data_dict["cov_xy"].append(msg.pose.covariance[1])
-            pose_data_dict["cov_yx"].append(msg.pose.covariance[6])
-            pose_data_dict["cov_yy"].append(msg.pose.covariance[7])
+            cov_data_dict["cov_xx"].append(msg.pose.covariance[0])
+            cov_data_dict["cov_xy"].append(msg.pose.covariance[1])
+            cov_data_dict["cov_yx"].append(msg.pose.covariance[6])
+            cov_data_dict["cov_yy"].append(msg.pose.covariance[7])
     param.df_temp = pd.DataFrame.from_dict(pose_data_dict)
+    if op_param.display_ellipse == True:
+        param.df_temp = param.df_temp.assign(
+        cov_xx=cov_data_dict["cov_xx"],
+        cov_xy=cov_data_dict["cov_xy"],
+        cov_yx=cov_data_dict["cov_yx"],
+        cov_yy=cov_data_dict["cov_yy"],
+        )
 
 
 def read_pose(bag_file, param):
