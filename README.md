@@ -94,9 +94,9 @@ When you zoom in on the graph, you can see the correspondence.
 
 ![2d_error](https://user-images.githubusercontent.com/81670028/177121927-f8519619-e300-46bb-adf3-62741519a2fb.png)
 
-3. Hight Error
+3. Height Error
 
-![hight_error](https://user-images.githubusercontent.com/81670028/177121971-71db77a4-cf89-4550-a563-8739f893a6a7.png)
+![height_error](https://user-images.githubusercontent.com/81670028/177121971-71db77a4-cf89-4550-a563-8739f893a6a7.png)
 
 4. 3D Error
 

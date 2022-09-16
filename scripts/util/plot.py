@@ -68,19 +68,19 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     ax_2d_error.grid()
     del error_2d
 
-    # Hight Error
-    fig_hight_error = plt.figure("Hight_Error", figsize=(16, 9), dpi=120)
-    ax_hight_error = fig_hight_error.add_subplot(111)
-    ax_hight_error.set_title("Hight Error", fontsize=save_param.title_font_size)
-    ax_hight_error.plot(time, error_z, marker="o", c="k", markersize=2, linewidth = 0.5)
-    ax_hight_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
-    ax_hight_error.set_ylabel("error[m]", fontsize=save_param.label_font_size)
-    # ax_hight_error.set_xlim(0, x_max)
-    y_min, y_max = ax_hight_error.get_ylim()
+    # Height Error
+    fig_height_error = plt.figure("Height_Error", figsize=(16, 9), dpi=120)
+    ax_height_error = fig_height_error.add_subplot(111)
+    ax_height_error.set_title("Height Error", fontsize=save_param.title_font_size)
+    ax_height_error.plot(time, error_z, marker="o", c="k", markersize=2, linewidth = 0.5)
+    ax_height_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+    ax_height_error.set_ylabel("error[m]", fontsize=save_param.label_font_size)
+    # ax_height_error.set_xlim(0, x_max)
+    y_min, y_max = ax_height_error.get_ylim()
     y_max = max(abs(y_min),abs(y_max))
-    ax_hight_error.set_ylim(-y_max, y_max)
-    ax_hight_error.tick_params(labelsize=save_param.ticks_font_size)
-    ax_hight_error.grid()
+    ax_height_error.set_ylim(-y_max, y_max)
+    ax_height_error.tick_params(labelsize=save_param.ticks_font_size)
+    ax_height_error.grid()
 
     # 3D Error
     error_3d = np.sqrt(pow(error_x, 2) + pow(error_y, 2) + pow(error_z, 2))
@@ -266,7 +266,7 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
         fig_2d_trj.savefig(output_dir + "/2d_trj." + save_param.save_extension_type)
         # fig_3d_trj.savefig(output_dir + "/3d_trj." + save_param.save_extension_type)
         fig_2d_error.savefig(output_dir + "/2d_error." + save_param.save_extension_type)
-        fig_hight_error.savefig(output_dir + "/hight_error." + save_param.save_extension_type)
+        fig_height_error.savefig(output_dir + "/height_error." + save_param.save_extension_type)
         fig_3d_error.savefig(output_dir + "/3d_error." + save_param.save_extension_type)
         fig_longitudinal_error.savefig(output_dir + "/longitudinal_error." + save_param.save_extension_type)
         fig_lateral_error.savefig(output_dir + "/lateral_error." + save_param.save_extension_type)
