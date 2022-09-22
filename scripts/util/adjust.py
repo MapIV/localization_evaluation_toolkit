@@ -46,6 +46,8 @@ def input_yaml_ros2(config, param, item):
 
 def input_save_param(config, save_param):
     save_param.display_radian = config["use_radian"]
+    save_param.progress_info = config["progress_info"]
+    save_param.interval = config["interval"]
     # save_param.font = config['font']
     save_param.title_font_size = config["title_font_size"]
     save_param.label_font_size = config["label_font_size"]

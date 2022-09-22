@@ -87,7 +87,8 @@ Result:
   
 # Display
 use_radian: true # [true]:radian / [false]:degree
-# font: Arial <Unimplemented>
+progress_info: 2 # trajectory graph -> [0]:no display, [1]: number, [2]:time, [3]:ros time, [4]:distance
+interval: 10 # progress_info is [2]:per [s], [3]:per [s], [4]:per [m]
 title_font_size: 14 
 label_font_size: 10
 ticks_font_size: 8
@@ -96,6 +97,7 @@ ticks_font_size: 8
 save_figures: true
 save_extension_type: png # without "."
 save_dataframe: true
+
 
 
 ############

@@ -49,6 +49,7 @@ class SaveParam:
     def __init__(self):
         # Save format
         self.display_radian = ""
+        self.progress_info = ""
         # self.font = ''
         self.title_font_size = ""
         self.label_font_size = ""

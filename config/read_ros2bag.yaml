@@ -36,7 +36,9 @@ Result:
 
 # Display
 use_radian: true # [true]:radian / [false]:degree
-# font: Arial <Unimplemented>
+progress_info: 0 # trajectory graph -> [0]:no display, [1]: number, [2]:time, [3]:ros time, [4]:distance
+interval: 0 # progress_info is [2]:per [s], [3]:per [s], [4]:per [m]
+
 title_font_size: 14 
 label_font_size: 10
 ticks_font_size: 8

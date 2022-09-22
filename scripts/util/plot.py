@@ -1,4 +1,5 @@
 import math
+from difflib import diff_bytes
 
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
@@ -15,12 +16,21 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     error_pitch = result_param.df["pitch"] - ref_param.df["pitch"]
     error_yaw = result_param.df["yaw"] - ref_param.df["yaw"]
 
-    r_absmax = max(ref_param.df["roll"].abs().max(axis=0), result_param.df["roll"].abs().max(axis=0))
-    p_absmax = max(ref_param.df["pitch"].abs().max(axis=0), result_param.df["pitch"].abs().max(axis=0))
-    y_absmax = max(ref_param.df["yaw"].abs().max(axis=0), result_param.df["yaw"].abs().max(axis=0))
-    er_absmax = error_roll.abs().max(axis=0)
-    ep_absmax = error_pitch.abs().max(axis=0)
-    ey_absmax = error_yaw.abs().max(axis=0)
+    if save_param.progress_info == 4:
+        distance = [0]
+        for i in range(1, len(result_param.df)):
+            diff_x = ref_param.df["x"][i] - ref_param.df["x"][i-1]
+            diff_y = ref_param.df["y"][i] - ref_param.df["y"][i-1]
+            diff_2d = np.sqrt(pow(diff_x, 2) + pow(diff_y, 2))
+            distance_temp = distance[i-1] + diff_2d
+            distance.append(distance_temp)
+
+    # r_absmax = max(ref_param.df["roll"].abs().max(axis=0), result_param.df["roll"].abs().max(axis=0))
+    # p_absmax = max(ref_param.df["pitch"].abs().max(axis=0), result_param.df["pitch"].abs().max(axis=0))
+    # y_absmax = max(ref_param.df["yaw"].abs().max(axis=0), result_param.df["yaw"].abs().max(axis=0))
+    # er_absmax = error_roll.abs().max(axis=0)
+    # ep_absmax = error_pitch.abs().max(axis=0)
+    # ey_absmax = error_yaw.abs().max(axis=0)
 
 
     # 2D Trajectory
@@ -31,9 +41,27 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     ax_2d_trj.scatter(result_param.df["x"], result_param.df["y"], c="r", s=2, label="Result")
     ax_2d_trj.plot([ref_param.df["x"], result_param.df["x"]], [ref_param.df["y"], result_param.df["y"]], "g-", linewidth=0.2, zorder=1)
     if op_param.display_ellipse == True:
-        for i in range(1,len(result_param.df)):
+        for i in range(len(result_param.df)):
             e = patches.Ellipse(xy=(result_param.df['x'][i],result_param.df['y'][i]), width=result_param.df["ellipse_long"][i]*2, height=result_param.df["ellipse_short"][i]*2, angle=math.degrees(result_param.df["ellipse_yaw"][i]), alpha=0.3,color='m') 
             ax_2d_trj.add_patch(e)
+
+    if save_param.progress_info != 0:
+        c = 1
+        for i in range(1, len(result_param.df)):
+            if save_param.progress_info == 1 and i >= save_param.interval * c: # number
+                ax_2d_trj.text(result_param.df["x"][i], result_param.df["y"][i], i, va='bottom')
+                c += 1
+            elif save_param.progress_info == 2 and time[i] >= save_param.interval * c: # time
+                ax_2d_trj.text(result_param.df["x"][i], result_param.df["y"][i], round(time[i],3), va='bottom')
+                c += 1
+            elif save_param.progress_info == 3 and time[i] >= save_param.interval * c: #rostime
+                ax_2d_trj.text(result_param.df["x"][i], result_param.df["y"][i], ref_param.df["bottom"][i], va='bottom')
+                c += 1
+            elif save_param.progress_info == 4 and distance[i] >= save_param.interval * c: # distance
+                ax_2d_trj.text(result_param.df["x"][i], result_param.df["y"][i], round(distance[i],1), va='bottom')
+                c += 1
+            
+
     ax_2d_trj.set_xlabel("x[m]", fontsize=save_param.label_font_size)
     ax_2d_trj.set_ylabel("y[m]", fontsize=save_param.label_font_size)
     ax_2d_trj.tick_params(labelsize=save_param.ticks_font_size)
