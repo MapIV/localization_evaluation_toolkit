@@ -48,9 +48,10 @@ class YamlParam:
 class SaveParam:
     def __init__(self):
         # Save format
+        self.axis_type = ""
         self.display_radian = ""
         self.progress_info = ""
-        # self.font = ''
+        self.interval = ""
         self.title_font_size = ""
         self.label_font_size = ""
         self.ticks_font_size = ""

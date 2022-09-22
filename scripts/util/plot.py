@@ -8,15 +8,11 @@ import numpy as np
 
 # fmt: off
 def output_graph(ref_param, result_param, output_dir, save_param, op_param):
+    # Cumulative time
     time = ref_param.df["time"] - ref_param.df["time"][0]
-    error_x = result_param.df["x"] - ref_param.df["x"]
-    error_y = result_param.df["y"] - ref_param.df["y"]
-    error_z = result_param.df["z"] - ref_param.df["z"]
-    error_roll = result_param.df["roll"] - ref_param.df["roll"]
-    error_pitch = result_param.df["pitch"] - ref_param.df["pitch"]
-    error_yaw = result_param.df["yaw"] - ref_param.df["yaw"]
 
-    if save_param.progress_info == 4:
+    # Cumulative distance
+    if save_param.axis_type == 1 or save_param.progress_info == 4:
         distance = [0]
         for i in range(1, len(result_param.df)):
             diff_x = ref_param.df["x"][i] - ref_param.df["x"][i-1]
@@ -24,6 +20,25 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
             diff_2d = np.sqrt(pow(diff_x, 2) + pow(diff_y, 2))
             distance_temp = distance[i-1] + diff_2d
             distance.append(distance_temp)
+
+    # Choose axis type
+    axis_array = []
+    if save_param.axis_type == 0:
+        axis_array = time
+        axis_unit = "time [s]"
+    else:
+        axis_array = distance
+        axis_unit = "distance [m]"
+
+    # Calc error
+    error_x = result_param.df["x"] - ref_param.df["x"]
+    error_y = result_param.df["y"] - ref_param.df["y"]
+    error_z = result_param.df["z"] - ref_param.df["z"]
+    error_roll = result_param.df["roll"] - ref_param.df["roll"]
+    error_pitch = result_param.df["pitch"] - ref_param.df["pitch"]
+    error_yaw = result_param.df["yaw"] - ref_param.df["yaw"]
+
+
 
     # r_absmax = max(ref_param.df["roll"].abs().max(axis=0), result_param.df["roll"].abs().max(axis=0))
     # p_absmax = max(ref_param.df["pitch"].abs().max(axis=0), result_param.df["pitch"].abs().max(axis=0))
@@ -85,8 +100,8 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     fig_2d_error = plt.figure("2D_Error", figsize=(16, 9), dpi=120)
     ax_2d_error = fig_2d_error.add_subplot(111)
     ax_2d_error.set_title("2D Error", fontsize=save_param.title_font_size)
-    ax_2d_error.plot(time, error_2d, marker="o", c="k", markersize=2, linewidth = 0.5)
-    ax_2d_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+    ax_2d_error.plot(axis_array, error_2d, marker="o", c="k", markersize=2, linewidth = 0.5)
+    ax_2d_error.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
     ax_2d_error.set_ylabel("error[m]", fontsize=save_param.label_font_size)
     # x_min, x_max = ax_2d_error.get_xlim()
     # ax_2d_error.set_xlim(0, x_max)
@@ -100,8 +115,8 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     fig_height_error = plt.figure("Height_Error", figsize=(16, 9), dpi=120)
     ax_height_error = fig_height_error.add_subplot(111)
     ax_height_error.set_title("Height Error", fontsize=save_param.title_font_size)
-    ax_height_error.plot(time, error_z, marker="o", c="k", markersize=2, linewidth = 0.5)
-    ax_height_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+    ax_height_error.plot(axis_array, error_z, marker="o", c="k", markersize=2, linewidth = 0.5)
+    ax_height_error.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
     ax_height_error.set_ylabel("error[m]", fontsize=save_param.label_font_size)
     # ax_height_error.set_xlim(0, x_max)
     y_min, y_max = ax_height_error.get_ylim()
@@ -115,8 +130,8 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     fig_3d_error = plt.figure("3D_Error", figsize=(16, 9), dpi=120)
     ax_3d_error = fig_3d_error.add_subplot(111)
     ax_3d_error.set_title("3D Error", fontsize=save_param.title_font_size)
-    ax_3d_error.plot(time, error_3d, marker="o", c="k", markersize=2, linewidth = 0.5)
-    ax_3d_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+    ax_3d_error.plot(axis_array, error_3d, marker="o", c="k", markersize=2, linewidth = 0.5)
+    ax_3d_error.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
     ax_3d_error.set_ylabel("error[m]", fontsize=save_param.label_font_size)
     # ax_3d_error.set_xlim(0, x_max)
     y_min, y_max = ax_3d_error.get_ylim()
@@ -135,10 +150,10 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     fig_longitudinal_error = plt.figure("Longitudinal_Error", figsize=(16, 9), dpi=120)
     ax_longitudinal_error = fig_longitudinal_error.add_subplot(111)
     ax_longitudinal_error.set_title("Longitudinal Error", fontsize=save_param.title_font_size)
-    ax_longitudinal_error.plot(time, longitudinal, marker="o", c="k", markersize=2, linewidth = 0.5)
+    ax_longitudinal_error.plot(axis_array, longitudinal, marker="o", c="k", markersize=2, linewidth = 0.5)
     if op_param.display_ellipse == True:
-        ax_longitudinal_error.plot(time, result_param.df["ellipse_longitudinal"], marker="o", c="m", markersize=2, linewidth = 0.5)
-    ax_longitudinal_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+        ax_longitudinal_error.plot(axis_array, result_param.df["ellipse_longitudinal"], marker="o", c="m", markersize=2, linewidth = 0.5)
+    ax_longitudinal_error.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
     ax_longitudinal_error.set_ylabel("error[m]", fontsize=save_param.label_font_size)
     # ax_longitudinal_error.set_xlim(0, x_max)
     y_min, y_max = ax_longitudinal_error.get_ylim()
@@ -152,10 +167,10 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     fig_lateral_error = plt.figure("Lateral_Error", figsize=(16, 9), dpi=120)
     ax_lateral_error = fig_lateral_error.add_subplot(111)
     ax_lateral_error.set_title("Lateral Error", fontsize=save_param.title_font_size)
-    ax_lateral_error.plot(time, lateral, marker="o", c="k", markersize=2, linewidth = 0.5)
+    ax_lateral_error.plot(axis_array, lateral, marker="o", c="k", markersize=2, linewidth = 0.5)
     if op_param.display_ellipse == True:
-        ax_lateral_error.plot(time, result_param.df["ellipse_lateral"], marker="o", c="m", markersize=2, linewidth = 0.5)
-    ax_lateral_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+        ax_lateral_error.plot(axis_array, result_param.df["ellipse_lateral"], marker="o", c="m", markersize=2, linewidth = 0.5)
+    ax_lateral_error.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
     ax_lateral_error.set_ylabel("error[m]", fontsize=save_param.label_font_size)
     # ax_lateral_error.set_xlim(0, x_max)
     y_min, y_max = ax_lateral_error.get_ylim()
@@ -180,9 +195,9 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     # Roll
     ax_r = fig_rpy.add_subplot(311)
     ax_r.set_title("Roll", fontsize=save_param.title_font_size)
-    ax_r.plot(time, ref_param.df["roll"] * rad_to_deg, marker="o", c="k", markersize=3, linewidth = 0.5, label="Reference")
-    ax_r.plot(time, result_param.df["roll"] * rad_to_deg, marker="o", c="r", markersize=1, linewidth = 0.5, label="Result")
-    ax_r.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+    ax_r.plot(axis_array, ref_param.df["roll"] * rad_to_deg, marker="o", c="k", markersize=3, linewidth = 0.5, label="Reference")
+    ax_r.plot(axis_array, result_param.df["roll"] * rad_to_deg, marker="o", c="r", markersize=1, linewidth = 0.5, label="Result")
+    ax_r.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
     ax_r.set_ylabel(rpy_label, fontsize=save_param.label_font_size)
     # ax_r.set_xlim(0, x_max)
     y_min, y_max = ax_r.get_ylim()
@@ -195,9 +210,9 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     # Pitch
     ax_p = fig_rpy.add_subplot(312)
     ax_p.set_title("Pitch", fontsize=save_param.title_font_size)
-    ax_p.plot(time, ref_param.df["pitch"] * rad_to_deg, marker="o", c="k", markersize=3, linewidth = 0.5, label="Reference")
-    ax_p.plot(time, result_param.df["pitch"] * rad_to_deg, marker="o", c="r", markersize=1, linewidth = 0.5, label="Result")
-    ax_p.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+    ax_p.plot(axis_array, ref_param.df["pitch"] * rad_to_deg, marker="o", c="k", markersize=3, linewidth = 0.5, label="Reference")
+    ax_p.plot(axis_array, result_param.df["pitch"] * rad_to_deg, marker="o", c="r", markersize=1, linewidth = 0.5, label="Result")
+    ax_p.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
     ax_p.set_ylabel(rpy_label, fontsize=save_param.label_font_size)
     # ax_p.set_xlim(0, x_max)
     y_min, y_max = ax_p.get_ylim()
@@ -210,9 +225,9 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     # Yaw
     ax_y = fig_rpy.add_subplot(313)
     ax_y.set_title("Yaw", fontsize=save_param.title_font_size)
-    ax_y.plot(time, ref_param.df["yaw"] * rad_to_deg, marker="o", c="k", markersize=3, linewidth = 0.5, label="Reference")
-    ax_y.plot(time, result_param.df["yaw"] * rad_to_deg, marker="o", c="r", markersize=1, linewidth = 0.5, label="Result")
-    ax_y.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+    ax_y.plot(axis_array, ref_param.df["yaw"] * rad_to_deg, marker="o", c="k", markersize=3, linewidth = 0.5, label="Reference")
+    ax_y.plot(axis_array, result_param.df["yaw"] * rad_to_deg, marker="o", c="r", markersize=1, linewidth = 0.5, label="Result")
+    ax_y.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
     ax_y.set_ylabel(rpy_label, fontsize=save_param.label_font_size)
     # ax_y.set_xlim(0, x_max)
     y_min, y_max = ax_y.get_ylim()
@@ -229,8 +244,8 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     # Roll Error
     ax_roll_error = fig_rpy_error.add_subplot(311)
     ax_roll_error.set_title("Roll_Error", fontsize=save_param.title_font_size)
-    ax_roll_error.plot(time, error_roll * rad_to_deg, marker="o", c="k", markersize=2, linewidth = 0.5)
-    ax_roll_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+    ax_roll_error.plot(axis_array, error_roll * rad_to_deg, marker="o", c="k", markersize=2, linewidth = 0.5)
+    ax_roll_error.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
     ax_roll_error.set_ylabel("error" + rpy_label, fontsize=save_param.label_font_size)
     # ax_roll_error.set_xlim(0, x_max)
     y_min, y_max = ax_roll_error.get_ylim()
@@ -242,8 +257,8 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     # Pitch Error
     ax_pitch_error = fig_rpy_error.add_subplot(312)
     ax_pitch_error.set_title("Pitch_Error", fontsize=save_param.title_font_size)
-    ax_pitch_error.plot(time, error_pitch * rad_to_deg, marker="o", c="k", markersize=2, linewidth = 0.5)
-    ax_pitch_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+    ax_pitch_error.plot(axis_array, error_pitch * rad_to_deg, marker="o", c="k", markersize=2, linewidth = 0.5)
+    ax_pitch_error.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
     ax_pitch_error.set_ylabel("error" + rpy_label, fontsize=save_param.label_font_size)
     # ax_pitch_error.set_xlim(0, x_max)
     y_min, y_max = ax_pitch_error.get_ylim()
@@ -255,8 +270,8 @@ def output_graph(ref_param, result_param, output_dir, save_param, op_param):
     # Yaw Error
     ax_yaw_error = fig_rpy_error.add_subplot(313)
     ax_yaw_error.set_title("Yaw_Error", fontsize=save_param.title_font_size)
-    ax_yaw_error.plot(time, error_yaw * rad_to_deg, marker="o", c="k", markersize=2, linewidth = 0.5)
-    ax_yaw_error.set_xlabel("time[s]", fontsize=save_param.label_font_size)
+    ax_yaw_error.plot(axis_array, error_yaw * rad_to_deg, marker="o", c="k", markersize=2, linewidth = 0.5)
+    ax_yaw_error.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
     ax_yaw_error.set_ylabel("error" + rpy_label, fontsize=save_param.label_font_size)
     # ax_yaw_error.set_xlim(0, x_max)
     y_min, y_max = ax_yaw_error.get_ylim()
