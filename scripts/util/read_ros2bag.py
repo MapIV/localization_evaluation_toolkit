@@ -9,6 +9,17 @@ from rosidl_runtime_py.utilities import get_message
 from scipy.spatial.transform import Rotation as R
 
 
+class FrameCM:
+    def __init__(self):
+        self.time = ""
+        self.x = []
+        self.y = []
+        self.z = []
+        self.roll = []
+        self.pitch = []
+        self.yaw = []
+
+
 def read_ros2bag(bag_file, param, op_param):
 
     bag_path = str(bag_file)
@@ -69,10 +80,10 @@ def read_ros2bag(bag_file, param, op_param):
     param.df_temp = pd.DataFrame.from_dict(pose_data_dict)
     if op_param.display_ellipse == True:
         param.df_temp = param.df_temp.assign(
-        cov_xx=cov_data_dict["cov_xx"],
-        cov_xy=cov_data_dict["cov_xy"],
-        cov_yx=cov_data_dict["cov_yx"],
-        cov_yy=cov_data_dict["cov_yy"],
+            cov_xx=cov_data_dict["cov_xx"],
+            cov_xy=cov_data_dict["cov_xy"],
+            cov_yx=cov_data_dict["cov_yx"],
+            cov_yy=cov_data_dict["cov_yy"],
         )
 
 
@@ -141,3 +152,42 @@ def read_unique(bag_file, param):
         data_dict["time"].append(msg.stamp.sec + msg.stamp.nanosec / 10**9)
         data_dict["data"].append(msg.data)
     param.df_temp = pd.DataFrame.from_dict(data_dict)
+
+
+def read_pose_array(bag_file, frame_array, topic_name):
+    bag_path = str(bag_file)
+    storage_options = rosbag2_py.StorageOptions(uri=bag_path, storage_id="sqlite3")
+    converter_options = rosbag2_py.ConverterOptions(input_serialization_format="cdr", output_serialization_format="cdr")
+
+    reader = rosbag2_py.SequentialReader()
+    reader.open(storage_options, converter_options)
+    topic_types = reader.get_all_topics_and_types()
+
+    type_map = {topic_types[i].name: topic_types[i].type for i in range(len(topic_types))}
+
+    storage_filter = rosbag2_py.StorageFilter(topics=[topic_name])
+    reader.set_filter(storage_filter)
+
+    while reader.has_next():
+        (topic, data, t) = reader.read_next()
+        msg_type = get_message(type_map[topic])
+        msg = deserialize_message(data, msg_type)
+
+        fram_cm = FrameCM()
+
+        fram_cm.time = (msg.header.stamp.sec) + (msg.header.stamp.nanosec) / 10**9
+        for i in range(len(msg.poses)):
+            q_temp = [
+                msg.poses[i].orientation.x,
+                msg.poses[i].orientation.y,
+                msg.poses[i].orientation.z,
+                msg.poses[i].orientation.w,
+            ]
+            e_temp = R.from_quat([q_temp[0], q_temp[1], q_temp[2], q_temp[3]])
+            fram_cm.x.append(msg.poses[i].position.x)
+            fram_cm.y.append(msg.poses[i].position.y)
+            fram_cm.z.append(msg.poses[i].position.z)
+            fram_cm.roll.append(e_temp.as_euler("ZYX", degrees=False)[2])
+            fram_cm.pitch.append(e_temp.as_euler("ZYX", degrees=False)[1])
+            fram_cm.yaw.append(e_temp.as_euler("ZYX", degrees=False)[0])
+        frame_array.append(fram_cm)

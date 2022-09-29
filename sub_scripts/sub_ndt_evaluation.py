@@ -1,4 +1,5 @@
 import math
+import os
 import sys
 
 import matplotlib.pyplot as plt
@@ -9,8 +10,9 @@ from rcl_interfaces.msg import Log
 from rclpy.serialization import deserialize_message
 from rosidl_runtime_py.utilities import get_message
 
-sys.path.append("../scripts")
-from util import read_ros2bag
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+# sys.path.append("../scripts")
+from scripts.util import adjust, read_ros2bag, yaml_param
 
 
 class BagParam:

@@ -1,4 +1,5 @@
 import math
+import os
 import sys
 
 import matplotlib.pyplot as plt
@@ -6,8 +7,9 @@ import numpy as np
 import pandas as pd
 import yaml
 
-sys.path.append("../scripts")
-from util import adjust, read_ros2bag, yaml_param
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+# sys.path.append("../scripts")
+from scripts.util import adjust, read_ros2bag, yaml_param
 
 
 def calc_kl(ref_param, result_param):
@@ -34,19 +36,7 @@ def calc_kl(ref_param, result_param):
         kl_list.append(KL)
         if KL > 10:
             mismatch += 1
-
-    fig_kl = plt.figure("KL divergence", figsize=(16, 9), dpi=120)
-    ax_kl = fig_kl.add_subplot(111)
-    ax_kl.set_title("KL divergence")
-    ax_kl.plot(ref_param.df["time"] - ref_param.df.at[0, "time"], kl_list, marker="o", c="b", markersize=2)
-    ax_kl.text(
-        0.1, 1.05, "mismatch:{}/{}".format(mismatch, int(len(result_param.df))), fontsize=15, transform=ax_kl.transAxes
-    )
-    ax_kl.set_xlabel("time[s]")
-    ax_kl.set_ylabel("KL divergence")
-    ax_kl.grid()
-    fig_kl.savefig(output_dir + "/kl.png")
-    plt.show()
+    return kl_list, mismatch
 
 
 if __name__ == "__main__":
@@ -93,4 +83,17 @@ if __name__ == "__main__":
     print("Completed!!")
 
     print("Calculating KL divergence for 2D distributions...", end="")
-    calc_kl(ref_param, result_param)
+    kl_list, mismatch = calc_kl(ref_param, result_param)
+
+    fig_kl = plt.figure("KL divergence", figsize=(16, 9), dpi=120)
+    ax_kl = fig_kl.add_subplot(111)
+    ax_kl.set_title("KL divergence")
+    ax_kl.plot(ref_param.df["time"] - ref_param.df.at[0, "time"], kl_list, marker="o", c="b", markersize=2)
+    ax_kl.text(
+        0.1, 1.05, "mismatch:{}/{}".format(mismatch, int(len(result_param.df))), fontsize=15, transform=ax_kl.transAxes
+    )
+    ax_kl.set_xlabel("time[s]")
+    ax_kl.set_ylabel("KL divergence")
+    ax_kl.grid()
+    fig_kl.savefig(output_dir + "/kl.png")
+    plt.show()

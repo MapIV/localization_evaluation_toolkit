@@ -36,11 +36,11 @@ Result:
 
 ## Display
 # Horizontal axis
-axis_type: 0 # [0]:time, [1]:distance
+axis_type: 1 # [0]:time, [1]:distance
 
 # Trajectory graph numbering
-progress_info: 0 # [0]:no display, [1]: number, [2]:time, [3]:ros time, [4]:distance
-interval: 0 # progress_info is [2]:per second, [3]:per second, [4]:per meter
+progress_info: 4 # [0]:no display, [1]: number, [2]:time, [3]:ros time, [4]:distance
+interval: 100 # progress_info is [2]:per second, [3]:per second, [4]:per meter
 
 # Rotation graph unit
 use_radian: true # [true]:radian / [false]:degree
