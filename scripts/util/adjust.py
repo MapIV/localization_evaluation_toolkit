@@ -164,7 +164,7 @@ def sync_time(ref_param, result_param, op_param):
     before_sync = -1
     before_min_time = 0
     if len(ref_param.df_temp.index) >= len(result_param.df_temp.index):
-        sync_ref_df = pd.DataFrame()
+        sync_ref_df = pd.DataFrame(columns=ref_param.df_temp.columns)
         for i in range(0, len(result_param.df_temp)):
             search_sync_ref_time = abs(ref_param.df_temp["time"] - result_param.df_temp.at[i, "time"])
             sync_ref_id = search_sync_ref_time.idxmin()
@@ -178,14 +178,14 @@ def sync_time(ref_param, result_param, op_param):
                     continue
             if op_param.use_lerp == True:
                 lerp(ref_param.df_temp, sync_ref_id, min_ref_time, result_param.df_temp.at[i, "time"])
-            sync_ref_df = sync_ref_df.append(ref_param.df_temp.iloc[sync_ref_id, :], ignore_index=True)
+            sync_ref_df = pd.concat([sync_ref_df, ref_param.df_temp.iloc[[sync_ref_id]]], ignore_index=True)
             before_sync = sync_ref_id
             before_min_time = min_ref_time
         result_param.df_temp.reset_index(inplace=True, drop=True)
         del search_sync_ref_time, before_min_time
         return sync_ref_df, result_param.df_temp
     else:
-        sync_result_df = pd.DataFrame()
+        sync_result_df = pd.DataFrame(columns=result_param.df_temp.columns)
         ref_param.df = ref_param.df_temp.copy()
         for i in range(0, len(ref_param.df)):
             search_sync_result_time = abs(result_param.df_temp["time"] - ref_param.df.at[i, "time"])
@@ -200,7 +200,8 @@ def sync_time(ref_param, result_param, op_param):
                     continue
             if op_param.use_lerp == True:
                 lerp(ref_param.df_temp, i, min_result_time, result_param.df_temp.at[sync_result_id, "time"])
-            sync_result_df = sync_result_df.append(result_param.df_temp.iloc[sync_result_id, :], ignore_index=True)
+            # sync_result_df = sync_result_df.append(result_param.df_temp.iloc[sync_result_id, :], ignore_index=True)
+            sync_result_df = pd.concat([sync_result_df, result_param.df_temp.iloc[[sync_result_id]]], ignore_index=True)
             before_sync = sync_result_id
             before_min_time = min_result_time
         ref_param.df.reset_index(inplace=True, drop=True)
