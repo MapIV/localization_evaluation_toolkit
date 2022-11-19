@@ -1,5 +1,4 @@
 import math
-from operator import truediv
 
 import numpy as np
 import pandas as pd
@@ -7,6 +6,7 @@ from scipy.spatial.transform import Rotation as R
 
 
 def input_yaml_param(config, param, item):
+    param.label = config[item]["label"]
     param.separate_time_stamp = config[item]["separate_time_stamp"]
     param.stamp_column = config[item]["stamp_column"]
     param.secs_stamp_column = config[item]["secs_stamp_column"]

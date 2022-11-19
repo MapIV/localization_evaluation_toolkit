@@ -3,6 +3,9 @@ import pandas as pd
 
 class YamlParam:
     def __init__(self):
+        # Auxiliary
+        self.label = ""
+
         # CSV
         self.separate_time_stamp = ""
         self.stamp_column = ""
