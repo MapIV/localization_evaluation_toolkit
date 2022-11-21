@@ -30,14 +30,14 @@ def output_graph(ref_param, result_params, output_dir, save_param, op_param):
         axis_unit = "distance [m]"
 
     # Calc error
+    round2pipi = lambda v: (v % (math.pi * 2)) - (0 if (v % (math.pi * 2)) < math.pi else (math.pi * 2))
     for result_param in result_params:
         result_param.error_x = result_param.df["x"] - ref_param.df["x"]
         result_param.error_y = result_param.df["y"] - ref_param.df["y"]
         result_param.error_z = result_param.df["z"] - ref_param.df["z"]
-        result_param.error_roll = result_param.df["roll"] - ref_param.df["roll"]
-        result_param.error_pitch = result_param.df["pitch"] - ref_param.df["pitch"]
-        result_param.error_yaw = result_param.df["yaw"] - ref_param.df["yaw"]
-
+        result_param.error_roll = (result_param.df["roll"] - ref_param.df["roll"]).map(round2pipi)
+        result_param.error_pitch = (result_param.df["pitch"] - ref_param.df["pitch"]).map(round2pipi)
+        result_param.error_yaw = (result_param.df["yaw"] - ref_param.df["yaw"]).map(round2pipi)
 
 
     # r_absmax = max(ref_param.df["roll"].abs().max(axis=0), result_param.df["roll"].abs().max(axis=0))
