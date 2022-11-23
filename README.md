@@ -1,5 +1,5 @@
-# localization_evaluation_toolkit -Ver.3.2
-You can evaluate your a localization result by comparing it to a reliable pose trajectory. The start time, end time, and period can be different for both data. The evaluation is automatically aligned with the one with the smaller number of data.
+# localization_evaluation_toolkit -Ver.4.0
+You can evaluate your localization result by comparing it to a reliable pose trajectory. The start time, end time, and period can be different for both data. The evaluation is automatically aligned with the one with the smaller number of data.
 
 ## Install
 ```
@@ -15,7 +15,7 @@ You should prepare the two types of csv files or bag files. The start time, end 
 
 **A. Evaluate with csv files**  
 - csv files require at least the following elements.
-    - Time stamp
+    - Timestamp
     - Position (x,y,z)
     - Rotation (Quaternion or Euler[degree or radian])
 
@@ -35,14 +35,16 @@ All yaml files are in the config/ directory.
 - Specify topic names in 'Reference' and 'Result'.
 
 **Display, Save column**  
-- 'Display' column is setting of output graphs. In 'Save' column, you can choose whether to save the graphs.
+- 'Display' column is the setting of output graphs. In 'Save' column, you can choose whether to save the graphs.
 
 ## How to run
 **A. Evaluate with csv files**
 ```
 $ cd localization_evaluation_toolkit/scripts
-$ python3 main.py [reference_csv_path] [result_csv_path] [evaluation.yaml path] [output_folder_path]
+$ python3 main.py [reference_csv_path] [result_csv_paths] --config [evaluation.yaml path] --outdir [output_folder_path]
 ```
+
+*The first path will be treated as the reference and the rest as available results.*
 
 **B. Evaluate with ros2 bag files**
 ```
@@ -50,9 +52,9 @@ $ cd localization_evaluation_toolkit/scripts
 $ python3 ros2bag_main.py [reference_bag_path] [result_bag_path] [read_ros2bag.yaml path] [output_folder_path]
 ```
 
-output_folder_path shoule be without "/"
+output_folder_path should be without "/"
 
-## Sub evaluation and adjustment
+## Sub-evaluation and adjustment
 **C. Evaluate TP, NVTL, execution time and iteration with ros2 bag files**
 
 Please input a rosbag containing the following (at least one) topic.
@@ -76,11 +78,11 @@ $ cd localization_evaluation_toolkit/sub_scripts
 $ python3 adjust_time_stamp.py [target_csv_path] [offset_csv_path] [ajust_time_stamp.yaml path] [output_folder_path]
 ```
 
-## What graphs are outputed?
-Sample output graphs are shown below. You can test this evaluation script easily with the following command. All graphs are outputed in full HD.
+## What graphs are output?
+Sample output graphs are shown below. You can test this evaluation script easily with the following command. All graphs are output in full HD.
 ```
 $ cd localization_evaluation_toolkit/scripts
-$ python3 main.py ~/localization_evaluation_toolkit/sample_data/reference.csv ~/localization_evaluation_toolkit/sample_data/result_trj_ndt.csv ~/localization_evaluation_toolkit/sample_data/config/sasashima_evaluation.yaml ~/localization_evaluation_toolkit/sample_data/output_test
+$ python3 main.py ~/localization_evaluation_toolkit/sample_data/reference.csv ~/localization_evaluation_toolkit/sample_data/result_trj_ndt.csv --config ~/localization_evaluation_toolkit/sample_data/config/sasashima_evaluation.yaml --outdir ~/localization_evaluation_toolkit/sample_data/output_test
 ```
 
 1. 2D Trajectory

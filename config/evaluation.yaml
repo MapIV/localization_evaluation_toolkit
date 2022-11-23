@@ -3,21 +3,24 @@
 ######################
 
 Reference:
+  ## Auxiliary info
+  label: reference
+
   ## Time
-  separate_time_stamp: true #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
+  separate_time_stamp: false #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
   #--------true--------#
   secs_stamp_column: 2
   nsecs_stamp_column: 3
   #--------false-------#
-  stamp_column: 0
+  stamp_column: 1
 
   ## Position
-  x_column: 5
-  y_column: 6
-  z_column: 7
+  x_column: 9
+  y_column: 10
+  z_column: 11
 
   ## Rotation
-  use_quaternion: true # [true]:Set Quaternion / [false]:Set Euler
+  use_quaternion: false # [true]:Set Quaternion / [false]:Set Euler
   #--------true--------#
   # Quaternion
   ori_x_column: 8
@@ -27,9 +30,9 @@ Reference:
   #--------false-------#
   # Euler
   use_radian: true # [true]:radian / [false]:degree
-  roll_column: 8
-  pitch_column: 9
-  yaw_column: 10
+  roll_column: 12
+  pitch_column: 13
+  yaw_column: 14
 
   ## TF
   tf_time: 0 #[s]
@@ -44,8 +47,12 @@ Reference:
   inv_yaw: 1 # 1 or -1
 
 
-Result:
-  separate_time_stamp: true #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
+Result1:
+  ## Auxiliary info
+  label: eagleye
+
+  ## Time
+  separate_time_stamp: false #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
   #--------true--------#
   secs_stamp_column: 2
   nsecs_stamp_column: 3
@@ -53,12 +60,12 @@ Result:
   stamp_column: 0
 
   ## Position
-  x_column: 5
-  y_column: 6
-  z_column: 7
+  x_column: 1
+  y_column: 2
+  z_column: 3
 
   ## Rotation
-  use_quaternion: true # [true]:Set Quaternion / [false]:Set Euler
+  use_quaternion: false # [true]:Set Quaternion / [false]:Set Euler
   #--------true--------#
   # Quaternion
   ori_x_column: 8
@@ -68,9 +75,9 @@ Result:
   #--------false-------#
   # Euler
   use_radian: true # [true]:radian / [false]:degree
-  roll_column: 8
-  pitch_column: 9
-  yaw_column: 10
+  roll_column: 4
+  pitch_column: 5
+  yaw_column: 6
 
   ## TF
   tf_time: 0 #[s]
@@ -78,8 +85,53 @@ Result:
   tf_y: 0 #[m]
   tf_z: 0 #[m]
   tf_roll: 0 #[rad]
-  tf_pitch: 0 #[rad]
-  tf_yaw: 0 #[rad]
+  tf_pitch: -0.0188496 #[rad]
+  tf_yaw: 0.0314159 #[rad]
+  inv_roll: 1 # 1 or -1
+  inv_pitch: 1 # 1 or -1
+  inv_yaw: 1 # 1 or -1
+
+
+Result2:
+  ## Auxiliary info
+  label: hawkeye
+
+  ## Time
+  separate_time_stamp: false #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
+  #--------true--------#
+  secs_stamp_column: 2
+  nsecs_stamp_column: 3
+  #--------false-------#
+  stamp_column: 0
+
+  ## Position
+  x_column: 1
+  y_column: 2
+  z_column: 3
+
+  ## Rotation
+  use_quaternion: false # [true]:Set Quaternion / [false]:Set Euler
+  #--------true--------#
+  # Quaternion
+  ori_x_column: 8
+  ori_y_column: 9
+  ori_z_column: 10
+  ori_w_column: 11
+  #--------false-------#
+  # Euler
+  use_radian: true # [true]:radian / [false]:degree
+  roll_column: 4
+  pitch_column: 5
+  yaw_column: 6
+
+  ## TF
+  tf_time: 0 #[s]
+  tf_x: 0 #[m]
+  tf_y: 0 #[m]
+  tf_z: 0 #[m]
+  tf_roll: 0 #[rad]
+  tf_pitch: -0.0188496 #[rad]
+  tf_yaw: 0.0314159 #[rad]
   inv_roll: 1 # 1 or -1
   inv_pitch: 1 # 1 or -1
   inv_yaw: 1 # 1 or -1
@@ -88,6 +140,9 @@ Result:
 ## Display
 # Horizontal axis
 axis_type: 0 # [0]:time, [1]:distance
+
+# Trajectory graph dilution
+dilution_step: 10 # at least 1, the larger the sparser for better performance
 
 # Trajectory graph numbering
 progress_info: 0 # [0]:no display, [1]: number, [2]:time, [3]:ros time, [4]:distance
