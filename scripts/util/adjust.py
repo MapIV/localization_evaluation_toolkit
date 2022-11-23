@@ -46,6 +46,7 @@ def input_yaml_ros2(config, param, item):
 
 def input_save_param(config, save_param):
     save_param.axis_type = config["axis_type"]
+    save_param.dilution_step = config["dilution_step"]
     save_param.display_radian = config["use_radian"]
     save_param.progress_info = config["progress_info"]
     save_param.interval = config["interval"]

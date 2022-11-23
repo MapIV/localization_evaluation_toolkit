@@ -94,6 +94,9 @@ Result:
 # Horizontal axis
 axis_type: 0 # [0]:time, [1]:distance
 
+# Trajectory graph dilution
+dilution_step: 3 # at least 1, the larger the sparser for better performance
+
 # Trajectory graph numbering
 progress_info: 0 # [0]:no display, [1]: number, [2]:time, [3]:ros time, [4]:distance
 interval: 0 # progress_info is [2]:per second, [3]:per second, [4]:per meter

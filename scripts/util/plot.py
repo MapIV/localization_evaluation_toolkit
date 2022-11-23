@@ -52,8 +52,8 @@ def output_graph(ref_param, result_params, output_dir, save_param, op_param):
     fig_2d_trj = plt.figure("2D_Trajectory", figsize=(16, 9), dpi=120)
     ax_2d_trj = fig_2d_trj.add_subplot(111)
     ax_2d_trj.set_title("2D Trajectory", fontsize=save_param.title_font_size)
-    for param in [ref_param] + result_params:
-        param.df_temp, param.df = param.df, param.df.iloc[::10] # dilute data by 10
+    for param in [ref_param] + result_params: # dilute trajectory data for better performance
+        param.df_temp, param.df = param.df, param.df.iloc[::save_param.dilution_step]
     ax_2d_trj.scatter(ref_param.df["x"], ref_param.df["y"], c="k", label=ref_param.label)
     for result_param in result_params:
         ax_2d_trj.scatter(result_param.df["x"], result_param.df["y"], s=2, label=result_param.label)

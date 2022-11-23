@@ -52,6 +52,7 @@ class SaveParam:
     def __init__(self):
         # Save format
         self.axis_type = ""
+        self.dilution_step = ""
         self.display_radian = ""
         self.progress_info = ""
         self.interval = ""

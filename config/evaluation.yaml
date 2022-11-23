@@ -85,8 +85,8 @@ Result1:
   tf_y: 0 #[m]
   tf_z: 0 #[m]
   tf_roll: 0 #[rad]
-  tf_pitch: 0 #[rad]
-  tf_yaw: 0 #[rad]
+  tf_pitch: -0.0188496 #[rad]
+  tf_yaw: 0.0314159 #[rad]
   inv_roll: 1 # 1 or -1
   inv_pitch: 1 # 1 or -1
   inv_yaw: 1 # 1 or -1
@@ -128,7 +128,7 @@ Result2:
   tf_time: 0 #[s]
   tf_x: 0 #[m]
   tf_y: 0 #[m]
-  tf_z: 2.3 #[m]
+  tf_z: 0 #[m]
   tf_roll: 0 #[rad]
   tf_pitch: -0.0188496 #[rad]
   tf_yaw: 0.0314159 #[rad]
@@ -140,6 +140,9 @@ Result2:
 ## Display
 # Horizontal axis
 axis_type: 0 # [0]:time, [1]:distance
+
+# Trajectory graph dilution
+dilution_step: 10 # at least 1, the larger the sparser for better performance
 
 # Trajectory graph numbering
 progress_info: 0 # [0]:no display, [1]: number, [2]:time, [3]:ros time, [4]:distance
