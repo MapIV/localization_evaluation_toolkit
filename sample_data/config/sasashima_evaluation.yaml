@@ -3,6 +3,8 @@
 ######################
 
 Reference:
+  ## Auxiliary info
+  label: reference
   ## Time
   separate_time_stamp: false #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
   #--------true--------#
@@ -45,6 +47,9 @@ Reference:
 
 
 Result:
+  ## Auxiliary info
+  label: result
+  ## Time
   separate_time_stamp: true #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
   #--------true--------#
   secs_stamp_column: 2

@@ -1,4 +1,4 @@
-# localization_evaluation_toolkit -Ver.3.2
+# localization_evaluation_toolkit -Ver.4.0
 You can evaluate your localization result by comparing it to a reliable pose trajectory. The start time, end time, and period can be different for both data. The evaluation is automatically aligned with the one with the smaller number of data.
 
 ## Install
@@ -38,13 +38,13 @@ All yaml files are in the config/ directory.
 - 'Display' column is the setting of output graphs. In 'Save' column, you can choose whether to save the graphs.
 
 ## How to run
-**A. Evaluate with csv files** (*updated*)
+**A. Evaluate with csv files**
 ```
 $ cd localization_evaluation_toolkit/scripts
 $ python3 main.py [reference_csv_path] [result_csv_paths] --config [evaluation.yaml path] --outdir [output_folder_path]
 ```
 
-*Treat the first path as the reference and the rest as available results.*
+*The first path will be treated as the reference and the rest as available results.*
 
 **B. Evaluate with ros2 bag files**
 ```
