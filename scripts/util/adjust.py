@@ -39,6 +39,7 @@ def set_tf(config, param, item):
 
 
 def input_yaml_ros2(config, param, item):
+    param.label = config[item]["label"]
     param.topic = config[item]["topic_name"]
     param.bag_id = config[item]["storage_id"]
     param.bag_format = config[item]["serialization_format"]
