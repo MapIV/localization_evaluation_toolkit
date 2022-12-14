@@ -41,10 +41,8 @@ All yaml files are in the config/ directory.
 **A. Evaluate with csv files**
 ```
 $ cd localization_evaluation_toolkit/scripts
-$ python3 main.py [reference_csv_path] [result_csv_paths] --config [evaluation.yaml path] --outdir [output_folder_path]
+$ python3 main.py [evaluation.yaml path]
 ```
-
-*The first path will be treated as the reference and the rest as available results.*
 
 **B. Evaluate with ros2 bag files**
 ```

@@ -6,7 +6,7 @@ import numpy as np
 
 
 # fmt: off
-def output_graph(ref_param, result_params, output_dir, save_param, op_param):
+def output_graph(ref_param, result_params, save_param, op_param):
     # Cumulative time
     time = ref_param.df["time"] - ref_param.df["time"][0]
 
@@ -357,31 +357,30 @@ def output_graph(ref_param, result_params, output_dir, save_param, op_param):
     if save_param.save_dataframe == True:
         print("Now saving csv files ...", end="")
         ref_param.df = ref_param.df[["time","x","y","z","roll","pitch","yaw"]]
-        ref_param.df.to_csv(output_dir + f"/sync_{ref_param.label}_df.csv")
+        ref_param.df.to_csv(save_param.output_directory + f"/sync_{ref_param.label}_df.csv")
         for result_param in result_params:
             if op_param.display_ellipse == True:
                 result_param.df = result_param.df[["time","x","y","z","roll","pitch","yaw","cov_xx","cov_xy","cov_yx","cov_yy",
                     "ellipse_long","ellipse_short","ellipse_yaw","ellipse_lateral","ellipse_longitudinal"]]
             else:
                 result_param.df = result_param.df[["time","x","y","z","roll","pitch","yaw"]]
-            result_param.df.to_csv(output_dir + f"/sync_{result_param.label}_df.csv")
+            result_param.df.to_csv(save_param.output_directory + f"/sync_{result_param.label}_df.csv")
         print("Completed!!")
 
     # Save Figures
     if save_param.save_figures == True:
         print("Now saving figures ...", end="")
-        fig_2d_trj.savefig(output_dir + "/2d_trj." + save_param.save_extension_type)
-        fig_3d_trj.savefig(output_dir + "/3d_trj." + save_param.save_extension_type)
-        fig_2d_error.savefig(output_dir + "/2d_error." + save_param.save_extension_type)
-        fig_height_error.savefig(output_dir + "/height_error." + save_param.save_extension_type)
-        fig_3d_error.savefig(output_dir + "/3d_error." + save_param.save_extension_type)
-        fig_longitudinal_error.savefig(output_dir + "/longitudinal_error." + save_param.save_extension_type)
-        fig_lateral_error.savefig(output_dir + "/lateral_error." + save_param.save_extension_type)
-        fig_rpy.savefig(output_dir + "/rpy." + save_param.save_extension_type)
-        fig_rpy_error.savefig(output_dir + "/rpy_error." + save_param.save_extension_type)
-        fig_velocity.savefig(output_dir + "/velocity." + save_param.save_extension_type)
-        print("Completed!!")
-        fig_velocity_error.savefig(output_dir + "/velocity_error." + save_param.save_extension_type)
+        fig_2d_trj.savefig(save_param.output_directory + "/2d_trj." + save_param.save_extension_type)
+        fig_3d_trj.savefig(save_param.output_directory + "/3d_trj." + save_param.save_extension_type)
+        fig_2d_error.savefig(save_param.output_directory + "/2d_error." + save_param.save_extension_type)
+        fig_height_error.savefig(save_param.output_directory + "/height_error." + save_param.save_extension_type)
+        fig_3d_error.savefig(save_param.output_directory + "/3d_error." + save_param.save_extension_type)
+        fig_longitudinal_error.savefig(save_param.output_directory + "/longitudinal_error." + save_param.save_extension_type)
+        fig_lateral_error.savefig(save_param.output_directory + "/lateral_error." + save_param.save_extension_type)
+        fig_rpy.savefig(save_param.output_directory + "/rpy." + save_param.save_extension_type)
+        fig_rpy_error.savefig(save_param.output_directory + "/rpy_error." + save_param.save_extension_type)
+        fig_velocity.savefig(save_param.output_directory + "/velocity." + save_param.save_extension_type)
+        fig_velocity_error.savefig(save_param.output_directory + "/velocity_error." + save_param.save_extension_type)
         print("Completed!!")
 
     plt.show()

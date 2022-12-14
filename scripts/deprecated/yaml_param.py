@@ -5,6 +5,7 @@ class YamlParam:
     def __init__(self):
         # Auxiliary
         self.label = ""
+        self.path = ""
 
         # CSV
         self.separate_time_stamp = ""
@@ -62,6 +63,7 @@ class SaveParam:
         self.save_figures = ""
         self.save_extension_type = ""
         self.save_dataframe = ""
+        self.output_directory = ""
 
 
 class OpParam:

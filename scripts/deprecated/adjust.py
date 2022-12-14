@@ -7,6 +7,7 @@ from scipy.spatial.transform import Rotation as R
 
 def input_yaml_param(config, param, item):
     param.label = config[item]["label"]
+    param.path = config[item]["path"]
     param.separate_time_stamp = config[item]["separate_time_stamp"]
     param.stamp_column = config[item]["stamp_column"]
     param.secs_stamp_column = config[item]["secs_stamp_column"]
@@ -56,6 +57,7 @@ def input_save_param(config, save_param):
     save_param.save_figures = config["save_figures"]
     save_param.save_extension_type = config["save_extension_type"]
     save_param.save_dataframe = config["save_dataframe"]
+    save_param.output_directory = config["output_directory"]
 
 
 def input_op_param(config, op_param):
