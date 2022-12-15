@@ -164,7 +164,7 @@ def plot_lateral_error(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_
                 marker="o", markersize=2, linewidth=0.5, label=f"{res_pack.label} ellipse"
             )
 
-    ax_lateral_error.set_title("Longitudinal Error", fontsize=opt_param.title_font_size)
+    ax_lateral_error.set_title("Lateral Error", fontsize=opt_param.title_font_size)
     ax_lateral_error.set_xlabel(ref_pack.axis_unit, fontsize=opt_param.label_font_size)
     ax_lateral_error.set_ylabel("error[m]", fontsize=opt_param.label_font_size)
     ylim = max(map(abs, ax_lateral_error.get_ylim()))

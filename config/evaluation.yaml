@@ -165,7 +165,7 @@ ticks_font_size: 8
 save_figures: true
 save_extension_type: png # without "."
 save_dataframe: true
-output_directory: /Users/peng/Documents/Files/2022_4A/traj-data/output_dp
+output_directory: /path/to/output/directory
 
 use_lerp: false
 

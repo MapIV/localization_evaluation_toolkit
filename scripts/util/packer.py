@@ -300,7 +300,9 @@ class RefDataPack(DataPack):
             selected_rows = np.sort(np.random.choice(len(res_pack.data_ref), df_len, replace=False))
             res_pack.data = res_pack.data.iloc[selected_rows].reset_index(drop=True)
             res_pack.data_ref = res_pack.data_ref.iloc[selected_rows].reset_index(drop=True)
-        return cls(ref_param, opt_param, cls.accumulate_df([res_pack.data_ref for res_pack in res_packs]))
+        ref_df = cls.accumulate_df([res_pack.data_ref for res_pack in res_packs])
+        selected_rows = np.sort(np.random.choice(len(ref_df), df_len, replace=False))
+        return cls(ref_param, opt_param, ref_df.iloc[selected_rows].reset_index(drop=True))
 
     @staticmethod
     def accumulate_df(dfs: List[pd.DataFrame], sort_by: str="time") -> pd.DataFrame:
