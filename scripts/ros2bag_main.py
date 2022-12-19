@@ -19,7 +19,9 @@ if __name__ == "__main__":
     with open(config_path, "r") as yml:
         config = yaml.safe_load(yml)
     ref_param = yaml_param.YamlParam()
+    result_params = list()
     result_param = yaml_param.YamlParam()
+    result_params.append(result_param)
     save_param = yaml_param.SaveParam()
     op_param = yaml_param.OpParam()
     adjust.input_yaml_ros2(config, ref_param, "Reference")
@@ -55,4 +57,4 @@ if __name__ == "__main__":
         print("Completed!!")
 
     print("Output graph ...", end="")
-    plot.output_graph(ref_param, result_param, output_dir, save_param, op_param)
+    plot.output_graph(ref_param, result_params, output_dir, save_param, op_param)
