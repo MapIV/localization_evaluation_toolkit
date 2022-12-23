@@ -270,7 +270,7 @@ def plot_velocity_error(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt
     return {"velocity_error": fig_velocity_error}
 
 def plot(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: OptParam) -> Dict[str, Figure]:
-    figs = reduce(lambda x, y: x | y, [
+    figs = reduce(lambda x, y: {**x, **y}, [
         plot_2d_traj(ref_pack, res_packs, opt_param), # 2d trajectory
         # plot_3d_traj(ref_pack, res_packs, opt_param), # 3d trajectory
         plot_2d_error(ref_pack, res_packs, opt_param), # 2d error
