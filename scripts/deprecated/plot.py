@@ -6,19 +6,19 @@ import numpy as np
 
 
 # fmt: off
-def output_graph(ref_param, result_params, output_dir, save_param, op_param):
+def output_graph(ref_param, result_params, save_param, op_param):
     # Cumulative time
     time = ref_param.df["time"] - ref_param.df["time"][0]
 
     # Cumulative distance
     if save_param.axis_type == 1 or save_param.progress_info == 4:
-        distance = [0]
-        for i in range(1, min(len(result_param.df) for result_param in result_params)):
-            diff_x = ref_param.df["x"][i] - ref_param.df["x"][i-1]
-            diff_y = ref_param.df["y"][i] - ref_param.df["y"][i-1]
-            diff_2d = np.sqrt(pow(diff_x, 2) + pow(diff_y, 2))
-            distance_temp = distance[i-1] + diff_2d
-            distance.append(distance_temp)
+        displacement = [0] + [
+            np.sqrt(pow(dx, 2) + pow(dy, 2)) for dx, dy in zip(
+                ref_param.df["x"][1:].values - ref_param.df["x"][:-1].values,
+                ref_param.df["y"][1:].values - ref_param.df["y"][:-1].values,
+            )
+        ]
+        distance = [sum(displacement[:idx + 1]) for idx in range(len(displacement))]
 
     # Choose axis type
     axis_array = []
@@ -29,6 +29,17 @@ def output_graph(ref_param, result_params, output_dir, save_param, op_param):
         axis_array = distance
         axis_unit = "distance [m]"
 
+    # Calc velocity
+    for param in [ref_param] + result_params:
+        param.velocity = np.array([
+            np.sqrt(pow(dx, 2) + pow(dy, 2)) / dt
+            for dx, dy, dt in zip(
+                param.df["x"][1:].values - param.df["x"][:-1].values,
+                param.df["y"][1:].values - param.df["y"][:-1].values,
+                param.df["time"][1:].values - param.df["time"][:-1].values
+            )
+        ])
+
     # Calc error
     round2pipi = lambda v: (v % (math.pi * 2)) - (0 if (v % (math.pi * 2)) < math.pi else (math.pi * 2))
     for result_param in result_params:
@@ -38,6 +49,7 @@ def output_graph(ref_param, result_params, output_dir, save_param, op_param):
         result_param.error_roll = (result_param.df["roll"] - ref_param.df["roll"]).map(round2pipi)
         result_param.error_pitch = (result_param.df["pitch"] - ref_param.df["pitch"]).map(round2pipi)
         result_param.error_yaw = (result_param.df["yaw"] - ref_param.df["yaw"]).map(round2pipi)
+        result_param.error_velocity = result_param.velocity - ref_param.velocity
 
 
     # r_absmax = max(ref_param.df["roll"].abs().max(axis=0), result_param.df["roll"].abs().max(axis=0))
@@ -90,15 +102,16 @@ def output_graph(ref_param, result_params, output_dir, save_param, op_param):
     ax_2d_trj.grid()
 
     # 3D Trajectory
-    # fig_3d_trj = plt.figure('3D_Trajectory')
-    # ax_3d_trj = fig_3d_trj.add_subplot(projection='3d')
-    # ax_3d_trj.set_title('3D Trajectory')
-    # ax_3d_trj.plot3D(ref_param.df['x'], ref_param.df['y'], ref_param.df['z'], c = "k")
-    # ax_3d_trj.plot3D(result_param.df['x'], result_param.df['y'], result_param.df['z'], c="r")
-    # ax_3d_trj.set_xlabel('x [m]')
-    # ax_3d_trj.set_ylabel('y [m]')
-    # ax_3d_trj.set_zlabel('z [m]')
-    # ax_3d_trj.grid()
+    fig_3d_trj = plt.figure('3D_Trajectory', figsize=(16, 9), dpi=120)
+    ax_3d_trj = fig_3d_trj.add_subplot(projection='3d')
+    ax_3d_trj.set_title('3D Trajectory')
+    ax_3d_trj.plot3D(ref_param.df["x"], ref_param.df["y"], ref_param.df["z"], c = "k")
+    for result_param in result_params:
+        ax_3d_trj.plot3D(result_param.df["x"], result_param.df["y"], result_param.df["z"])
+    ax_3d_trj.set_xlabel('x[m]')
+    ax_3d_trj.set_ylabel('y[m]')
+    ax_3d_trj.set_zlabel('z[m]')
+    ax_3d_trj.grid()
 
     # 2D Error
     fig_2d_error = plt.figure("2D_Error", figsize=(16, 9), dpi=120)
@@ -306,8 +319,35 @@ def output_graph(ref_param, result_params, output_dir, save_param, op_param):
     plt.tight_layout()
     
     # Velocity
+    fig_velocity = plt.figure("Velocity", figsize=(16, 9), dpi=120)
+    ax_velocity = fig_velocity.add_subplot(111)
+    ax_velocity.set_title("Velocity", fontsize=save_param.title_font_size)
+    ax_velocity.plot(axis_array[:-1], ref_param.velocity, c="k", marker="o", markersize=3, linewidth=0.5, label=ref_param.label)
+    for result_param in result_params:
+        ax_velocity.plot(axis_array[:-1], result_param.velocity, marker="o", markersize=1, linewidth=0.5, label=result_param.label)
+    ax_velocity.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
+    ax_velocity.set_ylabel("[m/s]", fontsize=save_param.label_font_size)
+    y_min, y_max = ax_velocity.get_ylim()
+    y_max = max(abs(y_min), abs(y_max))
+    ax_velocity.set_ylim(-y_max / 2, y_max)
+    ax_velocity.tick_params(labelsize=save_param.ticks_font_size)
+    ax_velocity.legend()
+    ax_velocity.grid()
 
     # Velocity Error
+    fig_velocity_error = plt.figure("Velocity_Error", figsize=(16, 9), dpi=120)
+    ax_velocity_error = fig_velocity_error.add_subplot(111)
+    ax_velocity_error.set_title("Velocity Error", fontsize=save_param.title_font_size)
+    for result_param in result_params:
+        ax_velocity_error.plot(axis_array[:-1], result_param.error_velocity, marker="o", markersize=2, linewidth=0.5, label=result_param.label)
+    ax_velocity_error.set_xlabel(axis_unit, fontsize=save_param.label_font_size)
+    ax_velocity_error.set_ylabel("error[m/s]", fontsize=save_param.label_font_size)
+    y_min, y_max = ax_velocity_error.get_ylim()
+    y_max = max(abs(y_min), abs(y_max))
+    ax_velocity_error.set_ylim(-y_max, y_max)
+    ax_velocity_error.tick_params(labelsize=save_param.ticks_font_size)
+    ax_velocity_error.legend()
+    ax_velocity_error.grid()
 
     # Exection time
 
@@ -317,28 +357,30 @@ def output_graph(ref_param, result_params, output_dir, save_param, op_param):
     if save_param.save_dataframe == True:
         print("Now saving csv files ...", end="")
         ref_param.df = ref_param.df[["time","x","y","z","roll","pitch","yaw"]]
-        ref_param.df.to_csv(output_dir + f"/sync_{ref_param.label}_df.csv")
+        ref_param.df.to_csv(save_param.output_directory + f"/sync_{ref_param.label}_df.csv")
         for result_param in result_params:
             if op_param.display_ellipse == True:
                 result_param.df = result_param.df[["time","x","y","z","roll","pitch","yaw","cov_xx","cov_xy","cov_yx","cov_yy",
                     "ellipse_long","ellipse_short","ellipse_yaw","ellipse_lateral","ellipse_longitudinal"]]
             else:
                 result_param.df = result_param.df[["time","x","y","z","roll","pitch","yaw"]]
-            result_param.df.to_csv(output_dir + f"/sync_{result_param.label}_df.csv")
+            result_param.df.to_csv(save_param.output_directory + f"/sync_{result_param.label}_df.csv")
         print("Completed!!")
 
     # Save Figures
     if save_param.save_figures == True:
         print("Now saving figures ...", end="")
-        fig_2d_trj.savefig(output_dir + "/2d_trj." + save_param.save_extension_type)
-        # fig_3d_trj.savefig(output_dir + "/3d_trj." + save_param.save_extension_type)
-        fig_2d_error.savefig(output_dir + "/2d_error." + save_param.save_extension_type)
-        fig_height_error.savefig(output_dir + "/height_error." + save_param.save_extension_type)
-        fig_3d_error.savefig(output_dir + "/3d_error." + save_param.save_extension_type)
-        fig_longitudinal_error.savefig(output_dir + "/longitudinal_error." + save_param.save_extension_type)
-        fig_lateral_error.savefig(output_dir + "/lateral_error." + save_param.save_extension_type)
-        fig_rpy.savefig(output_dir + "/rpy." + save_param.save_extension_type)
-        fig_rpy_error.savefig(output_dir + "/rpy_error." + save_param.save_extension_type)
+        fig_2d_trj.savefig(save_param.output_directory + "/2d_trj." + save_param.save_extension_type)
+        fig_3d_trj.savefig(save_param.output_directory + "/3d_trj." + save_param.save_extension_type)
+        fig_2d_error.savefig(save_param.output_directory + "/2d_error." + save_param.save_extension_type)
+        fig_height_error.savefig(save_param.output_directory + "/height_error." + save_param.save_extension_type)
+        fig_3d_error.savefig(save_param.output_directory + "/3d_error." + save_param.save_extension_type)
+        fig_longitudinal_error.savefig(save_param.output_directory + "/longitudinal_error." + save_param.save_extension_type)
+        fig_lateral_error.savefig(save_param.output_directory + "/lateral_error." + save_param.save_extension_type)
+        fig_rpy.savefig(save_param.output_directory + "/rpy." + save_param.save_extension_type)
+        fig_rpy_error.savefig(save_param.output_directory + "/rpy_error." + save_param.save_extension_type)
+        fig_velocity.savefig(save_param.output_directory + "/velocity." + save_param.save_extension_type)
+        fig_velocity_error.savefig(save_param.output_directory + "/velocity_error." + save_param.save_extension_type)
         print("Completed!!")
 
     plt.show()
