@@ -15,10 +15,11 @@ class DataPack:
         # set basic info
         self.label: str = param.label
         self.data: pd.DataFrame = None
+        self.display_ellipse = False
         # set axis info
         self.axis_name = "elapsed" if opt_param.axis_type == 0 else "distance"
         self.axis_unit = "time[s]" if opt_param.axis_type == 0 else "distance[m]"
-        self.degree_formater = lambda x: x * 1 if opt_param.degree_type == 0 else lambda x: x * 180 / np.pi
+        self.degree_formater = (lambda x: x * 1) if opt_param.degree_type == 0 else (lambda x: x * 180 / np.pi)
         self.degree_unit = "[radian]" if opt_param.degree_type == 0 else "[degree]"
 
     @property
@@ -26,7 +27,7 @@ class DataPack:
         return self.data[self.axis_name]
 
     @staticmethod
-    def read_data(csv_param: CsvParam, opt_param: OptParam) -> pd.DataFrame:
+    def read_data(csv_param: CsvParam) -> pd.DataFrame:
         original_data = pd.read_csv(csv_param.path)
         adjusted_data = pd.DataFrame()
         
@@ -71,11 +72,11 @@ class DataPack:
             adjusted_data["yaw"] = (original_data.iloc[:, csv_param.yaw_column] * math.pi / 180 + csv_param.tf_yaw) * csv_param.inv_yaw
         
         # covariance
-        if opt_param.display_ellipse == True:
-            adjusted_data["cov_xx"] = original_data.iloc[:, opt_param.covariance_xx_column]
-            adjusted_data["cov_xy"] = original_data.iloc[:, opt_param.covariance_xy_column]
-            adjusted_data["cov_yx"] = original_data.iloc[:, opt_param.covariance_yx_column]
-            adjusted_data["cov_yy"] = original_data.iloc[:, opt_param.covariance_yy_column]
+        if csv_param.display_ellipse == True:
+            adjusted_data["cov_xx"] = original_data.iloc[:, csv_param.covariance_xx_column]
+            adjusted_data["cov_xy"] = original_data.iloc[:, csv_param.covariance_xy_column]
+            adjusted_data["cov_yx"] = original_data.iloc[:, csv_param.covariance_yx_column]
+            adjusted_data["cov_yy"] = original_data.iloc[:, csv_param.covariance_yy_column]
 
         return adjusted_data
 
@@ -106,8 +107,8 @@ class ResDataPack(DataPack):
     def __init__(self, res_param: CsvParam, ref_param: CsvParam, opt_param: OptParam) -> None:
         super().__init__(res_param, opt_param)
         # read data
-        self.data = self.read_data(res_param, opt_param)
-        self.data_ref = self.read_data(ref_param, opt_param)
+        self.data = self.read_data(res_param)
+        self.data_ref = self.read_data(ref_param)
         # adjust time stamp
         self.adjust_start_time()
         self.adjust_end_time()
@@ -118,8 +119,9 @@ class ResDataPack(DataPack):
         self.data = self.data.assign(**self.calc_distance(self.data))
         # self.data = self.data.assign(**self.calc_velocity(self.data))
         self.data = self.data.assign(**self.calc_error(self.data_ref, self.data))
-        if opt_param.display_ellipse:
+        if res_param.display_ellipse:
             self.data = self.data.assign(**self.calc_ellipse(self.data))
+            self.display_ellipse = True
 
     def adjust_start_time(self):
         if (
@@ -287,7 +289,7 @@ class RefDataPack(DataPack):
     def __init__(self, ref_param: CsvParam, opt_param: OptParam, df: pd.DataFrame=None) -> None:
         super().__init__(ref_param, opt_param)
         # read data
-        self.data = df if isinstance(df, pd.DataFrame) else self.read_data(ref_param, opt_param)
+        self.data = df if isinstance(df, pd.DataFrame) else self.read_data(ref_param)
         # pre-calculation
         self.data = self.data.assign(**self.calc_elapsed(self.data))
         self.data = self.data.assign(**self.calc_distance(self.data))

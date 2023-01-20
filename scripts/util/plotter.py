@@ -17,22 +17,24 @@ def plot_2d_traj(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param:
 
     # dilute trajectory data for better performance
     res_dfs = [(
-        res_pack.label,
+        res_pack,
         res_pack.data.iloc[::opt_param.dilution_step],
         res_pack.data_ref.iloc[::opt_param.dilution_step]
     ) for res_pack in res_packs]
     ref_df = ref_pack.accumulate_df(list(zip(*res_dfs))[2])
 
     ax_2d_trj.scatter(ref_df["x"], ref_df["y"], c="k", zorder=1, label=ref_pack.label)
-    for label, res_df, ref_df in res_dfs:
-        ax_2d_trj.scatter(res_df["x"], res_df["y"], s=2, label=label)
+    for res_pack, res_df, ref_df in res_dfs:
+        ax_2d_trj.scatter(res_df["x"], res_df["y"], s=2, label=res_pack.label)
         ax_2d_trj.plot([ref_df["x"], res_df["x"]], [ref_df["y"], res_df["y"]], "-", linewidth=0.2, zorder=1)
         # show ellipse
-        if opt_param.display_ellipse:
-            for i in range(len(res_df)):
+        if res_pack.display_ellipse:
+            for i in res_df.index:
                 ax_2d_trj.add_patch(patches.Ellipse(
-                    xy=(res_df["x"][i], res_df["y"][i]), angle=np.degrees(res_df["ellipse_yaw"][i]),
-                    width=res_df["ellipse_long"][i] * 2, height=res_df["ellipse_short"][i] * 2,
+                    xy=(res_df["x"][i], res_df["y"][i]),
+                    angle=np.degrees(res_df["ellipse_yaw"][i]),
+                    width=res_df["ellipse_long"][i] * 2,
+                    height=res_df["ellipse_short"][i] * 2,
                     alpha=0.3
                 ))
         # show progress TODO
@@ -132,7 +134,7 @@ def plot_longitudinal_error(ref_pack: RefDataPack, res_packs: List[ResDataPack],
             res_pack.axis_array, res_pack.data["error_longitudinal"],
             marker="o", markersize=2, linewidth=0.5, label=res_pack.label
         )
-        if opt_param.display_ellipse:
+        if res_pack.display_ellipse:
             ax_longitudinal_error.plot(
                 res_pack.axis_array, res_pack.data["ellipse_longitudinal"],
                 marker="o", markersize=2, linewidth=0.5, label=f"{res_pack.label} ellipse"
@@ -158,7 +160,7 @@ def plot_lateral_error(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_
             res_pack.axis_array, res_pack.data["error_lateral"],
             marker="o", markersize=2, linewidth=0.5, label=res_pack.label
         )
-        if opt_param.display_ellipse:
+        if res_pack.display_ellipse:
             ax_lateral_error.plot(
                 res_pack.axis_array, res_pack.data["ellipse_lateral"],
                 marker="o", markersize=2, linewidth=0.5, label=f"{res_pack.label} ellipse"
@@ -292,12 +294,12 @@ def save_df(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: OptP
     ref_cols = ["time", "x", "y", "z", "roll", "pitch", "yaw"]
     ref_pack.data[ref_cols].to_csv(f"{opt_param.output_directory}/sync_{ref_pack.label}_df.csv")
     # save results df
-    res_cols = ref_cols + ([
-        "cov_xx","cov_xy","cov_yx","cov_yy",
-        "ellipse_long","ellipse_short","ellipse_yaw",
-        "ellipse_lateral","ellipse_longitudinal"
-    ] if opt_param.display_ellipse else [])
     for res_pack in res_packs:
+        res_cols = ref_cols + ([
+            "cov_xx","cov_xy","cov_yx","cov_yy",
+            "ellipse_long","ellipse_short","ellipse_yaw",
+            "ellipse_lateral","ellipse_longitudinal"
+        ] if res_pack.display_ellipse else [])
         res_pack.data[res_cols].to_csv(f"{opt_param.output_directory}/sync_{res_pack.label}_df.csv")
 
 def save_figures(figs: Dict[str, Figure], opt_param: OptParam) -> None:
