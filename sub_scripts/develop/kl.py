@@ -32,7 +32,9 @@ def calc_kl(ref_param, result_param):
         det_ref_cov = np.linalg.det(ref_cov)
         det_result_cov = np.linalg.det(result_cov)
         inv_ref_cov = np.linalg.inv(ref_cov)
-        KL = math.log(det_ref_cov / det_result_cov) + np.trace(np.dot(inv_ref_cov, result_cov)) - 2
+        inv_result_cov = np.linalg.inv(result_cov)
+        # KL = math.log(det_ref_cov / det_result_cov) + np.trace(np.dot(inv_ref_cov, result_cov)) - 2
+        KL = math.log(det_result_cov / det_ref_cov) + np.trace(np.dot(inv_result_cov, ref_cov)) - 2
         kl_list.append(KL)
         if KL > 10:
             mismatch += 1
