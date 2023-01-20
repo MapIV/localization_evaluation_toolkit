@@ -18,7 +18,7 @@ class DataPack:
         # set axis info
         self.axis_name = "elapsed" if opt_param.axis_type == 0 else "distance"
         self.axis_unit = "time[s]" if opt_param.axis_type == 0 else "distance[m]"
-        self.degree_formater = lambda x: x * 1 if opt_param.degree_type == 0 else lambda x: x * 180 / np.pi
+        self.degree_formater = (lambda x: x * 1) if opt_param.degree_type == 0 else (lambda x: x * 180 / np.pi)
         self.degree_unit = "[radian]" if opt_param.degree_type == 0 else "[degree]"
 
     @property
