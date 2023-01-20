@@ -187,10 +187,6 @@ if __name__ == "__main__":
     config_path = argv[3]
     output_dir = argv[4]
 
-    # ref_path = "/home/koki/01_dataset/xx1/osaki/0922_result/test/test_nce_bag/rosbag2_2022_09_27-14_36_29/rosbag2_2022_09_27-14_36_29_0.db3"
-    # result_path = "/home/koki/01_dataset/xx1/osaki/0922_result/test/test_prop_bag/rosbag2_2022_09_23-17_13_30/rosbag2_2022_09_23-17_13_30_0.db3"
-    # config_path = "/home/koki/01_dataset/xx1/osaki/0922_result/conv_graph.yaml"
-    # output_dir = "/home/koki/01_dataset/xx1/osaki/0922_result/test/test_cov_graph_short"
     print("Loading yaml file ...", end="")
     with open(config_path, "r") as yml:
         config = yaml.safe_load(yml)

@@ -1,5 +1,12 @@
-# localization_evaluation_toolkit -Ver.4.1
+# localization_evaluation_toolkit -Ver.5.0 (Update 1/20)
 You can evaluate your localization result by comparing it to a reliable pose trajectory. The start time, end time, and period can be different for both data. The evaluation is automatically aligned with the one with the smaller number of data.
+
+## Releases
+|Version|Release Data| Python version | Note |
+|  ---  |  ---  | --- | --- |
+| 6.0 | soon | python 3.7 or higher | Support evaluation with ros2bag  |
+| 5.0 | January 19, 2023 | python 3.7 or higher | Support multiple types of trajectories (csv evaluation only) |
+| 3.2 | September 29, 2022 | python 3.6 or higher | 2 pair evaluation |
 
 ## Install
 ```
@@ -30,6 +37,7 @@ All yaml files are in the config/ directory.
 **A. Evaluate with csv files → Use config/evaluation.yaml**  
 - In 'Reference' and 'Result', specify the number of csv columns corresponding to the element. 
 - Depending on your csv, select the time and rotation format as True or False.
+- To use 'Display ellipse' tool, refer to **E** in **Sub-evaluation and adjustment**. Prepare ros1 bag file including geometry_msgs/PoseWithCovarianceStamped topic.
 
 **B. Evaluate with ros2 bag files → Use config/read_ros2bag.yaml**  
 - Specify topic names in 'Reference' and 'Result'.
@@ -74,6 +82,13 @@ $ python3 sub_ndt_evaluation.py [bag_path] [output_folder_path]
 ```
 $ cd localization_evaluation_toolkit/sub_scripts
 $ python3 adjust_time_stamp.py [target_csv_path] [offset_csv_path] [ajust_time_stamp.yaml path] [output_folder_path]
+```
+
+**E. Create csv file with covariance column from rosbag file**  
+In detail, refer to [qiita article](https://qiita.com/koki2022/items/148d56e0f8eee45a0a62)
+```
+$ cd localization_evaluation_toolkit/sub_scripts
+$ python covariance_to_csv.py [input_bag_path] [output_folder_path]
 ```
 
 ## What graphs are output?
