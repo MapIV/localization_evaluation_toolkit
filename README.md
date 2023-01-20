@@ -2,11 +2,11 @@
 You can evaluate your localization result by comparing it to a reliable pose trajectory. The start time, end time, and period can be different for both data. The evaluation is automatically aligned with the one with the smaller number of data.
 
 ## Releases
-|Version|Release Data| Python version | Note |
+|Version|Release Date| Python version | Note |
 |  ---  |  ---  | --- | --- |
 | 6.0 | soon | python 3.7 or higher | Support evaluation with ros2bag  |
 | 5.0 | January 19, 2023 | python 3.7 or higher | Support multiple types of trajectories (csv evaluation only) |
-| 3.2 | September 29, 2022 | python 3.6 or higher | 2 pair evaluation |
+| 3.2 | September 29, 2022 | python 3.6 or higher | 1:1 evaluation |
 
 ## Install
 ```
