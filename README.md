@@ -5,7 +5,7 @@ You can evaluate your localization result by comparing it to a reliable pose tra
 |Version|Release Date| Python version | Note |
 |  ---  |  ---  | --- | --- |
 | 6.0 | soon | python 3.7 or higher | Support evaluation with ros2bag  |
-| 5.0 | January 19, 2023 | python 3.7 or higher | Support multiple types of trajectories (csv evaluation only) |
+| 5.0 | January 20, 2023 | python 3.7 or higher | Support multiple types of trajectories (csv evaluation only) |
 | 3.2 | September 29, 2022 | python 3.6 or higher | 1:1 evaluation |
 
 ## Install
