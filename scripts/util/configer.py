@@ -41,6 +41,16 @@ class CsvParam(DataParam):
         self.inv_roll = config[key]["inv_roll"]
         self.inv_pitch = config[key]["inv_pitch"]
         self.inv_yaw = config[key]["inv_yaw"]
+        # ellipse
+        try:
+            self.display_ellipse = config[key]["display_ellipse"]
+        except KeyError:
+            self.display_ellipse = False
+        else:
+            self.covariance_xx_column = config[key]["covariance_xx_column"]
+            self.covariance_xy_column = config[key]["covariance_xy_column"]
+            self.covariance_yx_column = config[key]["covariance_yx_column"]
+            self.covariance_yy_column = config[key]["covariance_yy_column"]
 
 class RosbagParam(DataParam):
     def __init__(self, config: dict, key: str) -> None:
@@ -70,12 +80,6 @@ class OptParam:
         self.output_directory = config["output_directory"]
         # lerp
         self.use_lerp = config["use_lerp"]
-        # display ellipse
-        self.display_ellipse = config["display_ellipse"]
-        self.covariance_xx_column = config["covariance_xx_column"]
-        self.covariance_xy_column = config["covariance_xy_column"]
-        self.covariance_yx_column = config["covariance_yx_column"]
-        self.covariance_yy_column = config["covariance_yy_column"]
 
 def yaml2params(config: dict) -> Tuple[CsvParam, List[CsvParam], OptParam]:
     ref_param = CsvParam(config, "Reference")

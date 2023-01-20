@@ -93,6 +93,13 @@ Result1:
   inv_pitch: 1 # 1 or -1
   inv_yaw: 1 # 1 or -1
 
+  # Display ellipse (put 2D covariance in result file)
+  display_ellipse: false
+  covariance_xx_column: 10
+  covariance_xy_column: 11
+  covariance_yx_column: 12
+  covariance_yy_column: 13
+
 
 Result2:
   ## Auxiliary info
@@ -139,6 +146,13 @@ Result2:
   inv_pitch: 1 # 1 or -1
   inv_yaw: 1 # 1 or -1
 
+  # Display ellipse (put 2D covariance in result file)
+  display_ellipse: false
+  covariance_xx_column: 10
+  covariance_xy_column: 11
+  covariance_yx_column: 12
+  covariance_yy_column: 13
+
 
 ############
 ## Option ##
@@ -168,10 +182,3 @@ save_dataframe: true
 output_directory: /path/to/output/directory
 
 use_lerp: false
-
-# Display ellipse (put 2D covariance in result file)
-display_ellipse: false
-covariance_xx_column: 10
-covariance_xy_column: 11
-covariance_yx_column: 12
-covariance_yy_column: 13
