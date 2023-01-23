@@ -32,6 +32,14 @@ class BagParam:
         self.df_temp = pd.DataFrame()
 
 
+def print_statistics(name, data):
+    print(name)
+    print(name + " : mean := "+str(np.mean(data)))
+    print(name + " : median := "+str(np.median(data)))
+    print(name + " : max := "+str(np.max(data)))
+    print(name + " : min := "+str(np.min(data)))
+
+
 if __name__ == "__main__":
 
     argv = sys.argv
@@ -198,6 +206,7 @@ if __name__ == "__main__":
 
         
     # create compare graphs
+    print("create compare graphs")
     path= output_dir+'/compare'
     os.makedirs(path, exist_ok = True)
 
@@ -316,6 +325,9 @@ if __name__ == "__main__":
         ax_nvtl.legend()
         fig_nvtl.savefig(path + "/nvtl.png")
 
+        for i in range(len(nvtl_)):
+            print_statistics("NVTL_"+str(i),nvtl_[i].df["data"])
+
         #fig_nvtl_diff = plt.figure("NVTLDiff", figsize=(16, 9), dpi=120)
         #ax_nvtl_diff = fig_nvtl_diff.add_subplot(111)
         fig_nvtl_diff, ax_nvtl_diff = plt.subplots(figsize=(16, 9), dpi=120)
@@ -329,6 +341,8 @@ if __name__ == "__main__":
         ax_nvtl_diff.set_ylim(-1, 1)
         ax_nvtl_diff.grid()
         fig_nvtl_diff.savefig(path + "/nvtl-diff.png")
+
+        print_statistics("NVTL DIFF", nvtl_[1].df["data"]-nvtl_[0].df["data"])
     
     print("Adjusting the start time ...", end="")
     if adjust.adjust_start_time(tp_[0], tp_[1]) == -1:
@@ -361,6 +375,9 @@ if __name__ == "__main__":
         ax_tp.legend()
         fig_tp.savefig(path + "/tp.png")
 
+        for i in range(len(tp_)):
+            print_statistics("TP_"+str(i), tp_[i].df["data"])
+
         #fig_tp_diff = plt.figure("TP DIFF", figsize=(16, 9), dpi=120)
         #ax_tp_diff = fig_tp_diff.add_subplot(111)
         fig_tp_diff, ax_tp_diff = plt.subplots(figsize=(16, 9), dpi=120)
@@ -376,6 +393,9 @@ if __name__ == "__main__":
         ax_tp_diff.grid()
         ax_tp_diff.legend()
         fig_tp_diff.savefig(path + "/tp_diff.png")
+
+
+        print_statistics("TP_Diff", tp_[1].df["data"]-tp_[0].df["data"])
 
     print("Adjusting the start time ...", end="")
     if adjust.adjust_start_time(exe_time_[0], exe_time_[1]) == -1:
@@ -414,6 +434,9 @@ if __name__ == "__main__":
         ax_exe_time.legend()
         fig_exe_time.savefig(path + "/exe_time.png")
 
+        for i in range(len(exe_time_)):
+            print_statistics("Execution Time_"+str(i), exe_time_[i].df["data"])
+
         #fig_exe_time_diff = plt.figure("Execution Time Diff", figsize=(16, 9), dpi=120)
         #ax_exe_time_diff = fig_exe_time_diff.add_subplot(111)
         fig_exe_time_diff, ax_exe_time_diff = plt.subplots(figsize=(16, 9), dpi=120)
@@ -432,6 +455,8 @@ if __name__ == "__main__":
         ax_exe_time_diff.grid()
         ax_exe_time_diff.legend()
         fig_exe_time_diff.savefig(path + "/exe_time_diff.png")
+
+        print_statistics("Execution Time Diff", exe_time_[1].df["data"]-exe_time_[0].df["data"])
 
     print("Adjusting the start time ...", end="")
     if adjust.adjust_start_time(itr_[0], itr_[1]) == -1:
@@ -463,6 +488,10 @@ if __name__ == "__main__":
         fig_itr.savefig(path + "/itr.png")
 
 
+        for i in range(len(itr_)):
+            print_statistics("Iteration_"+str(i), itr_[i].df_temp["data"])
+
+
         #fig_itr_diff = plt.figure("Iteration Diff", figsize=(16, 9), dpi=120)
         #ax_itr_diff = fig_itr_diff.add_subplot(111)
         fig_itr_diff, ax_itr_diff = plt.subplots(figsize=(16, 9), dpi=120)
@@ -476,6 +505,7 @@ if __name__ == "__main__":
         ax_itr_diff.legend()
         fig_itr_diff.savefig(path + "/itr_diff.png")
 
+        print_statistics("Iteration_Diff", itr_[1].df["data"]-itr_[0].df["data"])
 
 
     plt.show()
