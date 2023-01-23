@@ -58,7 +58,7 @@ def input_save_param(config, save_param):
     save_param.save_figures = config["save_figures"]
     save_param.save_extension_type = config["save_extension_type"]
     save_param.save_dataframe = config["save_dataframe"]
-    save_param.output_directory = config["output_directory"]
+    # save_param.output_directory = config["output_directory"]
 
 
 def input_op_param(config, op_param):

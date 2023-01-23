@@ -53,7 +53,7 @@ $ python3 ros2bag_main.py [reference_bag_path] [result_bag_path] [read_ros2bag.y
 output_folder_path should be without "/"
 
 ## Sub-evaluation and adjustment
-**C. Evaluate TP, NVTL, execution time and iteration with ros2 bag files**
+**C.1. Evaluate TP, NVTL, execution time and iteration with ros2 bag file**
 
 Please input a rosbag containing the following (at least one) topic.
 ```
@@ -69,6 +69,25 @@ $ cd localization_evaluation_toolkit/sub_scripts
 $ source ~/xxxxxx/install/setup.bash
 $ python3 sub_ndt_evaluation.py [bag_path] [output_folder_path]
 ```
+
+**C.2. Evaluate TP, NVTL, execution time and iteration with 2 ros2 bag files**
+
+Please input a rosbag containing the following (at least one) topic.
+```
+/localization/pose_estimator/pose_with_covariance
+/localization/pose_estimator/nearest_voxel_transformation_likelihood
+/localization/pose_estimator/transform_probability
+/localization/pose_estimator/exe_time_ms
+/localization/pose_estimator/iteration_num
+```
+
+```
+$ cd localization_evaluation_toolkit/sub_scripts
+$ source ~/xxxxxx/install/setup.bash
+$ python3 sub_ndt_evaluation_compare.py [bag1_path] [bag2_path] [config_file_path] [output_folder_path]
+```
+
+You should set config file param path in args, but almost all parameters are distabled. See `config/sub_ndt_evaluation_compare.yaml`
 
 **D. Adjust time stamp with csv files**
 ```

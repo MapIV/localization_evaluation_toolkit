@@ -1,0 +1,69 @@
+######################
+## Necessary Params ##
+######################
+
+Reference:
+  label: Reference # Listed in the legend of the output graph
+  topic_name: Unnecessary
+  storage_id: Unnecessary
+  serialization_format: Unnecessary
+  ## TF
+  tf_time: 0 #[s]
+  tf_x: 0 #[m]
+  tf_y: 0 #[m]
+  tf_z: 0 #[m]
+  tf_roll: 0 #[rad]
+  tf_pitch: 0 #[rad]
+  tf_yaw: 0 #[rad]
+  inv_roll: 1 # 1 or -1
+  inv_pitch: 1 # 1 or -1
+  inv_yaw: 1 # 1 or -1
+
+Result:
+  label: Result # Listed in the legend of the output graph
+  topic_name: Unnecessary
+  storage_id: Unnecessary
+  serialization_format: Unnecessary
+  ## TF
+  tf_time: 0 #[s]
+  tf_x: 0 #[m]
+  tf_y: 0 #[m]
+  tf_z: 0 #[m]
+  tf_roll: 0 #[rad]
+  tf_pitch: 0 #[rad]
+  tf_yaw: 0 #[rad]
+  inv_roll: 1 # 1 or -1
+  inv_pitch: 1 # 1 or -1
+  inv_yaw: 1 # 1 or -1
+
+## Display
+# Horizontal axis
+axis_type: Unnecessary # [0]:time, [1]:distance
+
+# Trajectory graph dilution
+dilution_step: Unnecessary # at least 1, the larger the sparser for better performance
+
+# Trajectory graph numbering
+progress_info: Unnecessary # [0]:no display, [1]: number, [2]:time, [3]:ros time, [4]:distance
+interval: Unnecessary # progress_info is [2]:per second, [3]:per second, [4]:per meter
+
+# Rotation graph unit
+use_radian: true # [true]:radian / [false]:degree
+
+# font Disable
+title_font_size: 14 
+label_font_size: 10
+ticks_font_size: 8
+
+# Save
+save_figures: Unnecessary
+save_extension_type: Unnecessary
+save_dataframe: Unnecessary
+
+
+############
+## Option ##
+############
+use_lerp: false
+
+display_ellipse: false # use PoseWithCovarianceStamped tyep topic in result data

@@ -5,7 +5,8 @@ import yaml
 
 sys.dont_write_bytecode = True
 
-from util import adjust, plot, read_ros2bag, yaml_param
+from util import read_ros2bag
+from deprecated import adjust, plot, yaml_param
 
 if __name__ == "__main__":
 
@@ -57,4 +58,4 @@ if __name__ == "__main__":
         print("Completed!!")
 
     print("Output graph ...", end="")
-    plot.output_graph(ref_param, result_params, output_dir, save_param, op_param)
+    plot.output_graph(ref_param, result_params, save_param, op_param)
