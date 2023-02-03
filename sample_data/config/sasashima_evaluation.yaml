@@ -5,6 +5,7 @@
 Reference:
   ## Auxiliary info
   label: reference
+  type: 0 # [0]: csv, [1]: ros2bag
   path: ../sample_data/reference.csv
   ## Time
   separate_time_stamp: false #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
@@ -50,6 +51,7 @@ Reference:
 Result1:
   ## Auxiliary info
   label: NDT
+  type: 0 # [0]: csv, [1]: ros2bag
   path: ../sample_data/result_trj_ndt.csv
 
   ## Time
@@ -103,6 +105,7 @@ Result1:
 Result2:
   ## Auxiliary info
   label: EKF
+  type: 0 # [0]: csv, [1]: ros2bag
   path: ../sample_data/result_trj_ekf.csv
 
   ## Time
