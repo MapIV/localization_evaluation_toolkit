@@ -12,7 +12,7 @@ if __name__ == "__main__":
     ref_param, res_params, opt_param = configer.yaml2params(config)
     print("Completed!!")
 
-    print("Loading csv files...", end="", flush=True)
+    print("Loading data files...", end="", flush=True)
     ref_pack, res_packs = packer.param2pack(ref_param, res_params, opt_param)
     print("Completed!!")
 

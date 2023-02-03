@@ -6,11 +6,28 @@ class DataParam:
     def __init__(self, config: dict, key: str) -> None:
         # auxiliary info
         self.label = config[key]["label"]
+        self.type = config[key]["type"]
         self.path = config[key]["path"]
+        # tf
+        self.tf_time = config[key]["tf_time"]
+        self.tf_x = config[key]["tf_x"]
+        self.tf_y = config[key]["tf_y"]
+        self.tf_z = config[key]["tf_z"]
+        self.tf_roll = config[key]["tf_roll"]
+        self.tf_pitch = config[key]["tf_pitch"]
+        self.tf_yaw = config[key]["tf_yaw"]
+        self.inv_roll = config[key]["inv_roll"]
+        self.inv_pitch = config[key]["inv_pitch"]
+        self.inv_yaw = config[key]["inv_yaw"]
+        # ellipse
+        self.display_ellipse = config[key].get("display_ellipse", False)
+        # other entries
+        if self.type == 0:
+            self.init_csv_param(config, key)
+        if self.type == 1:
+            self.init_ros2bag_param(config, key)
 
-class CsvParam(DataParam):
-    def __init__(self, config: dict, key: str) -> None:
-        super().__init__(config, key)
+    def init_csv_param(self, config: dict, key: str) -> None:
         # time
         self.separate_time_stamp = config[key]["separate_time_stamp"]
         self.stamp_column = config[key]["stamp_column"]
@@ -30,31 +47,14 @@ class CsvParam(DataParam):
         self.roll_column = config[key]["roll_column"]
         self.pitch_column = config[key]["pitch_column"]
         self.yaw_column = config[key]["yaw_column"]
-        # tf
-        self.tf_time = config[key]["tf_time"]
-        self.tf_x = config[key]["tf_x"]
-        self.tf_y = config[key]["tf_y"]
-        self.tf_z = config[key]["tf_z"]
-        self.tf_roll = config[key]["tf_roll"]
-        self.tf_pitch = config[key]["tf_pitch"]
-        self.tf_yaw = config[key]["tf_yaw"]
-        self.inv_roll = config[key]["inv_roll"]
-        self.inv_pitch = config[key]["inv_pitch"]
-        self.inv_yaw = config[key]["inv_yaw"]
         # ellipse
-        try:
-            self.display_ellipse = config[key]["display_ellipse"]
-        except KeyError:
-            self.display_ellipse = False
-        else:
+        if self.display_ellipse:
             self.covariance_xx_column = config[key]["covariance_xx_column"]
             self.covariance_xy_column = config[key]["covariance_xy_column"]
             self.covariance_yx_column = config[key]["covariance_yx_column"]
             self.covariance_yy_column = config[key]["covariance_yy_column"]
 
-class RosbagParam(DataParam):
-    def __init__(self, config: dict, key: str) -> None:
-        super().__init__(config, key)
+    def init_ros2bag_param(self, config: dict, key: str) -> None:
         # ros bag
         self.topic = config[key]["topic_name"]
         self.bag_id = config[key]["storage_id"]
@@ -81,8 +81,8 @@ class OptParam:
         # lerp
         self.use_lerp = config["use_lerp"]
 
-def yaml2params(config: dict) -> Tuple[CsvParam, List[CsvParam], OptParam]:
-    ref_param = CsvParam(config, "Reference")
-    res_params = [CsvParam(config, key) for key in config if key.startswith("Result")]
+def yaml2params(config: dict) -> Tuple[DataParam, List[DataParam], OptParam]:
+    ref_param = DataParam(config, "Reference")
+    res_params = [DataParam(config, key) for key in config if key.startswith("Result")]
     opt_param = OptParam(config)
     return ref_param, res_params, opt_param

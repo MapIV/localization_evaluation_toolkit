@@ -5,6 +5,7 @@
 Reference:
   ## Auxiliary info
   label: reference
+  type: 0 # [0]: csv, [1]: ros2bag
   path: /path/to/reference/csv
 
   ## Time
@@ -51,6 +52,7 @@ Reference:
 Result1:
   ## Auxiliary info
   label: result1
+  type: 0 # [0]: csv, [1]: ros2bag
   path: /path/to/result1/csv
 
   ## Time
@@ -82,16 +84,16 @@ Result1:
   yaw_column: 6
 
   ## TF
-  tf_time: 0 #[s]
-  tf_x: 0 #[m]
-  tf_y: 0 #[m]
-  tf_z: 0 #[m]
-  tf_roll: 0 #[rad]
-  tf_pitch: -0.0188496 #[rad]
-  tf_yaw: 0.0314159 #[rad]
-  inv_roll: 1 # 1 or -1
+  tf_time: 0   # [s]
+  tf_x: 0      # [m]
+  tf_y: 0      # [m]
+  tf_z: 0      # [m]
+  tf_roll: 0   # [rad]
+  tf_pitch: 0  # [rad]
+  tf_yaw: 0    # [rad]
+  inv_roll: 1  # 1 or -1
   inv_pitch: 1 # 1 or -1
-  inv_yaw: 1 # 1 or -1
+  inv_yaw: 1   # 1 or -1
 
   # Display ellipse (put 2D covariance in result file)
   display_ellipse: false
@@ -104,63 +106,36 @@ Result1:
 Result2:
   ## Auxiliary info
   label: result2
-  path: /path/to/result2/csv
+  type: 1 # [0]: csv, [1]: ros2bag
+  path: /path/to/result2/ros2bag
 
-  ## Time
-  separate_time_stamp: false #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
-  #--------true--------#
-  secs_stamp_column: 2
-  nsecs_stamp_column: 3
-  #--------false-------#
-  stamp_column: 0
-
-  ## Position
-  x_column: 1
-  y_column: 2
-  z_column: 3
-
-  ## Rotation
-  use_quaternion: false # [true]:Set Quaternion / [false]:Set Euler
-  #--------true--------#
-  # Quaternion
-  ori_x_column: 8
-  ori_y_column: 9
-  ori_z_column: 10
-  ori_w_column: 11
-  #--------false-------#
-  # Euler
-  use_radian: true # [true]:radian / [false]:degree
-  roll_column: 4
-  pitch_column: 5
-  yaw_column: 6
+  ## Rosbag info
+  topic_name: /localization/pose_estimator/pose_with_covariance
+  storage_id: sqlite3
+  serialization_format: cdr
 
   ## TF
-  tf_time: 0 #[s]
-  tf_x: 0 #[m]
-  tf_y: 0 #[m]
-  tf_z: 0 #[m]
-  tf_roll: 0 #[rad]
-  tf_pitch: -0.0188496 #[rad]
-  tf_yaw: 0.0314159 #[rad]
-  inv_roll: 1 # 1 or -1
+  tf_time: 0   # [s]
+  tf_x: 0      # [m]
+  tf_y: 0      # [m]
+  tf_z: 0      # [m]
+  tf_roll: 0   # [rad]
+  tf_pitch: 0  # [rad]
+  tf_yaw: 0    # [rad]
+  inv_roll: 1  # 1 or -1
   inv_pitch: 1 # 1 or -1
-  inv_yaw: 1 # 1 or -1
+  inv_yaw: 1   # 1 or -1
 
   # Display ellipse (put 2D covariance in result file)
-  display_ellipse: false
-  covariance_xx_column: 10
-  covariance_xy_column: 11
-  covariance_yx_column: 12
-  covariance_yy_column: 13
+  display_ellipse: false # use PoseWithCovarianceStamped tyep topic in result data
 
 
 ############
 ## Option ##
 ############
 
-## Display
 # Horizontal axis
-axis_type: 0 # [0]:time, [1]:distance
+axis_type: 0   # [0]:time, [1]:distance
 degree_type: 0 # [0]:radian, [1]:degree
 
 # Trajectory graph dilution
@@ -168,9 +143,9 @@ dilution_step: 10 # at least 1, the larger the sparser for better performance
 
 # Trajectory graph numbering
 progress_info: 0 # [0]:no display, [1]: number, [2]:time, [3]:ros time, [4]:distance
-interval: 0 # progress_info is [2]:per second, [3]:per second, [4]:per meter
+interval: 0      # progress_info is [2]:per second, [3]:per second, [4]:per meter
 
-# font
+# Font
 title_font_size: 14 
 label_font_size: 10
 ticks_font_size: 8
