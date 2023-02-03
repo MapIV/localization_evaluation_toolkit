@@ -15,7 +15,7 @@ from scipy.spatial.transform import Rotation as R
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 # sys.path.append("../scripts")
-from scripts.util import adjust, read_ros2bag, yaml_param
+from scripts.deprecated import adjust, read_ros2bag, yaml_param
 
 
 class FrameCM:
