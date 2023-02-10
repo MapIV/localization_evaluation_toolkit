@@ -24,41 +24,49 @@ class DataParam:
         # other entries
         if self.type == 0:
             self.init_csv_param(config, key)
-        if self.type == 1:
+        elif self.type == 1:
             self.init_ros2bag_param(config, key)
+        else:
+            raise RuntimeError("Unexpected data type")
 
     def init_csv_param(self, config: dict, key: str) -> None:
-        # time
-        self.separate_time_stamp = config[key]["separate_time_stamp"]
-        self.stamp_column = config[key]["stamp_column"]
-        self.secs_stamp_column = config[key]["secs_stamp_column"]
-        self.nsecs_stamp_column = config[key]["nsecs_stamp_column"]
-        # position
-        self.x_column = config[key]["x_column"]
-        self.y_column = config[key]["y_column"]
-        self.z_column = config[key]["z_column"]
-        # rotation
-        self.use_quaternion = config[key]["use_quaternion"]
-        self.ori_x_column = config[key]["ori_x_column"]
-        self.ori_y_column = config[key]["ori_y_column"]
-        self.ori_z_column = config[key]["ori_z_column"]
-        self.ori_w_column = config[key]["ori_w_column"]
-        self.use_radian = config[key]["use_radian"]
-        self.roll_column = config[key]["roll_column"]
-        self.pitch_column = config[key]["pitch_column"]
-        self.yaw_column = config[key]["yaw_column"]
-        # ellipse
-        if self.display_ellipse:
-            self.covariance_xx_column = config[key]["covariance_xx_column"]
-            self.covariance_xy_column = config[key]["covariance_xy_column"]
-            self.covariance_yx_column = config[key]["covariance_yx_column"]
-            self.covariance_yy_column = config[key]["covariance_yy_column"]
+        try:
+            # time
+            self.separate_time_stamp = config[key]["separate_time_stamp"]
+            self.stamp_column = config[key]["stamp_column"]
+            self.secs_stamp_column = config[key]["secs_stamp_column"]
+            self.nsecs_stamp_column = config[key]["nsecs_stamp_column"]
+            # position
+            self.x_column = config[key]["x_column"]
+            self.y_column = config[key]["y_column"]
+            self.z_column = config[key]["z_column"]
+            # rotation
+            self.use_quaternion = config[key]["use_quaternion"]
+            self.ori_x_column = config[key]["ori_x_column"]
+            self.ori_y_column = config[key]["ori_y_column"]
+            self.ori_z_column = config[key]["ori_z_column"]
+            self.ori_w_column = config[key]["ori_w_column"]
+            self.use_radian = config[key]["use_radian"]
+            self.roll_column = config[key]["roll_column"]
+            self.pitch_column = config[key]["pitch_column"]
+            self.yaw_column = config[key]["yaw_column"]
+            # ellipse
+            if self.display_ellipse:
+                self.covariance_xx_column = config[key]["covariance_xx_column"]
+                self.covariance_xy_column = config[key]["covariance_xy_column"]
+                self.covariance_yx_column = config[key]["covariance_yx_column"]
+                self.covariance_yy_column = config[key]["covariance_yy_column"]
+        except KeyError:
+            raise RuntimeError("Undefined config key for the CSV data type")
 
     def init_ros2bag_param(self, config: dict, key: str) -> None:
-        # ros bag
-        self.topic = config[key]["topic_name"]
-        self.bag_id = config[key]["storage_id"]
-        self.bag_format = config[key]["serialization_format"]
+        try:
+            # ros bag
+            self.topic = config[key]["topic_name"]
+            self.bag_id = config[key]["storage_id"]
+            self.bag_format = config[key]["serialization_format"]
+        except KeyError:
+            raise RuntimeError("Undefined config key for the ros2 bag data type")
 
 class OptParam:
     def __init__(self, config: dict) -> None:

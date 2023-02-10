@@ -5,9 +5,6 @@ from __future__ import annotations
 import math
 import numpy as np
 import pandas as pd
-import rosbag2_py
-from rclpy.serialization import deserialize_message
-from rosidl_runtime_py.utilities import get_message
 from scipy.spatial.transform import Rotation
 from typing import List, Tuple
 
@@ -35,7 +32,6 @@ class DataPack:
             return DataPack.read_csv(param)
         if param.type == 1:
             return DataPack.read_ros2bag(param)
-        raise RuntimeError("Unexpected param format")
 
     @staticmethod
     def read_csv(param: DataParam) -> pd.DataFrame:
@@ -92,6 +88,10 @@ class DataPack:
 
     @staticmethod
     def read_ros2bag(param: DataParam) -> pd.DataFrame:
+        import rosbag2_py
+        from rclpy.serialization import deserialize_message
+        from rosidl_runtime_py.utilities import get_message
+
         storage_options = rosbag2_py.StorageOptions(uri=param.path, storage_id=param.bag_id)
         converter_options = rosbag2_py.ConverterOptions(
             input_serialization_format=param.bag_format, output_serialization_format=param.bag_format
