@@ -29,9 +29,11 @@ if __name__ == "__main__":
     argv = sys.argv
     bag_file = argv[1]
     output_dir = argv[2]
+    
+    font_size = 30
 
     pose_ = BagParam()
-    pose_.topic = "/localization/pose_estimator/pose_with_covariance" 
+    pose_.topic = "/localization/pose_twist_fusion_filter/pose_with_covariance_without_yawbias" 
     read_ros2bag.read_pose(bag_file, pose_)
     pose_empty = pose_.df_temp.empty
 
@@ -57,22 +59,22 @@ if __name__ == "__main__":
 
     # Plot
     if pose_empty == False and nvtl_empty == False:
-        for i in range(0, len(pose_.df_temp)):
-            search_sync = abs(nvtl_.df_temp.iloc[:,0] - pose_.df_temp.iloc[i,0])
-            sync_id = search_sync.idxmin()
-            nvtl_.df = nvtl_.df.append(nvtl_.df_temp.iloc[sync_id,:], ignore_index=True)
-        nvtl_.df.reset_index(inplace=True, drop=True)
-
-        fig_trj_nvtl = plt.figure("Trajectory and NVTL", figsize=(16, 9), dpi=120)
+#        for i in range(0, len(pose_.df_temp)):
+#            search_sync = abs(nvtl_.df_temp.iloc[:,0] - pose_.df_temp.iloc[i,0])
+#            sync_id = search_sync.idxmin()
+#            nvtl_.df = nvtl_.df.append(nvtl_.df_temp.iloc[sync_id,:], ignore_index=True)
+#        nvtl_.df.reset_index(inplace=True, drop=True)
+#
+        fig_trj_nvtl = plt.figure("Trajectory", figsize=(16, 9), dpi=120)
         ax_trj_nvtl = fig_trj_nvtl.add_subplot(111)
-        ax_trj_nvtl.set_title("Trajectory and NVTL")
-        scatter_nvtl = ax_trj_nvtl.scatter(pose_.df_temp["x"], pose_.df_temp["y"], c=nvtl_.df["data"], vmin=0.0, vmax=5, cmap='jet')
-        plt.colorbar(scatter_nvtl, label="NVTL")
+        ax_trj_nvtl.set_title("Trajectory")
+        scatter_nvtl = ax_trj_nvtl.scatter(pose_.df_temp["x"], pose_.df_temp["y"], c='blue', vmin=0.0, vmax=5, cmap='jet')
+#        plt.colorbar(scatter_nvtl, label="NVTL")
         ax_trj_nvtl.set_xlabel("x[m]")
         ax_trj_nvtl.set_ylabel("y[m]")
         ax_trj_nvtl.set_aspect("equal")
         ax_trj_nvtl.grid()
-        fig_trj_nvtl.savefig(output_dir + "/trj_nvtl.png")
+        fig_trj_nvtl.savefig(output_dir + "/trj.png")
 
     if pose_empty == False and tp_empty == False:
         for i in range(0, len(pose_.df_temp)):
@@ -96,26 +98,26 @@ if __name__ == "__main__":
         fig_nvtl = plt.figure("NVTL", figsize=(16, 9), dpi=120)
         
         ax_nvtl = fig_nvtl.add_subplot(111)
-        plt.xticks(fontsize = 18)
-        plt.yticks(fontsize = 18)
-        ax_nvtl.set_title("NVTL", fontsize =18)
+        plt.xticks(fontsize = font_size)
+        plt.yticks(fontsize = font_size)
+        ax_nvtl.set_title("NVTL", fontsize =font_size)
         ax_nvtl.plot(nvtl_.df_temp["time"] - nvtl_.df_temp.at[0,"time"], nvtl_.df_temp["data"], marker="o", c="b", markersize=2)
-        ax_nvtl.set_xlabel("time[s]", fontsize =18)
-        ax_nvtl.set_ylabel("NVTL", fontsize =18)
-#        ax_nvtl.set_ylim(0, 5)
+        ax_nvtl.set_xlabel("time[s]", fontsize =font_size)
+        ax_nvtl.set_ylabel("NVTL", fontsize =font_size)
+#        ax_nvtl.set_ylim(2.2, 3.2)
         ax_nvtl.grid()
         fig_nvtl.savefig(output_dir + "/nvtl.png")
 
     if tp_empty == False:
         fig_tp = plt.figure("TP", figsize=(16, 9), dpi=120)
-        plt.xticks(fontsize = 18)
-        plt.yticks(fontsize = 18)
+        plt.xticks(fontsize = font_size)
+        plt.yticks(fontsize = font_size)
         ax_tp = fig_tp.add_subplot(111)
-        ax_tp.set_title("TP", fontsize =18)
-        ax_tp.plot(tp_.df_temp["time"] - tp_.df_temp.at[0,"time"], tp_.df_temp["data"], marker="o", c="b", markersize=2)
-        ax_tp.set_xlabel("time[s]", fontsize =18)
-        ax_tp.set_ylabel("TP", fontsize =18)
-#        ax_tp.set_ylim(0, 7)
+        ax_tp.set_title("TP", fontsize =font_size)
+        ax_tp.plot(tp_.df_temp["time"] - tp_.df_temp.at[0,"time"], tp_.df_temp["data"], marker="o" ,c="b", markersize=2)
+        ax_tp.set_xlabel("time[s]", fontsize =font_size)
+        ax_tp.set_ylabel("TP", fontsize =font_size)
+#        ax_tp.set_ylim(3, 7)
         ax_tp.grid()
         fig_tp.savefig(output_dir + "/tp.png")
 
@@ -131,13 +133,14 @@ if __name__ == "__main__":
 
     if itr_empty == False:
         fig_itr = plt.figure("Iteration", figsize=(16, 9), dpi=120)
-        plt.xticks(fontsize = 18)
-        plt.yticks(fontsize = 18)
+        plt.xticks(fontsize = font_size)
+        plt.yticks(fontsize = font_size)
         ax_itr = fig_itr.add_subplot(111)
-        ax_itr.set_title("Iteration", fontsize =18)
+        ax_itr.set_title("Iteration", fontsize =font_size)
         ax_itr.plot(itr_.df_temp["time"] - itr_.df_temp.at[0,"time"], itr_.df_temp["data"], marker="o", c="b", markersize=2)
-        ax_itr.set_xlabel("time[s]", fontsize =18)
-        ax_itr.set_ylabel("Iteration", fontsize =18)
+        ax_itr.set_xlabel("time[s]", fontsize =font_size)
+        ax_itr.set_ylabel("Iteration", fontsize =font_size)
+#        ax_itr.set_ylim(0,12)
         ax_itr.grid()
         fig_itr.savefig(output_dir + "/itr.png")
 
