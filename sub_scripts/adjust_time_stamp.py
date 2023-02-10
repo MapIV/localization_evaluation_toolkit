@@ -1,4 +1,5 @@
 import sys
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -6,8 +7,9 @@ import pandas as pd
 import yaml
 from scipy.spatial import KDTree
 
-sys.path.append("../scripts")
-from util import extract, yaml_param
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+# sys.path.append("../scripts")
+from scripts.deprecated import extract, yaml_param
 
 
 def input_yaml_param(config_path, target_param, offset_param):

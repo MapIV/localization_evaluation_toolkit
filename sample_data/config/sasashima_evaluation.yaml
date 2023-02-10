@@ -5,6 +5,7 @@
 Reference:
   ## Auxiliary info
   label: reference
+  type: 0 # [0]: csv, [1]: ros2bag
   path: ../sample_data/reference.csv
   ## Time
   separate_time_stamp: false #[true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
@@ -35,21 +36,22 @@ Reference:
   yaw_column: 8
 
   ## TF
-  tf_time: 0 #[s]
-  tf_x: 0 #[m]
-  tf_y: 0 #[m]
-  tf_z: 0 #[m]
-  tf_roll: 0 #[rad]
-  tf_pitch: 0 #[rad]
-  tf_yaw: 0 #[rad]
-  inv_roll: 1 # 1 or -1
+  tf_time: 0   # [s]
+  tf_x: 0      # [m]
+  tf_y: 0      # [m]
+  tf_z: 0      # [m]
+  tf_roll: 0   # [rad]
+  tf_pitch: 0  # [rad]
+  tf_yaw: 0    # [rad]
+  inv_roll: 1  # 1 or -1
   inv_pitch: 1 # 1 or -1
-  inv_yaw: 1 # 1 or -1
+  inv_yaw: 1   # 1 or -1
 
 
 Result1:
   ## Auxiliary info
   label: NDT
+  type: 0 # [0]: csv, [1]: ros2bag
   path: ../sample_data/result_trj_ndt.csv
 
   ## Time
@@ -81,16 +83,16 @@ Result1:
   yaw_column: 0
 
   ## TF
-  tf_time: 0 #[s]
-  tf_x: 0 #[m]
-  tf_y: 0 #[m]
-  tf_z: 0 #[m]
-  tf_roll: 0 #[rad]
-  tf_pitch: 0 #[rad]
-  tf_yaw: 0 #[rad]
-  inv_roll: 1 # 1 or -1
+  tf_time: 0   # [s]
+  tf_x: 0      # [m]
+  tf_y: 0      # [m]
+  tf_z: 0      # [m]
+  tf_roll: 0   # [rad]
+  tf_pitch: 0  # [rad]
+  tf_yaw: 0    # [rad]
+  inv_roll: 1  # 1 or -1
   inv_pitch: 1 # 1 or -1
-  inv_yaw: 1 # 1 or -1
+  inv_yaw: 1   # 1 or -1
 
   # Dosplay ellipse (put 2D covariance in result file)
   display_ellipse: false
@@ -103,6 +105,7 @@ Result1:
 Result2:
   ## Auxiliary info
   label: EKF
+  type: 0 # [0]: csv, [1]: ros2bag
   path: ../sample_data/result_trj_ekf.csv
 
   ## Time
@@ -134,16 +137,16 @@ Result2:
   yaw_column: 0
 
   ## TF
-  tf_time: 0 #[s]
-  tf_x: 0 #[m]
-  tf_y: 0 #[m]
-  tf_z: 0 #[m]
-  tf_roll: 0 #[rad]
-  tf_pitch: 0 #[rad]
-  tf_yaw: 0 #[rad]
-  inv_roll: 1 # 1 or -1
+  tf_time: 0   # [s]
+  tf_x: 0      # [m]
+  tf_y: 0      # [m]
+  tf_z: 0      # [m]
+  tf_roll: 0   # [rad]
+  tf_pitch: 0  # [rad]
+  tf_yaw: 0    # [rad]
+  inv_roll: 1  # 1 or -1
   inv_pitch: 1 # 1 or -1
-  inv_yaw: 1 # 1 or -1
+  inv_yaw: 1   # 1 or -1
 
   # Dosplay ellipse (put 2D covariance in result file)
   display_ellipse: false
@@ -151,21 +154,23 @@ Result2:
   covariance_xy_column: 0
   covariance_yx_column: 0
   covariance_yy_column: 0
-  
 
-## Display
+############
+## Option ##
+############
+
 # Horizontal axis
-axis_type: 0 # [0]:time, [1]:distance
+axis_type: 0   # [0]:time, [1]:distance
 degree_type: 0 # [0]:radian, [1]:degree
 
 # Trajectory graph dilution
-dilution_step: 3 # at least 1, the larger the sparser for better performance
+dilution_step: 10 # at least 1, the larger the sparser for better performance
 
 # Trajectory graph numbering
 progress_info: 0 # [0]:no display, [1]: number, [2]:time, [3]:ros time, [4]:distance
-interval: 0 # progress_info is [2]:per second, [3]:per second, [4]:per meter
+interval: 0      # progress_info is [2]:per second, [3]:per second, [4]:per meter
 
-# font
+# Font
 title_font_size: 14 
 label_font_size: 10
 ticks_font_size: 8
@@ -174,9 +179,6 @@ ticks_font_size: 8
 save_figures: true
 save_extension_type: png # without "."
 save_dataframe: true
-output_directory: ../sample_data/output_sample
+output_directory: ../sample_data/output_test
 
-############
-## Option ##
-############
 use_lerp: false

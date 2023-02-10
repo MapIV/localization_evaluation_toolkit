@@ -12,7 +12,7 @@ from rosidl_runtime_py.utilities import get_message
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 # sys.path.append("../scripts")
-from scripts.util import read_ros2bag
+from scripts.deprecated import read_ros2bag
 
 
 class BagParam:

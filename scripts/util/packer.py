@@ -8,10 +8,10 @@ import pandas as pd
 from scipy.spatial.transform import Rotation
 from typing import List, Tuple
 
-from util.configer import CsvParam, OptParam
+from util.configer import DataParam, OptParam
 
 class DataPack:
-    def __init__(self, param: CsvParam, opt_param: OptParam) -> None:
+    def __init__(self, param: DataParam, opt_param: OptParam) -> None:
         # set basic info
         self.label: str = param.label
         self.data: pd.DataFrame = None
@@ -27,57 +27,118 @@ class DataPack:
         return self.data[self.axis_name]
 
     @staticmethod
-    def read_data(csv_param: CsvParam) -> pd.DataFrame:
-        original_data = pd.read_csv(csv_param.path)
+    def read_data(param: DataParam) -> pd.DataFrame:
+        if param.type == 0:
+            return DataPack.read_csv(param)
+        if param.type == 1:
+            return DataPack.read_ros2bag(param)
+
+    @staticmethod
+    def read_csv(param: DataParam) -> pd.DataFrame:
+        original_data = pd.read_csv(param.path)
         adjusted_data = pd.DataFrame()
         
         # time
-        if csv_param.separate_time_stamp == True:
-            adjusted_data["time"] = original_data.iloc[:, csv_param.secs_stamp_column] + \
-                                    original_data.iloc[:, csv_param.nsecs_stamp_column] / 10 ** 9 + csv_param.tf_time
-        elif len(str(int(original_data.iloc[0, csv_param.stamp_column]))) > 10:
-            adjusted_data["time"] = original_data.iloc[:, csv_param.stamp_column] / 10 ** 9 + csv_param.tf_time
+        if param.separate_time_stamp == True:
+            adjusted_data["time"] = original_data.iloc[:, param.secs_stamp_column] + original_data.iloc[:, param.nsecs_stamp_column] / 10 ** 9 + param.tf_time
+        elif len(str(int(original_data.iloc[0, param.stamp_column]))) > 10:
+            adjusted_data["time"] = original_data.iloc[:, param.stamp_column] / 10 ** 9 + param.tf_time
         else:
-            adjusted_data["time"] = original_data.iloc[:, csv_param.stamp_column] + csv_param.tf_time
+            adjusted_data["time"] = original_data.iloc[:, param.stamp_column] + param.tf_time
         
         # position
-        adjusted_data["x"] = original_data.iloc[:, csv_param.x_column] + csv_param.tf_x
-        adjusted_data["y"] = original_data.iloc[:, csv_param.y_column] + csv_param.tf_y
-        adjusted_data["z"] = original_data.iloc[:, csv_param.z_column] + csv_param.tf_z
+        adjusted_data["x"] = original_data.iloc[:, param.x_column] + param.tf_x
+        adjusted_data["y"] = original_data.iloc[:, param.y_column] + param.tf_y
+        adjusted_data["z"] = original_data.iloc[:, param.z_column] + param.tf_z
 
         # rotation
-        if csv_param.use_quaternion == True:
+        if param.use_quaternion == True:
             for i in range(len(original_data)):
                 ref_q_temp = [
-                    original_data.iloc[i, csv_param.ori_x_column],
-                    original_data.iloc[i, csv_param.ori_y_column],
-                    original_data.iloc[i, csv_param.ori_z_column],
-                    original_data.iloc[i, csv_param.ori_w_column],
+                    original_data.iloc[i, param.ori_x_column],
+                    original_data.iloc[i, param.ori_y_column],
+                    original_data.iloc[i, param.ori_z_column],
+                    original_data.iloc[i, param.ori_w_column],
                 ]
                 ref_e_temp = Rotation.from_quat([ref_q_temp[0], ref_q_temp[1], ref_q_temp[2], ref_q_temp[3]])
                 adjusted_data.at[i, "roll"] = (
-                    ref_e_temp.as_euler("ZYX", degrees=False)[2] + csv_param.tf_roll
-                ) * csv_param.inv_roll
+                    ref_e_temp.as_euler("ZYX", degrees=False)[2] + param.tf_roll
+                ) * param.inv_roll
                 adjusted_data.at[i, "pitch"] = (
-                    ref_e_temp.as_euler("ZYX", degrees=False)[1] + csv_param.tf_pitch
-                ) * csv_param.inv_pitch
-                adjusted_data.at[i, "yaw"] = (ref_e_temp.as_euler("ZYX", degrees=False)[0] + csv_param.tf_yaw) * csv_param.inv_yaw
-        elif csv_param.use_quaternion == False and csv_param.use_radian == True:
-            adjusted_data["roll"] = (original_data.iloc[:, csv_param.roll_column] + csv_param.tf_roll) * csv_param.inv_roll
-            adjusted_data["pitch"] = (original_data.iloc[:, csv_param.pitch_column] + csv_param.tf_pitch) * csv_param.inv_pitch
-            adjusted_data["yaw"] = (original_data.iloc[:, csv_param.yaw_column] + csv_param.tf_yaw) * csv_param.inv_yaw
-        elif csv_param.use_quaternion == False and csv_param.use_radian == False:
-            adjusted_data["roll"] = (original_data.iloc[:, csv_param.roll_column] * math.pi / 180 + csv_param.tf_roll) * csv_param.inv_roll
-            adjusted_data["pitch"] = (original_data.iloc[:, csv_param.pitch_column] * math.pi / 180 + csv_param.tf_pitch) * csv_param.inv_pitch
-            adjusted_data["yaw"] = (original_data.iloc[:, csv_param.yaw_column] * math.pi / 180 + csv_param.tf_yaw) * csv_param.inv_yaw
+                    ref_e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch
+                ) * param.inv_pitch
+                adjusted_data.at[i, "yaw"] = (ref_e_temp.as_euler("ZYX", degrees=False)[0] + param.tf_yaw) * param.inv_yaw
+        elif param.use_quaternion == False and param.use_radian == True:
+            adjusted_data["roll"] = (original_data.iloc[:, param.roll_column] + param.tf_roll) * param.inv_roll
+            adjusted_data["pitch"] = (original_data.iloc[:, param.pitch_column] + param.tf_pitch) * param.inv_pitch
+            adjusted_data["yaw"] = (original_data.iloc[:, param.yaw_column] + param.tf_yaw) * param.inv_yaw
+        elif param.use_quaternion == False and param.use_radian == False:
+            adjusted_data["roll"] = (original_data.iloc[:, param.roll_column] * math.pi / 180 + param.tf_roll) * param.inv_roll
+            adjusted_data["pitch"] = (original_data.iloc[:, param.pitch_column] * math.pi / 180 + param.tf_pitch) * param.inv_pitch
+            adjusted_data["yaw"] = (original_data.iloc[:, param.yaw_column] * math.pi / 180 + param.tf_yaw) * param.inv_yaw
         
         # covariance
-        if csv_param.display_ellipse == True:
-            adjusted_data["cov_xx"] = original_data.iloc[:, csv_param.covariance_xx_column]
-            adjusted_data["cov_xy"] = original_data.iloc[:, csv_param.covariance_xy_column]
-            adjusted_data["cov_yx"] = original_data.iloc[:, csv_param.covariance_yx_column]
-            adjusted_data["cov_yy"] = original_data.iloc[:, csv_param.covariance_yy_column]
+        if param.display_ellipse == True:
+            adjusted_data["cov_xx"] = original_data.iloc[:, param.covariance_xx_column]
+            adjusted_data["cov_xy"] = original_data.iloc[:, param.covariance_xy_column]
+            adjusted_data["cov_yx"] = original_data.iloc[:, param.covariance_yx_column]
+            adjusted_data["cov_yy"] = original_data.iloc[:, param.covariance_yy_column]
 
+        return adjusted_data
+
+    @staticmethod
+    def read_ros2bag(param: DataParam) -> pd.DataFrame:
+        import rosbag2_py
+        from rclpy.serialization import deserialize_message
+        from rosidl_runtime_py.utilities import get_message
+
+        storage_options = rosbag2_py.StorageOptions(uri=param.path, storage_id=param.bag_id)
+        converter_options = rosbag2_py.ConverterOptions(
+            input_serialization_format=param.bag_format, output_serialization_format=param.bag_format
+        )
+
+        reader = rosbag2_py.SequentialReader()
+        reader.open(storage_options, converter_options)
+        topic_types = reader.get_all_topics_and_types()
+
+        type_map = {topic_type.name: topic_type.type for topic_type in topic_types}
+
+        storage_filter = rosbag2_py.StorageFilter(topics=[param.topic])
+        reader.set_filter(storage_filter)
+
+        pose_data_dict = {key: [] for key in ["time", "x", "y", "z", "roll", "pitch", "yaw"]}
+        cov_data_dict = {key: [] for key in ["cov_xx", "cov_xy", "cov_yx", "cov_yy"]}
+        while reader.has_next():
+            topic, data, _ = reader.read_next()
+            msg_type = get_message(type_map[topic])
+            msg = deserialize_message(data, msg_type)
+
+            q_temp = [
+                msg.pose.pose.orientation.x,
+                msg.pose.pose.orientation.y,
+                msg.pose.pose.orientation.z,
+                msg.pose.pose.orientation.w,
+            ]
+            e_temp = Rotation.from_quat([q_temp[0], q_temp[1], q_temp[2], q_temp[3]])
+
+            # time
+            pose_data_dict["time"].append(msg.header.stamp.sec + msg.header.stamp.nanosec / 10**9 + param.tf_time)
+            # position
+            pose_data_dict["x"].append(msg.pose.pose.position.x + param.tf_x)
+            pose_data_dict["y"].append(msg.pose.pose.position.y + param.tf_y)
+            pose_data_dict["z"].append(msg.pose.pose.position.z + param.tf_z)
+            # rotation
+            pose_data_dict["roll"].append((e_temp.as_euler("ZYX", degrees=False)[2] + param.tf_roll) * param.inv_roll)
+            pose_data_dict["pitch"].append((e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch) * param.inv_pitch)
+            pose_data_dict["yaw"].append((e_temp.as_euler("ZYX", degrees=False)[0] + param.tf_yaw) * param.inv_yaw)
+            # covariance
+            if param.display_ellipse == True:
+                cov_data_dict["cov_xx"].append(msg.pose.covariance[0])
+                cov_data_dict["cov_xy"].append(msg.pose.covariance[1])
+                cov_data_dict["cov_yx"].append(msg.pose.covariance[6])
+                cov_data_dict["cov_yy"].append(msg.pose.covariance[7])
+
+        adjusted_data = pd.DataFrame.from_dict({**pose_data_dict, **(cov_data_dict if param.display_ellipse else {})})
         return adjusted_data
 
     @staticmethod
@@ -104,7 +165,7 @@ class DataPack:
         ])}
 
 class ResDataPack(DataPack):
-    def __init__(self, res_param: CsvParam, ref_param: CsvParam, opt_param: OptParam) -> None:
+    def __init__(self, res_param: DataParam, ref_param: DataParam, opt_param: OptParam) -> None:
         super().__init__(res_param, opt_param)
         # read data
         self.data = self.read_data(res_param)
@@ -286,7 +347,7 @@ class ResDataPack(DataPack):
         return ellipse_dict
 
 class RefDataPack(DataPack):
-    def __init__(self, ref_param: CsvParam, opt_param: OptParam, df: pd.DataFrame=None) -> None:
+    def __init__(self, ref_param: DataParam, opt_param: OptParam, df: pd.DataFrame=None) -> None:
         super().__init__(ref_param, opt_param)
         # read data
         self.data = df if isinstance(df, pd.DataFrame) else self.read_data(ref_param)
@@ -296,7 +357,7 @@ class RefDataPack(DataPack):
         # self.data = self.data.assign(**self.calc_velocity(self.data))
 
     @classmethod
-    def build_from_res(cls, ref_param: CsvParam, opt_param: OptParam, res_packs: List[ResDataPack]) -> RefDataPack:
+    def build_from_res(cls, ref_param: DataParam, opt_param: OptParam, res_packs: List[ResDataPack]) -> RefDataPack:
         df_len = min(map(len, [res_pack.data_ref for res_pack in res_packs]))
         for res_pack in res_packs:
             selected_rows = np.sort(np.random.choice(len(res_pack.data_ref), df_len, replace=False))
@@ -310,7 +371,7 @@ class RefDataPack(DataPack):
     def accumulate_df(dfs: List[pd.DataFrame], sort_by: str="time") -> pd.DataFrame:
         return pd.concat(dfs, ignore_index=True).drop_duplicates().sort_values(by=sort_by, ignore_index=True)
 
-def param2pack(ref_parm: CsvParam, res_params: List[CsvParam], opt_param: OptParam) -> Tuple[RefDataPack, List[ResDataPack]]:
+def param2pack(ref_parm: DataParam, res_params: List[DataParam], opt_param: OptParam) -> Tuple[RefDataPack, List[ResDataPack]]:
     res_packs = [ResDataPack(res_param, ref_parm, opt_param) for res_param in res_params]
-    ref_pack = RefDataPack.build_from_res(ref_parm, opt_param, res_packs)
+    ref_pack = RefDataPack.build_from_res(ref_parm, opt_param, res_packs) if res_packs else RefDataPack(ref_parm, opt_param)
     return ref_pack, res_packs

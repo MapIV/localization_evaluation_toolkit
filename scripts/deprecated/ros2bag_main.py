@@ -5,7 +5,7 @@ import yaml
 
 sys.dont_write_bytecode = True
 
-from util import adjust, plot, read_ros2bag, yaml_param
+from deprecated import adjust, plot, yaml_param, read_ros2bag
 
 if __name__ == "__main__":
 
@@ -13,7 +13,7 @@ if __name__ == "__main__":
     ref_path = argv[1]
     result_path = argv[2]
     config_path = argv[3]
-    output_dir = argv[4]
+    # output_dir = argv[4]
 
     print("Loading yaml file ...", end="")
     with open(config_path, "r") as yml:
@@ -57,4 +57,4 @@ if __name__ == "__main__":
         print("Completed!!")
 
     print("Output graph ...", end="")
-    plot.output_graph(ref_param, result_params, output_dir, save_param, op_param)
+    plot.output_graph(ref_param, result_params, save_param, op_param)
