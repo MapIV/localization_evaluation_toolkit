@@ -15,16 +15,13 @@ def plot_2d_traj(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param:
     fig_2d_trj = plt.figure("2D_Trajectory", figsize=(16, 9), dpi=120)
     ax_2d_trj = fig_2d_trj.add_subplot(111)
 
-    # dilute trajectory data for better performance
-    res_dfs = [(
-        res_pack,
-        res_pack.data.iloc[::opt_param.dilution_step],
-        res_pack.data_ref.iloc[::opt_param.dilution_step]
-    ) for res_pack in res_packs]
-    ref_df = ref_pack.accumulate_df(list(zip(*res_dfs))[2])
-
-    ax_2d_trj.scatter(ref_df["x"], ref_df["y"], c="k", zorder=1, label=ref_pack.label)
-    for res_pack, res_df, ref_df in res_dfs:
+    ref_dfs = list()
+    for res_pack in res_packs:
+        # dilute trajectory data for better performance
+        res_df = res_pack.data.iloc[::opt_param.dilution_step]
+        ref_df = res_pack.data_ref.iloc[::opt_param.dilution_step]
+        ref_dfs.append(ref_df)
+        # plot the traj of results
         ax_2d_trj.scatter(res_df["x"], res_df["y"], s=2, label=res_pack.label)
         ax_2d_trj.plot([ref_df["x"], res_df["x"]], [ref_df["y"], res_df["y"]], "-", linewidth=0.2, zorder=1)
         # show ellipse
@@ -37,7 +34,26 @@ def plot_2d_traj(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param:
                     height=res_df["ellipse_short"][i] * 2,
                     alpha=0.3
                 ))
-        # show progress TODO
+        # show progress
+        if opt_param.progress_info:
+            if opt_param.progress_info == 1:
+                data = res_df.index
+            elif opt_param.progress_info == 2:
+                data = res_df["elapsed"]
+            elif opt_param.progress_info == 3:
+                data = res_df["time"]
+            elif opt_param.progress_info == 4:
+                data = res_df["distance"]
+            else:
+                raise RuntimeError("Unexpected progress info type")
+            counter = 0
+            for i in res_df.index:
+                if (data[i] - data[0]) < counter: continue
+                ax_2d_trj.text(res_df["x"][i], res_df["y"][i], round(data[i], 2), va="bottom")
+                counter += opt_param.interval
+    # plot the traj of reference
+    ref_df = ref_pack.accumulate_df(ref_dfs)
+    ax_2d_trj.scatter(ref_df["x"], ref_df["y"], c="k", zorder=-1, label=ref_pack.label)
 
     ax_2d_trj.set_title("2D trajectory", fontsize=opt_param.title_font_size)
     ax_2d_trj.set_xlabel("x[m]", fontsize=opt_param.label_font_size)
