@@ -1,4 +1,4 @@
-# localization_evaluation_toolkit -Ver.6.0 (Update 2023/02/03)
+# localization_evaluation_toolkit -Ver.6.1 (Update 2023/03/14)
 You can evaluate your localization result by comparing it to a reliable pose trajectory.
 The start time, end time, and period can be different for each data.
 The evaluation is automatically aligned with the one with the smaller number of data.
@@ -148,8 +148,8 @@ degree_type: 0 # [0]:radian, [1]:degree
 dilution_step: 10 # at least 1, the larger the sparser for better performance
 
 # Trajectory graph numbering
-progress_info: 0 # [0]:no display, [1]: number, [2]:time, [3]:ros time, [4]:distance
-interval: 0      # progress_info is [2]:per second, [3]:per second, [4]:per meter
+progress_info: 0 # [0]:off, [1]:number, [2]:time, [3]:ros time, [4]:distance
+interval: 0      # progress_info is [2]:second, [3]:second, [4]:meter
 
 # Font
 title_font_size: 14 

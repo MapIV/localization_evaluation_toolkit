@@ -39,7 +39,7 @@ class DataPack:
         adjusted_data = pd.DataFrame()
         
         # time
-        if param.separate_time_stamp == True:
+        if param.separate_time_stamp:
             adjusted_data["time"] = original_data.iloc[:, param.secs_stamp_column] + original_data.iloc[:, param.nsecs_stamp_column] / 10 ** 9 + param.tf_time
         elif len(str(int(original_data.iloc[0, param.stamp_column]))) > 10:
             adjusted_data["time"] = original_data.iloc[:, param.stamp_column] / 10 ** 9 + param.tf_time
@@ -52,7 +52,7 @@ class DataPack:
         adjusted_data["z"] = original_data.iloc[:, param.z_column] + param.tf_z
 
         # rotation
-        if param.use_quaternion == True:
+        if param.use_quaternion:
             for i in range(len(original_data)):
                 ref_q_temp = [
                     original_data.iloc[i, param.ori_x_column],
@@ -68,17 +68,17 @@ class DataPack:
                     ref_e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch
                 ) * param.inv_pitch
                 adjusted_data.at[i, "yaw"] = (ref_e_temp.as_euler("ZYX", degrees=False)[0] + param.tf_yaw) * param.inv_yaw
-        elif param.use_quaternion == False and param.use_radian == True:
+        elif (not param.use_quaternion) and param.use_radian:
             adjusted_data["roll"] = (original_data.iloc[:, param.roll_column] + param.tf_roll) * param.inv_roll
             adjusted_data["pitch"] = (original_data.iloc[:, param.pitch_column] + param.tf_pitch) * param.inv_pitch
             adjusted_data["yaw"] = (original_data.iloc[:, param.yaw_column] + param.tf_yaw) * param.inv_yaw
-        elif param.use_quaternion == False and param.use_radian == False:
+        elif (not param.use_quaternion) and (not param.use_radian):
             adjusted_data["roll"] = (original_data.iloc[:, param.roll_column] * math.pi / 180 + param.tf_roll) * param.inv_roll
             adjusted_data["pitch"] = (original_data.iloc[:, param.pitch_column] * math.pi / 180 + param.tf_pitch) * param.inv_pitch
             adjusted_data["yaw"] = (original_data.iloc[:, param.yaw_column] * math.pi / 180 + param.tf_yaw) * param.inv_yaw
         
         # covariance
-        if param.display_ellipse == True:
+        if param.display_ellipse:
             adjusted_data["cov_xx"] = original_data.iloc[:, param.covariance_xx_column]
             adjusted_data["cov_xy"] = original_data.iloc[:, param.covariance_xy_column]
             adjusted_data["cov_yx"] = original_data.iloc[:, param.covariance_yx_column]
@@ -93,9 +93,7 @@ class DataPack:
         from rosidl_runtime_py.utilities import get_message
 
         storage_options = rosbag2_py.StorageOptions(uri=param.path, storage_id=param.bag_id)
-        converter_options = rosbag2_py.ConverterOptions(
-            input_serialization_format=param.bag_format, output_serialization_format=param.bag_format
-        )
+        converter_options = rosbag2_py.ConverterOptions(input_serialization_format=param.bag_format, output_serialization_format=param.bag_format)
 
         reader = rosbag2_py.SequentialReader()
         reader.open(storage_options, converter_options)
@@ -132,7 +130,7 @@ class DataPack:
             pose_data_dict["pitch"].append((e_temp.as_euler("ZYX", degrees=False)[1] + param.tf_pitch) * param.inv_pitch)
             pose_data_dict["yaw"].append((e_temp.as_euler("ZYX", degrees=False)[0] + param.tf_yaw) * param.inv_yaw)
             # covariance
-            if param.display_ellipse == True:
+            if param.display_ellipse:
                 cov_data_dict["cov_xx"].append(msg.pose.covariance[0])
                 cov_data_dict["cov_xy"].append(msg.pose.covariance[1])
                 cov_data_dict["cov_yx"].append(msg.pose.covariance[6])
