@@ -1,0 +1,29 @@
+eagleye_log:
+  tf_num: 0 # 0:plane, 1:mgrs
+  time_unit: 0 # 0:[s], 1:[ns]
+  missing_gnss_type: 0 # 0:use all type, 1:rtklib_nav, 2:nmea
+  ros_reverse_imu: False # [True]:Use reverse_imu in ros
+
+param:
+  reverse_imu_flag: False
+  plane_num: 7 # Plane Cartesian coordinate system number (default:7 = 7)
+  sync_threshold_time_data_param: 0.01 # Time threshold for judgment at synchronized. (default:0.01 = 0.01[s])
+  leap_time_param: 0.0 # Offset correction for time synchronization. (default:0.0 = 0.0[s])
+  tf_x_param: 0.0 # Correction amount in East-West direction[m]
+  tf_y_param: 0.0 # Correction amount in North-South direction[m]
+  tf_across_param: 0.0 # Correction amount in vehicle orthogonal direction[m]
+  tf_along_param: 0.0 # Correction amount in the direction of vehicle travel[m]
+  tf_height_param: 0.0 # Correction amount in height direction[m]
+  tf_yaw_param: 0.0 # Correction amount in yaw[deg]
+  based_heaing_angle: False # [True]:The heading angle is based on North /[False]:The heading angle is based on East (ros data)
+  distance_length_param: 100 # Distance to calculate relative trajectory. (default:100 = 100[m])
+  distance_step_param: 50 # Calculate relative trajectories step (default:50 = 50[m])
+  eval_step_max_param: 3.0 # Maximum value of error to be evaluated default (default:3.0 = 3.0[m])
+  ref_data_name_param: 'ref data' # Reference Legend Name. (default:'ref data')
+  data_name_param: 'eagleye' # Target Legend Name. (default:'eagleye')
+  font_size_param: 12 # label size
+
+evaluation_plot:
+  dr_error_ylim: 3.0 # ylabel data lim
+  plot_text_data: 'elapsed_time' # Text data to be displayed in the graph of trajectory(distance or elapsed_time)
+  plot_text_step: 50 # Text data step to be displayed in the graph of trajectory(default:50 = 50[m])
