@@ -40,7 +40,7 @@ A standard configuration file for evaluation consists of the following parts.
 
 It is required that the reference block should have the name of ***Reference*** and the names of result blocks should begin with ***Result***.
 When specifying the paths, it is recommended to use the absolute path.
-There is a sample YAML file at `config/evaluation.yaml`.
+There is a sample YAML file at `config/evaluation_pose.yaml`.
 To create your own configuration file, just use the following templates for CSV or ros2 bag,
 
 <details>
@@ -171,7 +171,7 @@ and run with
 
 ```sh
 $ cd localization_evaluation_toolkit
-$ python3 scripts/main.py config/evaluation.yaml
+$ python3 scripts/main.py config/evaluation_pose.yaml
 ```
 
 ## Sub-evaluation and adjustment
