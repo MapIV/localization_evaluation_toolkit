@@ -171,7 +171,7 @@ and run with
 
 ```sh
 $ cd localization_evaluation_toolkit
-$ python3 scripts/main.py config/evaluation_pose.yaml
+$ python3 scripts/pose_main.py config/evaluation_pose.yaml
 ```
 
 ## Sub-evaluation and adjustment

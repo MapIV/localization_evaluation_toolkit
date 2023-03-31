@@ -3,7 +3,7 @@ import yaml
 
 sys.dont_write_bytecode = True
 
-from util import configer, packer, plotter
+from util.pose import configer, packer, plotter
 
 if __name__ == "__main__":
     print("Loading yaml file...", end="", flush=True)
