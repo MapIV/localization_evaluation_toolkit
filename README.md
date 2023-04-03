@@ -1,4 +1,4 @@
-# localization_evaluation_toolkit -Ver.6.1 (Update 2023/03/14)
+# localization_evaluation_toolkit -Ver.6.2 (Update 2023/04/03)
 You can evaluate your localization result by comparing it to a reliable pose trajectory.
 The start time, end time, and period can be different for each data.
 The evaluation is automatically aligned with the one with the smaller number of data.
