@@ -93,9 +93,7 @@ def plot_nvtl(nvtl, output_dir):
     fig_nvtl = plt.figure("NVTL", figsize=(16, 9), dpi=120)
     ax_nvtl = fig_nvtl.add_subplot(111)
     ax_nvtl.set_title("NVTL")
-    ax_nvtl.plot(
-        nvtl.df_temp["time"] - nvtl.df_temp.at[0, "time"], nvtl.df_temp["data"], marker="o", c="b", markersize=2
-    )
+    ax_nvtl.plot(nvtl.df_temp["time"] - nvtl.df_temp.at[0, "time"], nvtl.df_temp["data"], marker="o", markersize=2)
     ax_nvtl.set_xlabel("time[s]")
     ax_nvtl.set_ylabel("NVTL")
     ax_nvtl.set_ylim(0, 5)
@@ -107,7 +105,7 @@ def plot_tp(tp, output_dir):
     fig_tp = plt.figure("TP", figsize=(16, 9), dpi=120)
     ax_tp = fig_tp.add_subplot(111)
     ax_tp.set_title("TP")
-    ax_tp.plot(tp.df_temp["time"] - tp.df_temp.at[0, "time"], tp.df_temp["data"], marker="o", c="b", markersize=2)
+    ax_tp.plot(tp.df_temp["time"] - tp.df_temp.at[0, "time"], tp.df_temp["data"], marker="o", markersize=2)
     ax_tp.set_xlabel("time[s]")
     ax_tp.set_ylabel("TP")
     ax_tp.set_ylim(0, 7)
@@ -123,7 +121,6 @@ def plot_exe_time(exe_time, output_dir):
         exe_time.df_temp["time"] - exe_time.df_temp.at[0, "time"],
         exe_time.df_temp["data"],
         marker="o",
-        c="b",
         markersize=2,
     )
     ax_exe_time.set_xlabel("time[s]")
@@ -137,7 +134,7 @@ def plot_itr(itr, output_dir):
     fig_itr = plt.figure("Iteration", figsize=(16, 9), dpi=120)
     ax_itr = fig_itr.add_subplot(111)
     ax_itr.set_title("Iteration")
-    ax_itr.plot(itr.df_temp["time"] - itr.df_temp.at[0, "time"], itr.df_temp["data"], marker="o", c="b", markersize=2)
+    ax_itr.plot(itr.df_temp["time"] - itr.df_temp.at[0, "time"], itr.df_temp["data"], marker="o", markersize=2)
     ax_itr.set_xlabel("time[s]")
     ax_itr.set_ylabel("Iteration")
     ax_itr.grid()
