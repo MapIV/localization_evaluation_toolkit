@@ -176,7 +176,7 @@ $ python3 scripts/main.py config/evaluation.yaml
 
 ## Sub-evaluation and adjustment
 
-**A. Evaluate TP, NVTL, execution time and iteration with ros2 bag files**
+**A. Evaluate TP, NVTL, execution time, iteration and error ellipse with ros2 bag files**
 
 Please input a rosbag containing the following (at least one) topic.
 ```
