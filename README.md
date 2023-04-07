@@ -214,38 +214,35 @@ $ python3 main.py ../sample_data/config/sasashima_evaluation.yaml
 ```
 
 1. 2D Trajectory
+  ![2d_traj](/sample_data/output_sample/2d_trajectory.png)
+  When you zoom in on the graph, you can see the correspondence.
+  ![2D_traj_zoom](/sample_data/output_sample/2d_trajectory_zoom.png)
 
-![2d_traj](/sample_data/output_sample/2d_trajectory.png)
+1. 3D Trajectory
+  ![3d_traj](/sample_data/output_sample/3d_trajectory.png)
 
-When you zoom in on the graph, you can see the correspondence.
-![2D_traj_zoom](/sample_data/output_sample/2d_trajectory_zoom.png)
+1. X Y Z
+  ![xyz](/sample_data/output_sample/xyz.png)
 
-2. 2D Error
+1. X Y Z error
+  ![xyz_error](/sample_data/output_sample/xyz_error.png)
 
-![2d_error](/sample_data/output_sample/2d_error.png)
+1. 2D Error
+  ![2d_error](/sample_data/output_sample/2d_error.png)
 
-3. Height Error
+1. 3D Error
+  ![3d_error](/sample_data/output_sample/3d_error.png)
 
-![height_error](/sample_data/output_sample/height_error.png)
+1. Longitudinal Error
+  ![longitudinal_error](/sample_data/output_sample/longitudinal_error.png)
 
-4. 3D Error
+1. Lateral Error
+  ![lateral_error](/sample_data/output_sample/lateral_error.png)
 
-![3d_error](/sample_data/output_sample/3d_error.png)
+1. Roll Pitch Yaw:
+  ![rpy](/sample_data/output_sample/rpy.png)
+  You can choose the unit of the vertical axis between radian and degree.
 
-5. Longitudinal Error
-
-![longitudinal_error](/sample_data/output_sample/longitudinal_error.png)
-
-6. Lateral Error
-
-![lateral_error](/sample_data/output_sample/lateral_error.png)
-
-7. Roll Pitch Yaw
-
-You can choose the unit of the vertical axis between radian and degree.
-![rpy](/sample_data/output_sample/rpy.png)
-
-8. Roll Pitch Yaw Error
-
-You can choose the unit of the vertical axis between radian and degree.
-![rpy_error](/sample_data/output_sample/rpy_error.png)
+1. Roll Pitch Yaw Error
+  ![rpy_error](/sample_data/output_sample/rpy_error.png)
+  You can choose the unit of the vertical axis between radian and degree.

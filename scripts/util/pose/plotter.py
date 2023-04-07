@@ -128,7 +128,7 @@ def plot_xyz_error(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_para
         ax.legend()
     plt.tight_layout()
 
-    return {"xyz": fig_xyz}
+    return {"xyz_error": fig_xyz}
 
 def plot_2d_error(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: OptParam) -> Dict[str, Figure]:
     fig_2d_error = plt.figure("2D_Error", figsize=(16, 9), dpi=120)
