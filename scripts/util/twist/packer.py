@@ -202,6 +202,7 @@ class DataPack:
         adjusted_data["z"] = original_data.iloc[:, param.z_column]
 
         # rotation
+        round2pipi = lambda v: (v % (math.pi * 2)) - (0 if (v % (math.pi * 2)) < math.pi else (math.pi * 2))
         if param.use_quaternion:
             for i in range(len(original_data)):
                 ref_q_temp = [
@@ -215,13 +216,13 @@ class DataPack:
                 adjusted_data.at[i, "pitch"] = ref_e_temp.as_euler("ZYX", degrees=True)[1]
                 adjusted_data.at[i, "yaw"] = ref_e_temp.as_euler("ZYX", degrees=True)[0]
         elif (not param.use_quaternion) and param.use_radian:
-            adjusted_data["roll"] = original_data.iloc[:, param.roll_column] * 180 / math.pi
-            adjusted_data["pitch"] = original_data.iloc[:, param.pitch_column] * 180 / math.pi
-            adjusted_data["yaw"] = original_data.iloc[:, param.yaw_column] * 180 / math.pi
+            adjusted_data["roll"] = original_data.iloc[:, param.roll_column].map(round2pipi).map(np.rad2deg)
+            adjusted_data["pitch"] = original_data.iloc[:, param.pitch_column].map(round2pipi).map(np.rad2deg)
+            adjusted_data["yaw"] = original_data.iloc[:, param.yaw_column].map(round2pipi).map(np.rad2deg)
         elif (not param.use_quaternion) and (not param.use_radian):
-            adjusted_data["roll"] = original_data.iloc[:, param.roll_column] * math.pi / 180
-            adjusted_data["pitch"] = original_data.iloc[:, param.pitch_column] * math.pi / 180
-            adjusted_data["yaw"] = original_data.iloc[:, param.yaw_column] * math.pi / 180
+            adjusted_data["roll"] = original_data.iloc[:, param.roll_column].map(np.deg2rad).map(round2pipi).map(np.rad2deg)
+            adjusted_data["pitch"] = original_data.iloc[:, param.pitch_column].map(np.deg2rad).map(round2pipi).map(np.rad2deg)
+            adjusted_data["yaw"] = original_data.iloc[:, param.yaw_column].map(np.deg2rad).map(round2pipi).map(np.rad2deg)
 
         # enu velocity
         if param.use_enu_velocity:
