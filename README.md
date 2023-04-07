@@ -1,4 +1,4 @@
-# localization_evaluation_toolkit -Ver.6.1 (Update 2023/03/14)
+# localization_evaluation_toolkit -Ver.7.0 (Update 2023/04/07)
 You can evaluate your localization result by comparing it to a reliable pose trajectory.
 The start time, end time, and period can be different for each data.
 The evaluation is automatically aligned with the one with the smaller number of data.
@@ -6,6 +6,7 @@ The evaluation is automatically aligned with the one with the smaller number of 
 ## Releases
 | Version | Release Date       | Python version       | Note                                                         |
 | ------- | ------------------ | -------------------- | ------------------------------------------------------------ |
+| 7.0     | April 7, 2023      | python 3.7 or higher | Support twist evaluation                                     |
 | 6.0     | Feburary 3, 2023   | python 3.7 or higher | Support multi-file evaluation (mixtures of csv and ros2 bag) |
 | 5.0     | January 20, 2023   | python 3.7 or higher | Support multi-file evaluation (CSV only)                     |
 | 3.2     | September 29, 2022 | python 3.6 or higher | 1:1 evaluation                                               |
@@ -176,7 +177,7 @@ $ python3 scripts/pose_main.py config/evaluation_pose.yaml
 
 ## Sub-evaluation and adjustment
 
-**A. Evaluate TP, NVTL, execution time and iteration with ros2 bag files**
+**A. Evaluate TP, NVTL, execution time, iteration and error ellipse with ros2 bag files**
 
 Please input a rosbag containing the following (at least one) topic.
 ```
