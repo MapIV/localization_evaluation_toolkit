@@ -1,23 +1,14 @@
-# localization_evaluation_toolkit -Ver.7.0 (Update 2023/04/07)
-You can evaluate your localization result by comparing it to a reliable pose trajectory.
-The start time, end time, and period can be different for each data.
-The evaluation is automatically aligned with the one with the smaller number of data.
+# localization_evaluation_toolkit
 
-## Releases
-| Version | Release Date       | Python version       | Note                                                         |
-| ------- | ------------------ | -------------------- | ------------------------------------------------------------ |
-| 7.0     | April 7, 2023      | python 3.7 or higher | Support twist evaluation                                     |
-| 6.0     | Feburary 3, 2023   | python 3.7 or higher | Support multi-file evaluation (mixtures of csv and ros2 bag) |
-| 5.0     | January 20, 2023   | python 3.7 or higher | Support multi-file evaluation (CSV only)                     |
-| 3.2     | September 29, 2022 | python 3.6 or higher | 1:1 evaluation                                               |
+An evaluator for localization results, which compares with a reliable pose trajectory. Specifically, comparisons between different start times, end times, and periods are supported, since evaluation will be automatically aligned with the one with fewer data.
 
-## Installation
+## 1. Installation & Preparation
+
+Clone this repo to the local environment.
 
 ```sh
 $ git clone https://github.com/MapIV/localization_evaluation_toolkit.git
 ```
-
-## Preparation
 
 Evaluatable data types are limited to the format of CSV or ros2 bag, and the start time, end time, and period can be different for each data.
 Specifically, a valid **CSV file** requires at least the following entries.
@@ -31,9 +22,11 @@ And a valid ros2 bag file should have one of the following types of topics.
 - `geometry_msgs/msg/PoseWithCovarianceStamped`
 - `nav_msgs/msg/Odometry`
 
-## Execution
+## 2. Main-evaluation
 
-A standard configuration file for evaluation consists of the following parts.
+### 2.1 Pose evaluation
+
+A standard configuration file for pose evaluation consists of the following parts.
 
 - Reference
 - Result1, Result2, ...
@@ -175,11 +168,210 @@ $ cd localization_evaluation_toolkit
 $ python3 scripts/pose_main.py config/evaluation_pose.yaml
 ```
 
-## Sub-evaluation and adjustment
+For example, you may output the following graphs with the sample data.
 
-**A. Evaluate TP, NVTL, execution time, iteration and error ellipse with ros2 bag files**
+```sh
+$ cd localization_evaluation_toolkit
+$ python3 scripts/pose_main.py sample_data/config/sasashima_evaluation.yaml
+```
 
-Please input a rosbag containing the following (at least one) topic.
+<details>
+<summary>2D Trajectory</summary>
+<img src="sample_data/output_sample/2d_trajectory.png">
+When you zoom in on the graph, you can see the correspondence.
+<img src="sample_data/output_sample/2d_trajectory_zoom.png">
+</details>
+
+<details>
+<summary>3D Trajectory</summary>
+<img src="sample_data/output_sample/3d_trajectory.png">
+</details>
+
+<details>
+<summary>X Y Z</summary>
+<img src="sample_data/output_sample/xyz.png">
+</details>
+
+<details>
+<summary>X Y Z error</summary>
+<img src="sample_data/output_sample/xyz_error.png">
+</details>
+
+<details>
+<summary>2D Error</summary>
+<img src="sample_data/output_sample/2d_error.png">
+</details>
+
+<details>
+<summary>3D Error</summary>
+<img src="sample_data/output_sample/3d_error.png">
+</details>
+
+<details>
+<summary>Longitudinal Error</summary>
+<img src="sample_data/output_sample/longitudinal_error.png">
+</details>
+
+<details>
+<summary>Lateral Error</summary>
+<img src="sample_data/output_sample/lateral_error.png">
+</details>
+
+<details>
+<summary>Roll Pitch Yaw</summary>
+You can choose the unit of the vertical axis between radian and degree.
+<img src="sample_data/output_sample/rpy.png">
+</details>
+
+<details>
+<summary>Roll Pitch Yaw Error</summary>
+You can choose the unit of the vertical axis between radian and degree.
+<img src="sample_data/output_sample/rpy_error.png">
+</details>
+
+### 2.2 Twist evaluation
+
+A standard configuration file for twist evaluation consists of the following parts.
+
+- Reference
+- Twist
+- Optional settings
+
+It is required that the reference block should have the name of ***Reference*** and the names of result blocks should begin with ***Twist***.
+When specifying the paths, it is recommended to use the absolute path.
+There is a sample YAML file at `config/evaluation_twist.yaml`.
+To create your own configuration file, just use the following templates,
+
+<details>
+<summary>Template of Reference (click to expand)</summary>
+
+```yaml
+Reference:
+  ## Auxiliary info
+  label: reference
+  path: /path/to/reference/csv
+
+  ## Time
+  separate_time_stamp: false # [true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
+  #--------true--------#
+  secs_stamp_column: 1
+  nsecs_stamp_column: 2
+  #--------false-------#
+  stamp_column: 2
+
+  ## Position
+  x_column: 4
+  y_column: 5
+  z_column: 6
+
+  ## Rotation
+  use_quaternion: true # [true]:Set Quaternion / [false]:Set Euler
+  #--------true--------#
+  # Quaternion
+  ori_x_column: 7
+  ori_y_column: 8
+  ori_z_column: 9
+  ori_w_column: 10
+  #--------false-------#
+  # Euler
+  use_radian: true # [true]:radian / [false]:degree
+  roll_column: 7
+  pitch_column: 8
+  yaw_column: 9
+
+  ## Enu velocity
+  use_enu_vel: false # [true]: use enu velocity / [false]: ignored
+  vel_x_column: 0
+  vel_y_column: 0
+  vel_z_column: 0
+
+  ## Angular
+  use_angular: false # [true]: use angular / [false]: ignored
+  angular_x_column: 0
+  angular_y_column: 0
+  angular_z_column: 0
+
+  # GNSS quality
+  use_gnss_qual: false # [true]: use GNSS quality / [false]: ignored
+  gnss_qual: 10
+```
+
+</details>
+
+<details>
+<summary>Template of Twist (click to expand)</summary>
+
+```yaml
+Twist:
+  ## Auxiliary info
+  label: twist
+  path: /path/to/twist/csv
+
+  ## Time
+  separate_time_stamp: false # [true]:Set secs_stamp_column and nsecs_stamp_column / [false]:Set stamp_column
+  #--------true--------#
+  secs_stamp_column: 1
+  nsecs_stamp_column: 2
+  #--------false-------#
+  stamp_column: 2
+
+  ## Linear
+  linear_x_column: 4
+  linear_y_column: 5
+  linear_z_column: 6
+
+  ## Angular
+  angular_x_column: 7
+  angular_y_column: 8
+  angular_z_column: 9
+```
+
+</details>
+
+<details>
+<summary>Template of optional settings (click to expand)</summary>
+
+```yaml
+# Trajectory graph numbering
+progress_info: 0 # [0]:off, [1]:number, [2]:time, [3]:ros time, [4]:distance
+interval: 0      # progress_info is [2]:second, [3]:second, [4]:meter
+
+# Misc
+sync_time_threshold: 0.01  # Time threshold for judgment for time synchronization [s]
+leap_time: 0.0             # Offset correction for time synchronizatio [s]
+based_heading_angle: false # [true]:The heading angle is based on North / [false]:The heading angle is based on East (ros data)
+distance_length: 100       # Distance to calculate relative trajectory [m]
+distance_step: 50          # Calculate relative trajectories step [m]
+eval_step_max: 3.0   # Maximum value of error to be evaluated default [m]
+
+# Font
+title_font_size: 14
+label_font_size: 10
+ticks_font_size: 8
+
+# Save
+save_figures: true
+save_extension_type: png # without "."
+save_dataframe: true
+output_directory: /path/to/output/directory
+```
+
+</details>
+
+and run with
+
+```sh
+$ cd localization_evaluation_toolkit
+$ python3 scripts/twist_main.py config/evaluation_twist.yaml
+```
+
+## 3. Sub-evaluation
+
+### 3.1 NDT performance
+
+Evaluation of TP, NVTL, execution time, iteration and error ellipse with ros2 bag files.
+
+The input rosbag file should contain the following (at least one) topic.
 ```
 /localization/pose_estimator/pose_with_covariance
 /localization/pose_estimator/nearest_voxel_transformation_likelihood
@@ -194,56 +386,15 @@ $ source ~/xxxxxx/install/setup.bash
 $ python3 sub_ndt_evaluation.py [bag_path] [output_folder_path]
 ```
 
-**B. Adjust time stamp with CSV files**
-```sh
-$ cd localization_evaluation_toolkit/sub_scripts
-$ python3 adjust_time_stamp.py [target_csv_path] [offset_csv_path] [ajust_time_stamp.yaml path] [output_folder_path]
-```
+### 3.2 Eagleye log evaluation
 
-**C. Create CSV file with covariance column from rosbag file**  
-In detail, refer to [qiita article](https://qiita.com/koki2022/items/148d56e0f8eee45a0a62)
+Currently, refer to [the original doc page](https://github.com/MapIV/eagleye/tree/main-ros1/eagleye_util/trajectory_plot#eagleye_pp_single_evaluation) for details.
+
+### 3.3 Covariance file generation
+
+Create a CSV file with covariance columns from rosbag file. In detail, refer to [qiita article](https://qiita.com/koki2022/items/148d56e0f8eee45a0a62) for details.
+
 ```sh
 $ cd localization_evaluation_toolkit/sub_scripts
 $ python covariance_to_csv.py [input_bag_path] [output_folder_path]
 ```
-
-## Output graphs
-Sample output graphs are shown below. You can test this evaluation script easily with the following command. All graphs are output in full HD.
-```sh
-$ cd localization_evaluation_toolkit/scripts
-$ python3 main.py ../sample_data/config/sasashima_evaluation.yaml
-```
-
-1. 2D Trajectory
-  ![2d_traj](/sample_data/output_sample/2d_trajectory.png)
-  When you zoom in on the graph, you can see the correspondence.
-  ![2D_traj_zoom](/sample_data/output_sample/2d_trajectory_zoom.png)
-
-1. 3D Trajectory
-  ![3d_traj](/sample_data/output_sample/3d_trajectory.png)
-
-1. X Y Z
-  ![xyz](/sample_data/output_sample/xyz.png)
-
-1. X Y Z error
-  ![xyz_error](/sample_data/output_sample/xyz_error.png)
-
-1. 2D Error
-  ![2d_error](/sample_data/output_sample/2d_error.png)
-
-1. 3D Error
-  ![3d_error](/sample_data/output_sample/3d_error.png)
-
-1. Longitudinal Error
-  ![longitudinal_error](/sample_data/output_sample/longitudinal_error.png)
-
-1. Lateral Error
-  ![lateral_error](/sample_data/output_sample/lateral_error.png)
-
-1. Roll Pitch Yaw:
-  ![rpy](/sample_data/output_sample/rpy.png)
-  You can choose the unit of the vertical axis between radian and degree.
-
-1. Roll Pitch Yaw Error
-  ![rpy_error](/sample_data/output_sample/rpy_error.png)
-  You can choose the unit of the vertical axis between radian and degree.
