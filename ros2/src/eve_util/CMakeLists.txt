@@ -100,16 +100,16 @@ if(USE_CUDA)
 endif()
 
 
-ament_auto_add_executable(trajectory_publisher src/trajectory_publisher.cpp)
-target_include_directories(trajectory_publisher PUBLIC
+ament_auto_add_executable(trajectory_viewer src/trajectory_viewer.cpp)
+target_include_directories(trajectory_viewer PUBLIC
   include
   ${PCL_INCLUDE_DIRS}
 )
-target_link_libraries(trajectory_publisher
+target_link_libraries(trajectory_viewer
   ${Boost_LIBRARIES}
   ${PCL_LIBRARIES}
 )
-install(TARGETS trajectory_publisher
+install(TARGETS trajectory_viewer
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

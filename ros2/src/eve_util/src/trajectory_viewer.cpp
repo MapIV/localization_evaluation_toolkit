@@ -85,15 +85,22 @@ void pose2tf(const geometry_msgs::msg::PoseStamped& pose, geometry_msgs::msg::Tr
 
 
 int main(int argc, char * argv[]) {
+
+  if (argc == 1)
+  {
+    std::cerr << std::string(argv[0]) + " <BAG_FILE> <PCD_FILE>" << std::endl;
+    exit(1);
+  }
+
   rclcpp::init(argc, argv);
   auto node = std::make_shared<rclcpp::Node>("publisher_node");
+
+  std::string bag_file = argv[1];
+  std::string pcd_file = argv[2];
 
   auto publisher_path = node->create_publisher<nav_msgs::msg::Path>("trajectory", rclcpp::QoS{1}.transient_local());
   auto publisher_map = node->create_publisher<sensor_msgs::msg::PointCloud2>("pointcloud_map", rclcpp::QoS(1).transient_local());
   tf2_ros::StaticTransformBroadcaster tf_broascaster_(node);
-
-  std::string bag_file = argv[1];
-  std::string pcd_file = argv[2];
 
   nav_msgs::msg::Path path;
   pose2path(bag_file,path);
