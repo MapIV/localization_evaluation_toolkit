@@ -17,6 +17,24 @@ _EOT_
 exit 1
 }
 
+# Parse option
+if [ "$OPTIND" = 1 ]; then
+  while getopts h OPT
+  do
+    case $OPT in
+      h)
+        usage ;;
+      \?)
+        echo "Undefined option $OPT"
+        usage ;;
+    esac
+  done
+else
+  echo "No installed getopts-command." 1>&2
+  exit 1
+fi
+shift $(($OPTIND - 1))
+
 rviz2 -d ${BASE_DIR}"/ros2/src/eve_util/rviz/trajectory_publisher.rviz" &
 
 echo $1

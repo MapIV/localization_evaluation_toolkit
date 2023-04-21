@@ -115,5 +115,20 @@ install(TARGETS trajectory_viewer
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+ament_auto_add_executable(height_evaluator src/height_evaluator.cpp)
+target_include_directories(height_evaluator PUBLIC
+  include
+  ${PCL_INCLUDE_DIRS}
+)
+target_link_libraries(height_evaluator
+  ${Boost_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+install(TARGETS height_evaluator
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 
 ament_auto_package()
