@@ -16,6 +16,8 @@ if __name__ == "__main__":
             color=df_sort["score"],
             colorbar=dict(title="Height[m]"),
             colorscale=["blue","yellow","red"],
+            cmin=0,
+            cmax=0.4
         ),
         name="Position of LiDAR",
         mode="markers"
@@ -49,7 +51,7 @@ if __name__ == "__main__":
         mode="lines")
     )
     fig.update_xaxes(linecolor='black',gridcolor='lightgray',mirror=True,title="time[s]")
-    fig.update_yaxes(linecolor='black',gridcolor='lightgray',mirror=True,title="Height[m]")
+    fig.update_yaxes(linecolor='black',gridcolor='lightgray',mirror=True,title="Height[m]",range=[0,0.4])
     fig.update_coloraxes(colorbar_title="Height[m]",colorbar_dtick=1)
     fig.update_layout(title="Height score")
     fig.update_layout(font={"size":20})

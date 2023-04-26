@@ -1,0 +1,3 @@
+[submodule "ros1/src/lanelet2_parser"]
+	path = ros1/src/lanelet2_parser
+	url = git@github.com:MapIV/lanelet2_parser.git
