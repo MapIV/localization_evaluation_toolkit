@@ -283,3 +283,8 @@ Trajectory viewer
 ```
 ./ros1/devel/lib/eve_util/extract_within_lane <CSV_FILE> <OSM_FILE> <X_COLUMN_NUM> <Y_COLUMN_NUM>
 ```
+
+Scan to pcd
+```
+./install/eve_util/scan2pcd <BAG_FILE> <OUTPUT_DIR>
+```

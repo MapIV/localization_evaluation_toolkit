@@ -17,14 +17,9 @@ int main(int argc, char * argv[]) {
 
   if (argc == 1)
   {
-    std::cerr << std::string(argv[0]) + " <BAG_FILE> <PCD_FILE>" << std::endl;
+    std::cerr << std::string(argv[0]) + " <BAG_FILE> <OUTPUT_DIR>" << std::endl;
     exit(1);
   }
-
-  // poseの読み込み
-  // pointcloudの読み込み
-  // 
-
 
   std::string bag_file = argv[1];
   std::string output_dir = argv[2];
