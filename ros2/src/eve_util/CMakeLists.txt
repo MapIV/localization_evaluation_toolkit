@@ -130,5 +130,20 @@ install(TARGETS height_evaluator
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+ament_auto_add_executable(scan2pcd src/scan2pcd.cpp)
+target_include_directories(scan2pcd PUBLIC
+  include
+  ${PCL_INCLUDE_DIRS}
+)
+target_link_libraries(scan2pcd
+  ${Boost_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+install(TARGETS scan2pcd
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 
 ament_auto_package()
