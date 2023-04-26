@@ -249,3 +249,37 @@ You can choose the unit of the vertical axis between radian and degree.
 
 You can choose the unit of the vertical axis between radian and degree.
 ![rpy_error](/sample_data/output_sample/rpy_error.png)
+
+
+## EVE Autonomy evaluation
+
+### Build
+Terminal 1
+``` 
+source /opt/ros/noetic/setup.bash
+cd localization_evaluation_toolkit/ros1
+catkin_make -DCMAKE_BUILD_TYPE=Release
+```
+Terminal 2
+``` 
+source /opt/ros/galactic/setup.bash
+cd localization_evaluation_toolkit/ros2
+colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+```
+
+### Usage
+
+Evaluation
+``` 
+./sub_scripts/eve_localization_evaluation.sh <BAG_FILE> <PCD_FILE> <OUTPUT_DIR>
+```
+
+Trajectory viewer
+``` 
+ ./sub_scripts/trajectory_viewer.sh <BAG_FILE> <PCD_FILE>
+```
+
+ Extract csv rows within lane
+```
+./ros1/devel/lib/eve_util/extract_within_lane <CSV_FILE> <OSM_FILE> <X_COLUMN_NUM> <Y_COLUMN_NUM>
+```
