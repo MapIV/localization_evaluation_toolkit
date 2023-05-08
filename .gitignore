@@ -5,3 +5,4 @@ __pycache__/
 *install*
 *log*
 *devel*
+*.bak

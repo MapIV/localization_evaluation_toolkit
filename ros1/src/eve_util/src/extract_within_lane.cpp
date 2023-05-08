@@ -8,7 +8,6 @@
 
 std::vector<std::string> split(const std::string str, char delimiter){
   std::vector<std::string> output;
-  std::cout << str << std::endl;
 
   std::istringstream sstr(str);
   std::string tmp;
@@ -69,8 +68,6 @@ int main(int argc, char** argv)
     double x = std::stod(vec[x_col]);
     double y = std::stod(vec[y_col]);
     double z;
-    std::cout << x_col <<"," << y_col << std::endl;
-    std::cout << x <<"," << y << std::endl;
     if(lanelet_parser.isInside(x,y,z)){
       ofs << str << std::endl;
     }
