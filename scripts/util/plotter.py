@@ -311,7 +311,7 @@ def save_df(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: OptP
     ref_pack.data[ref_cols].to_csv(f"{opt_param.output_directory}/sync_{ref_pack.label}_df.csv")
     # save results df
     for res_pack in res_packs:
-        res_cols = ref_cols + ([
+        res_cols = ref_cols + (["error_2d","error_3d"]) + ([
             "cov_xx","cov_xy","cov_yx","cov_yy",
             "ellipse_long","ellipse_short","ellipse_yaw",
             "ellipse_lateral","ellipse_longitudinal"
