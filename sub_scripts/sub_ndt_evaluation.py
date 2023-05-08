@@ -15,6 +15,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append("../scripts")
 from deprecated import adjust, read_ros2bag, yaml_param
 
+NVTL_PLOT_RANGE=[0,2.0]
+TP_PLOT_RANGE=[0,4.0]
+ITR_PLOT_RANGE=[0,30]
+ERROR_ELLIPSE_RANGE=[0,1.2]
+ERROR_ELLIPSE_LATERAL_DIRECTION=[0,0.4]
 
 class BagParam:
     def __init__(self):
@@ -54,11 +59,11 @@ def plot_trajectory_nvtl(pose_param, nvtl, output_dir):
         nvtl.df = nvtl.df.append(nvtl.df_temp.iloc[sync_id, :], ignore_index=True)
     nvtl.df.reset_index(inplace=True, drop=True)
 
-    fig_trj_nvtl = plt.figure("Trajectory and NVTL", figsize=(16, 9), dpi=120)
+    fig_trj_nvtl = plt.figure("Trajectory and NVTL")
     ax_trj_nvtl = fig_trj_nvtl.add_subplot(111)
     ax_trj_nvtl.set_title("Trajectory and NVTL")
     scatter_nvtl = ax_trj_nvtl.scatter(
-        pose_param.df["x"], pose_param.df["y"], c=nvtl.df["data"], vmin=0.0, vmax=5, cmap="jet"
+        pose_param.df["x"], pose_param.df["y"], c=nvtl.df["data"], vmin=NVTL_PLOT_RANGE[0], vmax=NVTL_PLOT_RANGE[1], cmap="jet"
     )
     plt.colorbar(scatter_nvtl, label="NVTL")
     ax_trj_nvtl.set_xlabel("x[m]")
@@ -75,11 +80,11 @@ def plot_trajectory_tp(pose_param, tp, output_dir):
         tp.df = tp.df.append(tp.df_temp.iloc[sync_id, :], ignore_index=True)
     tp.df.reset_index(inplace=True, drop=True)
 
-    fig_trj_tp = plt.figure("Trajectory and TP", figsize=(16, 9), dpi=120)
+    fig_trj_tp = plt.figure("Trajectory and TP")
     ax_trj_tp = fig_trj_tp.add_subplot(111)
     ax_trj_tp.set_title("Trajectory and TP")
     scatter_tp = ax_trj_tp.scatter(
-        pose_param.df["x"], pose_param.df["y"], c=tp.df["data"], vmin=0.0, vmax=7.0, cmap="jet"
+        pose_param.df["x"], pose_param.df["y"], c=tp.df["data"], vmin=TP_PLOT_RANGE[0], vmax=TP_PLOT_RANGE[1], cmap="jet", s=2
     )
     plt.colorbar(scatter_tp, label="TP")
     ax_trj_tp.set_xlabel("x[m]")
@@ -90,31 +95,31 @@ def plot_trajectory_tp(pose_param, tp, output_dir):
 
 
 def plot_nvtl(nvtl, output_dir):
-    fig_nvtl = plt.figure("NVTL", figsize=(16, 9), dpi=120)
+    fig_nvtl = plt.figure("NVTL")
     ax_nvtl = fig_nvtl.add_subplot(111)
     ax_nvtl.set_title("NVTL")
     ax_nvtl.plot(nvtl.df_temp["time"] - nvtl.df_temp.at[0, "time"], nvtl.df_temp["data"], marker="o", markersize=2)
     ax_nvtl.set_xlabel("time[s]")
     ax_nvtl.set_ylabel("NVTL")
-    ax_nvtl.set_ylim(0, 5)
+    ax_nvtl.set_ylim(NVTL_PLOT_RANGE[0],NVTL_PLOT_RANGE[1])
     ax_nvtl.grid()
     fig_nvtl.savefig(output_dir + "/nvtl.png")
 
 
 def plot_tp(tp, output_dir):
-    fig_tp = plt.figure("TP", figsize=(16, 9), dpi=120)
+    fig_tp = plt.figure("TP")
     ax_tp = fig_tp.add_subplot(111)
     ax_tp.set_title("TP")
     ax_tp.plot(tp.df_temp["time"] - tp.df_temp.at[0, "time"], tp.df_temp["data"], marker="o", markersize=2)
     ax_tp.set_xlabel("time[s]")
     ax_tp.set_ylabel("TP")
-    ax_tp.set_ylim(0, 7)
+    ax_tp.set_ylim(TP_PLOT_RANGE[0],TP_PLOT_RANGE[1])
     ax_tp.grid()
     fig_tp.savefig(output_dir + "/tp.png")
 
 
 def plot_exe_time(exe_time, output_dir):
-    fig_exe_time = plt.figure("Execution Time", figsize=(16, 9), dpi=120)
+    fig_exe_time = plt.figure("Execution Time")
     ax_exe_time = fig_exe_time.add_subplot(111)
     ax_exe_time.set_title("Execution Time")
     ax_exe_time.plot(
@@ -131,12 +136,13 @@ def plot_exe_time(exe_time, output_dir):
 
 
 def plot_itr(itr, output_dir):
-    fig_itr = plt.figure("Iteration", figsize=(16, 9), dpi=120)
+    fig_itr = plt.figure("Iteration")
     ax_itr = fig_itr.add_subplot(111)
     ax_itr.set_title("Iteration")
     ax_itr.plot(itr.df_temp["time"] - itr.df_temp.at[0, "time"], itr.df_temp["data"], marker="o", markersize=2)
     ax_itr.set_xlabel("time[s]")
     ax_itr.set_ylabel("Iteration")
+    ax_itr.set_ylim(ITR_PLOT_RANGE[0],ITR_PLOT_RANGE[1])
     ax_itr.grid()
     fig_itr.savefig(output_dir + "/itr.png")
 
@@ -144,7 +150,7 @@ def plot_itr(itr, output_dir):
 def plot_ellipse_ls(pose_param, output_dir):
     # ellipse long
     start_time = pose_param.df.at[0, "time"]
-    fig_el = plt.figure("Error Ellipse (long/short)", figsize=(16, 9), dpi=120)
+    fig_el = plt.figure("Error Ellipse (long/short)")
     ax_el_long = fig_el.add_subplot(211)
     ax_el_long.set_title("Ellipse Long Radius")
     ax_el_long.plot(
@@ -176,10 +182,22 @@ def plot_ellipse_ls(pose_param, output_dir):
     fig_el.savefig(output_dir + "/error_ellipse_ls.png")
 
 
+def plot_ellipse_long(pose_param, output_dir):
+    fig_el = plt.figure("Error Long Ellipse")
+    ax_el= fig_el.add_subplot(111)
+    ax_el.set_title("Error Long Ellipse")
+    ax_el.plot(pose_param.df["time"] - pose_param.df.at[0, "time"], pose_param.df["ellipse_long"],marker="o", markersize=2)
+    ax_el.set_xlabel("time[s]")
+    ax_el.set_ylabel("size[m]")
+    ax_el.set_ylim(ERROR_ELLIPSE_RANGE[0],ERROR_ELLIPSE_RANGE[1])
+    ax_el.grid()
+    fig_el.savefig(output_dir + "/error_ellipse_long.png")
+
+
 def plot_ellipse_ll(pose_param, output_dir):
     # ellipse longitudinal direction
     start_time = pose_param.df.at[0, "time"]
-    fig_el2 = plt.figure("Error Ellipse (longitudinal/lateral)", figsize=(16, 9), dpi=120)
+    fig_el2 = plt.figure("Error Ellipse (longitudinal/lateral)")
     ax_el2_longitudinal = fig_el2.add_subplot(211)
     ax_el2_longitudinal.set_title("Ellipse Longitudinal Direction")
     ax_el2_longitudinal.plot(
@@ -210,6 +228,18 @@ def plot_ellipse_ll(pose_param, output_dir):
     fig_el2.savefig(output_dir + "/error_ellipse2_ll.png")
 
 
+def plot_ellipse_lateral(pose_param, output_dir):
+    fig_lateral = plt.figure("Error Ellipse Lateral")
+    ax_lateral = fig_lateral.add_subplot(111)
+    ax_lateral.set_title("Error Ellipse Lateral")
+    ax_lateral.plot(pose_param.df["time"] - pose_param.df.at[0, "time"], pose_param.df["ellipse_lateral"],marker="o", markersize=2)
+    ax_lateral.set_xlabel("time[s]")
+    ax_lateral.set_ylabel("size[m]")
+    ax_lateral.set_ylim(ERROR_ELLIPSE_LATERAL_DIRECTION[0],ERROR_ELLIPSE_LATERAL_DIRECTION[1])
+    ax_lateral.grid()
+    fig_lateral.savefig(output_dir + "/error_ellipse_lateral.png")
+
+
 def create_ellipse(pose_param, ax):
     for i in range(len(pose_param.df)):
         e = patches.Ellipse(
@@ -224,16 +254,16 @@ def create_ellipse(pose_param, ax):
 
 
 def plot_ellipse_trj(pose_param, output_dir):
-    fig_trj_el_long = plt.figure("Trajectory and Ellipse Long", figsize=(16, 9), dpi=120)
+    fig_trj_el_long = plt.figure("Trajectory and Ellipse Long")
     ax_trj_el_long = fig_trj_el_long.add_subplot(111)
 
-    fig_trj_el_short = plt.figure("Trajectory and Ellipse Short", figsize=(16, 9), dpi=120)
+    fig_trj_el_short = plt.figure("Trajectory and Ellipse Short")
     ax_trj_el_short = fig_trj_el_short.add_subplot(111)
 
-    fig_trj_el2_longitudinal = plt.figure("Trajectory and Ellipse Longitudinal", figsize=(16, 9), dpi=120)
+    fig_trj_el2_longitudinal = plt.figure("Trajectory and Ellipse Longitudinal")
     ax_trj_el2_longitudinal = fig_trj_el2_longitudinal.add_subplot(111)
 
-    fig_trj_el2_lateral = plt.figure("Trajectory and Ellipse Lateral", figsize=(16, 9), dpi=120)
+    fig_trj_el2_lateral = plt.figure("Trajectory and Ellipse Lateral")
     ax_trj_el2_lateral = fig_trj_el2_lateral.add_subplot(111)
 
     create_ellipse(pose_param, ax_trj_el_long)
@@ -306,24 +336,28 @@ if __name__ == "__main__":
     nvtl.topic = "/localization/pose_estimator/nearest_voxel_transformation_likelihood"
     read_ros2bag.read_unique(bag_file, nvtl)
     nvtl_empty = nvtl.df_temp.empty
+    nvtl.df_temp.to_csv(output_dir+"/nvtl.csv",index = False)
 
     print("Load TP")
     tp = BagParam()
     tp.topic = "/localization/pose_estimator/transform_probability"
     read_ros2bag.read_unique(bag_file, tp)
     tp_empty = tp.df_temp.empty
+    tp.df_temp.to_csv(output_dir+"/tp.csv",index = False)
 
     print("Load Execute time")
     exe_time = BagParam()
     exe_time.topic = "/localization/pose_estimator/exe_time_ms"
     read_ros2bag.read_unique(bag_file, exe_time)
     exe_time_empty = exe_time.df_temp.empty
+    exe_time.df_temp.to_csv(output_dir+"/exe_time.csv",index = False)
 
     print("Load Iteration")
     itr = BagParam()
     itr.topic = "/localization/pose_estimator/iteration_num"
     read_ros2bag.read_unique(bag_file, itr)
     itr_empty = itr.df_temp.empty
+    itr.df_temp.to_csv(output_dir+"/itr.csv",index = False)
 
     # Plot
     # trajectory nvtl
@@ -360,8 +394,10 @@ if __name__ == "__main__":
     if pose_empty == False:
         print("Plot Ellipse")
         adjust.calc_ellipse(pose_param)
+        pose_param.df.to_csv(output_dir+"/pose.csv",index = False)
+        plot_ellipse_long(pose_param, output_dir)
+        plot_ellipse_lateral(pose_param, output_dir)
         plot_ellipse_ls(pose_param, output_dir)
         plot_ellipse_ll(pose_param, output_dir)
         plot_ellipse_trj(pose_param, output_dir)
 
-    plt.show()
