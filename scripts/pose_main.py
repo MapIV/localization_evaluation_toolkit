@@ -3,7 +3,7 @@ import yaml
 
 sys.dont_write_bytecode = True
 
-from util import configer, packer, plotter
+from util.pose import configer, packer, plotter
 
 if __name__ == "__main__":
     print("Loading yaml file...", end="", flush=True)
@@ -16,10 +16,10 @@ if __name__ == "__main__":
     ref_pack, res_packs = packer.param2pack(ref_param, res_params, opt_param)
     print("Completed!!")
 
-    print("Plot graph...", end="", flush=True)
+    print("Plotitng graph...", end="", flush=True)
     figs = plotter.plot(ref_pack, res_packs, opt_param)
     print("Completed!!")
 
-    print("Save data...", end="", flush=True)
+    print("Saving data...", end="", flush=True)
     plotter.save(ref_pack, res_packs, figs, opt_param)
     print("Completed!!")

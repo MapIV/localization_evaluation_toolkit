@@ -8,7 +8,7 @@ import pandas as pd
 from scipy.spatial.transform import Rotation
 from typing import List, Tuple
 
-from util.configer import DataParam, OptParam
+from util.pose.configer import DataParam, OptParam
 
 class DataPack:
     def __init__(self, param: DataParam, opt_param: OptParam) -> None:

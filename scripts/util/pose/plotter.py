@@ -8,8 +8,8 @@ import numpy as np
 from functools import reduce
 from typing import List, Dict
 
-from util.configer import OptParam
-from util.packer import RefDataPack, ResDataPack
+from util.pose.configer import OptParam
+from util.pose.packer import RefDataPack, ResDataPack
 
 def plot_2d_traj(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: OptParam) -> Dict[str, Figure]:
     fig_2d_trj = plt.figure("2D_Trajectory", figsize=(16, 9), dpi=120)
@@ -55,7 +55,7 @@ def plot_2d_traj(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param:
     ref_df = ref_pack.accumulate_df(ref_dfs)
     ax_2d_trj.scatter(ref_df["x"], ref_df["y"], c="k", zorder=-1, label=ref_pack.label)
 
-    ax_2d_trj.set_title("2D trajectory", fontsize=opt_param.title_font_size)
+    ax_2d_trj.set_title("2D Trajectory", fontsize=opt_param.title_font_size)
     ax_2d_trj.set_xlabel("x[m]", fontsize=opt_param.label_font_size)
     ax_2d_trj.set_ylabel("y[m]", fontsize=opt_param.label_font_size)
     ax_2d_trj.tick_params(labelsize=opt_param.ticks_font_size)
@@ -73,7 +73,7 @@ def plot_3d_traj(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param:
     for res_pack in res_packs:
         ax_3d_trj.plot3D(res_pack.data["x"], res_pack.data["y"], res_pack.data["z"], label=res_pack.label)
 
-    ax_3d_trj.set_title("3D trajectory", fontsize=opt_param.title_font_size)
+    ax_3d_trj.set_title("3D Trajectory", fontsize=opt_param.title_font_size)
     ax_3d_trj.set_xlabel('x[m]', fontsize=opt_param.label_font_size)
     ax_3d_trj.set_ylabel('y[m]', fontsize=opt_param.label_font_size)
     ax_3d_trj.set_zlabel('z[m]', fontsize=opt_param.label_font_size)
@@ -81,6 +81,54 @@ def plot_3d_traj(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param:
     ax_3d_trj.grid()
 
     return {"3d_trajectory": fig_3d_trj}
+
+def plot_xyz(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: OptParam) -> Dict[str, Figure]:
+    fig_xyz = plt.figure("X_Y_Z", figsize=(16, 9), dpi=120)
+
+    for i, name in enumerate(["x", "y", "z"]):
+        ax = fig_xyz.add_subplot(311 + i)
+
+        ax.plot(
+            ref_pack.axis_array, ref_pack.data[name],
+            marker="o", c="k", markersize=3, linewidth=0.5, label=ref_pack.label
+        )
+        for res_pack in res_packs:
+            ax.plot(
+                res_pack.axis_array, res_pack.data[name],
+                marker="o", markersize=1, linewidth=0.5, label=res_pack.label
+            )
+
+        ax.set_title(name.capitalize(), fontsize=opt_param.title_font_size)
+        ax.set_xlabel(ref_pack.axis_unit, fontsize=opt_param.label_font_size)
+        ax.set_ylabel("[m]", fontsize=opt_param.label_font_size)
+        ax.tick_params(labelsize=opt_param.ticks_font_size)
+        ax.grid()
+        ax.legend()
+    plt.tight_layout()
+
+    return {"xyz": fig_xyz}
+
+def plot_xyz_error(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: OptParam) -> Dict[str, Figure]:
+    fig_xyz = plt.figure("X_Y_Z_Error", figsize=(16, 9), dpi=120)
+
+    for i, name in enumerate(["x", "y", "z"]):
+        ax = fig_xyz.add_subplot(311 + i)
+
+        for res_pack in res_packs:
+            ax.plot(
+                res_pack.axis_array, res_pack.data[f"error_{name}"],
+                marker="o", markersize=1, linewidth=0.5, label=res_pack.label
+            )
+
+        ax.set_title(f"{name.capitalize()} Error", fontsize=opt_param.title_font_size)
+        ax.set_xlabel(ref_pack.axis_unit, fontsize=opt_param.label_font_size)
+        ax.set_ylabel("error[m]", fontsize=opt_param.label_font_size)
+        ax.tick_params(labelsize=opt_param.ticks_font_size)
+        ax.grid()
+        ax.legend()
+    plt.tight_layout()
+
+    return {"xyz_error": fig_xyz}
 
 def plot_2d_error(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: OptParam) -> Dict[str, Figure]:
     fig_2d_error = plt.figure("2D_Error", figsize=(16, 9), dpi=120)
@@ -100,27 +148,6 @@ def plot_2d_error(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param
     ax_2d_error.grid()
 
     return {"2d_error": fig_2d_error}
-
-def plot_height_error(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: OptParam) -> Dict[str, Figure]:
-    fig_height_error = plt.figure("Height_Error", figsize=(16, 9), dpi=120)
-    ax_height_error = fig_height_error.add_subplot(111)
-
-    for res_pack in res_packs:
-        ax_height_error.plot(
-            res_pack.axis_array, res_pack.data["error_z"],
-            marker="o", markersize=2, linewidth=0.5, label=res_pack.label
-        )
-
-    ax_height_error.set_title("Height Error", fontsize=opt_param.title_font_size)
-    ax_height_error.set_xlabel(ref_pack.axis_unit, fontsize=opt_param.label_font_size)
-    ax_height_error.set_ylabel("error[m]", fontsize=opt_param.label_font_size)
-    ylim = max(map(abs, ax_height_error.get_ylim()))
-    ax_height_error.set_ylim(-ylim, ylim)
-    ax_height_error.tick_params(labelsize=opt_param.ticks_font_size)
-    ax_height_error.legend()
-    ax_height_error.grid()
-
-    return {"height_error": fig_height_error}
 
 def plot_3d_error(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: OptParam) -> Dict[str, Figure]:
     fig_3d_error = plt.figure("3D_Error", figsize=(16, 9), dpi=120)
@@ -209,7 +236,7 @@ def plot_rpy(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: Opt
                 marker="o", markersize=1, linewidth=0.5, label=res_pack.label
             )
 
-        ax.set_title(name, fontsize=opt_param.title_font_size)
+        ax.set_title(name.capitalize(), fontsize=opt_param.title_font_size)
         ax.set_xlabel(ref_pack.axis_unit, fontsize=opt_param.label_font_size)
         ax.set_ylabel(ref_pack.degree_unit, fontsize=opt_param.label_font_size)
         ylim = max(map(abs, ax.get_ylim()))
@@ -290,9 +317,10 @@ def plot_velocity_error(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt
 def plot(ref_pack: RefDataPack, res_packs: List[ResDataPack], opt_param: OptParam) -> Dict[str, Figure]:
     figs = reduce(lambda x, y: {**x, **y}, [
         plot_2d_traj(ref_pack, res_packs, opt_param), # 2d trajectory
-        # plot_3d_traj(ref_pack, res_packs, opt_param), # 3d trajectory
+        plot_3d_traj(ref_pack, res_packs, opt_param), # 3d trajectory
+        plot_xyz(ref_pack, res_packs, opt_param), # xyz
+        plot_xyz_error(ref_pack, res_packs, opt_param), # xyz error
         plot_2d_error(ref_pack, res_packs, opt_param), # 2d error
-        plot_height_error(ref_pack, res_packs, opt_param), # height error
         plot_3d_error(ref_pack, res_packs, opt_param), # 3d error
         plot_longitudinal_error(ref_pack, res_packs, opt_param), # longitudinal error
         plot_lateral_error(ref_pack, res_packs, opt_param), # lateral error
