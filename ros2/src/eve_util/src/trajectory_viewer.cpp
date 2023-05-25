@@ -57,7 +57,7 @@ void pcd2msg(const std::string& pcd_file, sensor_msgs::msg::PointCloud2& pc2)
 {
   // Loading PCD
   std::cout << "Reading PCD file..." << std::endl;
-  pcl::PointCloud<pcl::PointXYZ>::Ptr input_pcd(new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZI>::Ptr input_pcd(new pcl::PointCloud<pcl::PointXYZI>);
   if (pcl::io::loadPCDFile(pcd_file, *input_pcd) == -1)
   {
     std::cerr << "Error: Cannot load PCD: " + pcd_file << std::endl;
@@ -98,8 +98,8 @@ int main(int argc, char * argv[]) {
   std::string bag_file = argv[1];
   std::string pcd_file = argv[2];
 
-  auto publisher_path = node->create_publisher<nav_msgs::msg::Path>("trajectory_2", rclcpp::QoS{1}.transient_local());
-  auto publisher_map = node->create_publisher<sensor_msgs::msg::PointCloud2>("pointcloud_map_2", rclcpp::QoS(1).transient_local());
+  auto publisher_path = node->create_publisher<nav_msgs::msg::Path>("trajectory", rclcpp::QoS{1}.transient_local());
+  auto publisher_map = node->create_publisher<sensor_msgs::msg::PointCloud2>("pointcloud_map", rclcpp::QoS(1).transient_local());
   tf2_ros::StaticTransformBroadcaster tf_broascaster_(node);
 
   nav_msgs::msg::Path path;
@@ -114,7 +114,7 @@ int main(int argc, char * argv[]) {
 
   publisher_path->publish(path);
   publisher_map->publish(pc2);
-  // tf_broascaster_.sendTransform(transform);
+  tf_broascaster_.sendTransform(transform);
   std::cout << "Publish" << std::endl;
  
   rclcpp::spin(node);
