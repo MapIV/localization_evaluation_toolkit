@@ -13,7 +13,7 @@ The evaluation is automatically aligned with the one with the smaller number of 
 ## Installation
 
 ```sh
-$ git clone https://github.com/MapIV/localization_evaluation_toolkit.git
+$ git clone https://github.com/MapIV/localization_evaluation_toolkit.git --recursive
 ```
 
 ## Preparation
@@ -269,17 +269,22 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 ### Usage
 
-Evaluation
+#### Evaluation
 ``` 
 ./sub_scripts/eve_localization_evaluation.sh <BAG_FILE> <PCD_FILE> <OUTPUT_DIR>
 ```
 
-Trajectory viewer
+#### Trajectory viewer
+Terminal1
 ``` 
  ./sub_scripts/trajectory_viewer.sh <BAG_FILE> <PCD_FILE>
 ```
+Terminal2
+``` 
+ rviz2 -d ros2/src/evel_util/rviz/trajectory_publisher.rviz
+```
 
- Extract csv rows within lane
+#### Extract csv rows within lane
 ```
 ./ros1/devel/lib/eve_util/extract_within_lane <CSV_FILE> <OSM_FILE> <X_COLUMN_NUM> <Y_COLUMN_NUM>
 ```
