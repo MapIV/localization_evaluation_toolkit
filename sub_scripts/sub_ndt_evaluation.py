@@ -51,7 +51,8 @@ def plot_trajectory_nvtl(pose_param, nvtl, output_dir):
     for i in range(0, len(pose_param.df)):
         search_sync = abs(nvtl.df_temp.iloc[:, 0] - pose_param.df.iloc[i, 0])
         sync_id = search_sync.idxmin()
-        nvtl.df = nvtl.df.append(nvtl.df_temp.iloc[sync_id, :], ignore_index=True)
+        # nvtl.df = nvtl.df.append(nvtl.df_temp.iloc[sync_id, :], ignore_index=True)
+        nvtl.df = pd.concat([nvtl.df, nvtl.df_temp.iloc[[sync_id]]], ignore_index=True)
     nvtl.df.reset_index(inplace=True, drop=True)
 
     fig_trj_nvtl = plt.figure("Trajectory and NVTL", figsize=(16, 9), dpi=120)
@@ -72,7 +73,8 @@ def plot_trajectory_tp(pose_param, tp, output_dir):
     for i in range(0, len(pose_param.df)):
         search_sync = abs(tp.df_temp.iloc[:, 0] - pose_param.df.iloc[i, 0])
         sync_id = search_sync.idxmin()
-        tp.df = tp.df.append(tp.df_temp.iloc[sync_id, :], ignore_index=True)
+        # tp.df = tp.df.append(tp.df_temp.iloc[sync_id, :], ignore_index=True)
+        tp.df = pd.concat([tp.df, tp.df_temp.iloc[[sync_id]]], ignore_index=True)
     tp.df.reset_index(inplace=True, drop=True)
 
     fig_trj_tp = plt.figure("Trajectory and TP", figsize=(16, 9), dpi=120)
