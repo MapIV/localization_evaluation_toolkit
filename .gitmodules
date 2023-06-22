@@ -1,3 +1,9 @@
 [submodule "ros1/src/lanelet2_parser"]
 	path = ros1/src/lanelet2_parser
 	url = git@github.com:MapIV/lanelet2_parser.git
+[submodule "ros1/src/elevation_map_checker"]
+	path = ros1/src/elevation_map_checker
+	url = git@github.com:MapIV/elevation_map_checker.git
+[submodule "ros1/src/llh_converter"]
+	path = ros1/src/llh_converter
+	url = git@github.com:MapIV/llh_converter.git

@@ -98,8 +98,8 @@ int main(int argc, char * argv[]) {
   std::string bag_file = argv[1];
   std::string pcd_file = argv[2];
 
-  auto publisher_path = node->create_publisher<nav_msgs::msg::Path>("trajectory", rclcpp::QoS{1}.transient_local());
-  auto publisher_map = node->create_publisher<sensor_msgs::msg::PointCloud2>("pointcloud_map", rclcpp::QoS(1).transient_local());
+  auto publisher_path = node->create_publisher<nav_msgs::msg::Path>("trajectory", rclcpp::QoS(1));
+  auto publisher_map = node->create_publisher<sensor_msgs::msg::PointCloud2>("pointcloud_map", rclcpp::QoS(1));
   tf2_ros::StaticTransformBroadcaster tf_broascaster_(node);
 
   nav_msgs::msg::Path path;
