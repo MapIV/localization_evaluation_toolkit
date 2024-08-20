@@ -13,7 +13,7 @@ from rosidl_runtime_py.utilities import get_message
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append("../scripts")
-from deprecated import adjust, read_ros2bag, yaml_param
+from deprecated_tmp import adjust, read_ros2bag, yaml_param
 
 NVTL_PLOT_RANGE=[0,2.0]
 TP_PLOT_RANGE=[0,4.0]
@@ -57,7 +57,7 @@ def plot_trajectory_nvtl(pose_param, nvtl, output_dir):
         search_sync = abs(nvtl.df_temp.iloc[:, 0] - pose_param.df.iloc[i, 0])
         sync_id = search_sync.idxmin()
         # nvtl.df = nvtl.df.append(nvtl.df_temp.iloc[sync_id, :], ignore_index=True)
-        nvtl.df = pd.concat([nvtl.df, nvtl.df_temp.iloc[sync_id]], ignore_index=True)
+        nvtl.df = pd.concat([nvtl.df, nvtl.df_temp.iloc[[sync_id]]], ignore_index=True)
     nvtl.df.reset_index(inplace=True, drop=True)
 
     fig_trj_nvtl = plt.figure("Trajectory and NVTL")
@@ -79,7 +79,7 @@ def plot_trajectory_tp(pose_param, tp, output_dir):
         search_sync = abs(tp.df_temp.iloc[:, 0] - pose_param.df.iloc[i, 0])
         sync_id = search_sync.idxmin()
         # tp.df = tp.df.append(tp.df_temp.iloc[sync_id, :], ignore_index=True)
-        tp.df = pd.concat([tp.df, tp.df_temp.iloc[sync_id]], ignore_index=True)
+        tp.df = pd.concat([tp.df, tp.df_temp.iloc[[sync_id]]], ignore_index=True)
     tp.df.reset_index(inplace=True, drop=True)
 
     fig_trj_tp = plt.figure("Trajectory and TP")
@@ -100,7 +100,7 @@ def plot_nvtl(nvtl, output_dir):
     fig_nvtl = plt.figure("NVTL")
     ax_nvtl = fig_nvtl.add_subplot(111)
     ax_nvtl.set_title("NVTL")
-    ax_nvtl.plot(nvtl.df_temp["time"] - nvtl.df_temp.at[0, "time"], nvtl.df_temp["data"], marker="o", markersize=2)
+    ax_nvtl.plot(nvtl.df_temp["time"].to_numpy() - nvtl.df_temp.at[0, "time"], nvtl.df_temp["data"].to_numpy(), marker="o", markersize=2)
     ax_nvtl.set_xlabel("time[s]")
     ax_nvtl.set_ylabel("NVTL")
     ax_nvtl.set_ylim(NVTL_PLOT_RANGE[0],NVTL_PLOT_RANGE[1])
@@ -112,7 +112,7 @@ def plot_tp(tp, output_dir):
     fig_tp = plt.figure("TP")
     ax_tp = fig_tp.add_subplot(111)
     ax_tp.set_title("TP")
-    ax_tp.plot(tp.df_temp["time"] - tp.df_temp.at[0, "time"], tp.df_temp["data"], marker="o", markersize=2)
+    ax_tp.plot(tp.df_temp["time"].to_numpy() - tp.df_temp.at[0, "time"], tp.df_temp["data"].to_numpy(), marker="o", markersize=2)
     ax_tp.set_xlabel("time[s]")
     ax_tp.set_ylabel("TP")
     ax_tp.set_ylim(TP_PLOT_RANGE[0],TP_PLOT_RANGE[1])
@@ -125,8 +125,8 @@ def plot_exe_time(exe_time, output_dir):
     ax_exe_time = fig_exe_time.add_subplot(111)
     ax_exe_time.set_title("Execution Time")
     ax_exe_time.plot(
-        exe_time.df_temp["time"] - exe_time.df_temp.at[0, "time"],
-        exe_time.df_temp["data"],
+        exe_time.df_temp["time"].to_numpy() - exe_time.df_temp.at[0, "time"],
+        exe_time.df_temp["data"].to_numpy(),
         marker="o",
         markersize=2,
     )
@@ -141,7 +141,7 @@ def plot_itr(itr, output_dir):
     fig_itr = plt.figure("Iteration")
     ax_itr = fig_itr.add_subplot(111)
     ax_itr.set_title("Iteration")
-    ax_itr.plot(itr.df_temp["time"] - itr.df_temp.at[0, "time"], itr.df_temp["data"], marker="o", markersize=2)
+    ax_itr.plot(itr.df_temp["time"].to_numpy() - itr.df_temp.at[0, "time"], itr.df_temp["data"].to_numpy(), marker="o", markersize=2)
     ax_itr.set_xlabel("time[s]")
     ax_itr.set_ylabel("Iteration")
     ax_itr.set_ylim(ITR_PLOT_RANGE[0],ITR_PLOT_RANGE[1])
@@ -156,8 +156,8 @@ def plot_ellipse_ls(pose_param, output_dir):
     ax_el_long = fig_el.add_subplot(211)
     ax_el_long.set_title("Ellipse Long Radius")
     ax_el_long.plot(
-        pose_param.df["time"] - start_time,
-        pose_param.df["ellipse_long"],
+        pose_param.df["time"].to_numpy() - start_time,
+        pose_param.df["ellipse_long"].to_numpy(),
         marker="o",
         markersize=2,
     )
@@ -170,8 +170,8 @@ def plot_ellipse_ls(pose_param, output_dir):
     ax_el_short = fig_el.add_subplot(212)
     ax_el_short.set_title("Ellipse Short Radius")
     ax_el_short.plot(
-        pose_param.df["time"] - start_time,
-        pose_param.df["ellipse_short"],
+        pose_param.df["time"].to_numpy() - start_time,
+        pose_param.df["ellipse_short"].to_numpy(),
         marker="o",
         markersize=2,
     )
@@ -188,7 +188,7 @@ def plot_ellipse_long(pose_param, output_dir):
     fig_el = plt.figure("Error Long Ellipse")
     ax_el= fig_el.add_subplot(111)
     ax_el.set_title("Error Long Ellipse")
-    ax_el.plot(pose_param.df["time"] - pose_param.df.at[0, "time"], pose_param.df["ellipse_long"],marker="o", markersize=2)
+    ax_el.plot(pose_param.df["time"].to_numpy() - pose_param.df.at[0, "time"], pose_param.df["ellipse_long"].to_numpy(),marker="o", markersize=2)
     ax_el.set_xlabel("time[s]")
     ax_el.set_ylabel("size[m]")
     ax_el.set_ylim(ERROR_ELLIPSE_RANGE[0],ERROR_ELLIPSE_RANGE[1])
@@ -203,8 +203,8 @@ def plot_ellipse_ll(pose_param, output_dir):
     ax_el2_longitudinal = fig_el2.add_subplot(211)
     ax_el2_longitudinal.set_title("Ellipse Longitudinal Direction")
     ax_el2_longitudinal.plot(
-        pose_param.df["time"] - start_time,
-        pose_param.df["ellipse_longitudinal"],
+        pose_param.df["time"].to_numpy() - start_time,
+        pose_param.df["ellipse_longitudinal"].to_numpy(),
         marker="o",
         markersize=2,
     )
@@ -217,8 +217,8 @@ def plot_ellipse_ll(pose_param, output_dir):
     ax_el2_lateral = fig_el2.add_subplot(212)
     ax_el2_lateral.set_title("Ellipse Lateral Direction")
     ax_el2_lateral.plot(
-        pose_param.df["time"] - start_time,
-        pose_param.df["ellipse_lateral"],
+        pose_param.df["time"].to_numpy() - start_time,
+        pose_param.df["ellipse_lateral"].to_numpy(),
         marker="o",
         markersize=2,
     )
@@ -234,7 +234,7 @@ def plot_ellipse_lateral(pose_param, output_dir):
     fig_lateral = plt.figure("Error Ellipse Lateral")
     ax_lateral = fig_lateral.add_subplot(111)
     ax_lateral.set_title("Error Ellipse Lateral")
-    ax_lateral.plot(pose_param.df["time"] - pose_param.df.at[0, "time"], pose_param.df["ellipse_lateral"],marker="o", markersize=2)
+    ax_lateral.plot(pose_param.df["time"].to_numpy() - pose_param.df.at[0, "time"], pose_param.df["ellipse_lateral"].to_numpy(),marker="o", markersize=2)
     ax_lateral.set_xlabel("time[s]")
     ax_lateral.set_ylabel("size[m]")
     ax_lateral.set_ylim(ERROR_ELLIPSE_LATERAL_DIRECTION[0],ERROR_ELLIPSE_LATERAL_DIRECTION[1])
